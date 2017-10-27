@@ -6,7 +6,12 @@ import os
 import argparse
 import ipaddress
 import getpass
+import configparser
 
+#Setup configuration file structure
+config = configparser.ConfigParser()
+config['NETWORKING'] = {}
+config['EMAIL'] = {}
 
 #Define arguments
 parser = argparse.ArgumentParser()
@@ -32,8 +37,6 @@ def verifySubnets(subnets):
 #The main function to call if the --setup option is selected.
 #This function should ask the user a series of questions, verify the answers, and create a configuration file.
 if args.setup:
-  subnets = ""
-
   os.system('clear')
   input("This setup wizard will ask you a series of questions which will be used to build a configuration file.  Press enter to continue.\n")
   os.system('clear')
@@ -42,14 +45,39 @@ if args.setup:
     subnets = input("Please enter a comma seperated list of subnets that you would like to scan.  Exmaple: 192.168.1.0/24,10.10.0.0/16 \n")
     
     if verifySubnets(subnets):
+      config['NETWORKING']['Subnets'] = subnets
       break
     else:
       input("Press enter to try again.")
       os.system('clear')
 
   os.system('clear')
-  print("subnets: %s" % (subnets))
+  input("Subnets verified succesfully!  Press Enter to continue\n")
+  os.system('clear')
 
+  config['EMAIL']['ServerAddress'] = input("Please enter an email server address.  Example: smtp.office365.com\n") #should use regex to limit chracters to avoid command injection
+  os.system('clear')
+
+  config['EMAIL']['ServerPort'] = input("Please enter an email server port.  Example: 587\n") #should check for int in valid range
+  os.system('clear')
+
+  config['EMAIL']['Tls'] = input("Does the email server require TLS?  Please enter y or n\n") #should check for y or n
+  os.system('clear')
+
+  config['EMAIL']['SenderEmail'] = input("Please enter the senders email address.  Example: notifications@example.com\n") #should use regex to validate
+  os.system('clear')
+
+  config['EMAIL']['SenderUsername'] = input("Please enter the senders email username.  This may be the same as their email address.  Example: notifications@example.com\n")
+  os.system('clear')
+
+  print("Please enter the senders email password.  Example: Password123\n")
+  config['EMAIL']['SenderPassword'] = getpass.getpass()
+  os.system('clear')
+
+  config['EMAIL']['SenderEmail'] = input("Please enter the recipient email address.  Example: admin@example.com\n") #should use regex to validate
+  os.system('clear')
+
+  print(config)
 
   print("Setup Complete")
   sys.exit(0)
