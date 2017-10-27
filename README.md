@@ -1,4 +1,6 @@
 # MacMon
+THIS IS A WORK IN PROGRESS. AKA IT DOESNT WORK AT ALL YET!
+
 Monitors the network for new connected MAC addresses
 
 This script assumes that it will run on an Ubuntu Linux system running Python3.  It may work in othe Linux distributions but it has not been tested.
