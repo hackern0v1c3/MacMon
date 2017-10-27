@@ -71,13 +71,39 @@ if args.setup:
   os.system('clear')
 
   print("Please enter the senders email password.  Example: Password123\n")
+  print("IMPORTANT: This password will be saved in clear text in the macmon.cfg configuration file.  This script will attempt to change the permissions of that file so only the current user can read it.  This does not gurantee security.  If you are not comfortable with having your email credentials in a text file please donn\'t use this script!")
   config['EMAIL']['SenderPassword'] = getpass.getpass()
   os.system('clear')
 
-  config['EMAIL']['SenderEmail'] = input("Please enter the recipient email address.  Example: admin@example.com\n") #should use regex to validate
+  config['EMAIL']['RecipientEmail'] = input("Please enter the recipient email address.  Example: admin@example.com\n") #should use regex to validate
   os.system('clear')
 
-  print(config)
+  print("Please verify that the settings looks correct.  Enter y to continue or n to re-enter.\n")
+  print("Subnets: %s" % (config['NETWORKING']['Subnets']))
+  print("ServerAddress: %s" % (config['EMAIL']['ServerAddress']))
+  print("ServerPort: %s" % (config['EMAIL']['ServerPort']))
+  print("Tls: %s" % (config['EMAIL']['Tls']))
+  print("SenderEmail: %s" % (config['EMAIL']['SenderEmail']))
+  print("SenderUsername: %s" % (config['EMAIL']['SenderUsername']))
+  print("SenderPassword: ***")
+  print("RecipientEmail: %s" % (config['EMAIL']['RecipientEmail']))
+
+  input()### This should start questions all over again if the user enters n
+
+  try:
+    with open('macmon.cfg', 'w') as configfile:
+      config.write(configfile)
+  except:
+    os.system('clear')
+    print("error saving macmon.cfg")
+    sys.exit(1)
+
+  try:
+    os.chmod("macmon.cfg", 0o600)
+  except:
+    os.system('clear')
+    print("error setting permissions on macmon.cfg.  This file could contain your email password.  Please force delete it!")
+    sys.exit(1)
 
   print("Setup Complete")
   sys.exit(0)
