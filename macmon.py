@@ -7,6 +7,7 @@ import argparse
 import ipaddress
 import getpass
 import configparser
+import smtplib
 
 #Setup configuration file structure
 config = configparser.ConfigParser()
@@ -22,7 +23,6 @@ args = parser.parse_args()
 
 #This function takes in an array, removes it's duplicates, and returns a unique array.  Found here https://www.peterbe.com/plog/uniqifiers-benchmark
 def unique_array(seq):
-   # Not order preserving
    keys = {}
    for e in seq:
        keys[e] = 1
@@ -42,6 +42,37 @@ def verifySubnets(subnets):
       print("Invalid Subnet %s" % (network) + "\n")
       return False
   return True
+
+#This function takes in a string and generates an email
+def sendEmailNotification(message_body):
+  server_address = config['EMAIL']['ServerAddress']
+  server_port = int(config['EMAIL']['ServerPort'])
+  username = config['EMAIL']['SenderUsername']
+  password = config['EMAIL']['SenderPassword']
+  sender_email = config['EMAIL']['SenderEmail']
+  recipient = config['EMAIL']['RecipientEmail']
+  use_tls = True
+  if config['EMAIL']['Tls'] == "n":
+    use_tls = False
+
+  server = smtplib.SMTP(server_address, server_port, None, 30)
+  server.ehlo()
+  if use_tls:
+    server.starttls()
+  server.login(username, passsword)
+  BODY = '\r\n'.join(['To: %s' % recipient,
+                    'From: %s' % sender_email,
+                    'Subject: New MAC deteccted on network',
+                    '', message_body])
+  try:
+    server.sendmail(sender_email, [recipient], BODY)
+    server.quit()
+    print ('email sent')
+    return True
+  except:
+    print ('error sending mail')
+    server.quit()
+    return False
 
 #The main function to call if the --setup option is selected.
 #This function should ask the user a series of questions, verify the answers, and create a configuration file.
