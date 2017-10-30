@@ -9,6 +9,9 @@ import getpass
 import configparser
 import smtplib
 
+#Configurable Options
+mac_address_whitelist = './macmon_whitelist.txt'
+
 #Setup configuration file structure
 config = configparser.ConfigParser()
 
@@ -157,7 +160,9 @@ if args.setup:
 
 #The main function to call if the --learn option is selected.
 #This function should check for a configuration file and verify the subnets
-#Then this function should scan each subnet and record all identified MAC addresses
+#Then this function should scan each subnet and identify all MAC addresses
+#If no mac whitelist file exists one is created
+#If a whitelist already exists then new addresses are added to it
 elif args.learn:
   try:
     config.read("macmon.cfg")
@@ -188,16 +193,35 @@ elif args.learn:
 
   mac_address_array.pop(0)
 
-  ######## HERE I SHOULD TRY AND READ MAC ADDRESS FILE
-  ######## IF IT EXISTS SORT UNIQUE
-  ######## THEN SEARCh NEW SCAN RESULTS FOR ADDITIONAL ADDRESSES
-  ######## ADD ANY NEW ADDRESSES TO OLD LIST
-  ######## WRITE BACK TO FILE
+  unique_addresses = sorted(unique_array(mac_address_array))
 
-  ######## IF FILES DIDN'T EXIST JUST WRITE A NEW ONE WITH NEW SORTED UNIQUE ARRAY
+  i = 0
+  for s in unique_addresses:
+    unique_addresses[i] = s+"\n"
+    i = i + 1
+
+  if os.path.isfile(mac_address_whitelist):
+    whitelisted_addresses = []
+    with open(mac_address_whitelist, "r") as f:
+      for line in f:
+        whitelisted_addresses.append(line)
+    new_addresses = set(unique_addresses) - set(whitelisted_addresses)
+
+    if args.verbose & (new_addresses != set()):
+      print("The following new addresses were detected.  Adding to whitelist")
+      print(new_addresses)
+
+    with open(mac_address_whitelist, "a") as f:
+      for address in new_addresses:
+        f.write(address)
+
+  else:
+    with open(mac_address_whitelist, "w") as f:
+      for address in unique_addresses:
+        f.write(address)
 
   print("Learning Complete")
-  print(sorted(unique_array(mac_address_array)))
+  print(unique_addresses)
   sys.exit(0)
 
 #The main function to call if the --check option is selected.

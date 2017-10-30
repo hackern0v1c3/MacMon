@@ -1,3 +1,4 @@
 .vscode
 macmon.cfg
 argparse
+macmon_whitelist.txt
