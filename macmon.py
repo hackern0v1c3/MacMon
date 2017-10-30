@@ -80,7 +80,6 @@ def find_new_mac_addresses():
   else:
     return unique_addresses
 
-
 #This function takes in a string which should be a comma seperated list of subnets.
 #It splits the list and verifies that each subnet is valid.
 def verifySubnets(subnets):
@@ -98,6 +97,9 @@ def verifySubnets(subnets):
 
 #This function takes in a string and generates an email
 def sendEmailNotification(message_body):
+  if args.verbose:
+    print("Attempting to send email notification")
+
   server_address = config['EMAIL']['ServerAddress']
   server_port = int(config['EMAIL']['ServerPort'])
   username = config['EMAIL']['SenderUsername']
@@ -112,7 +114,7 @@ def sendEmailNotification(message_body):
   server.ehlo()
   if use_tls:
     server.starttls()
-  server.login(username, passsword)
+  server.login(username, password)
   BODY = '\r\n'.join(['To: %s' % recipient,
                     'From: %s' % sender_email,
                     'Subject: New MAC deteccted on network',
@@ -237,6 +239,28 @@ elif args.learn:
 #If new MAC address are found an email should be generated
 else:
   read_config()
+
+  new_addresses = find_new_mac_addresses()
+
+  if new_addresses != set():
+    if args.verbose:
+      print("The following new addresses were detected.")
+      print(new_addresses)
+    
+    email_body = ""
+    for s in new_addresses:
+      email_body += s
+
+    email_delivered = sendEmailNotification(email_body)
+
+    if email_delivered:
+      with open(mac_address_whitelist, "a") as f:
+        for address in new_addresses:
+          f.write(address)
+
+  else:
+    if args.verbose:
+      print("No new addresses were detected.")
 
   print("Checking Complete")
   sys.exit(0)
