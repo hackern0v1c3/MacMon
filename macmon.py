@@ -31,6 +31,56 @@ def unique_array(seq):
        keys[e] = 1
    return keys.keys()
 
+#This function is used to read the settings from the config file
+def read_config():
+  try:
+    config.read("macmon.cfg")
+  except:
+    print("Unable to read macmon.cfg.  Exiting")
+    sys.exit(1)
+
+  if not verifySubnets(config['NETWORKING']['Subnets']):
+    print("Invalid information in macmon.cfg.  Ending script")
+    sys.exit(1)
+
+#This function uses nmap to scan for new mac addresses on the network and returns a python set of MAC addresses
+def find_new_mac_addresses():
+  subnets = config['NETWORKING']['Subnets'].split(',')
+  for subnet in subnets:
+    os.system('nmap -n -sn %(subnet)s' % locals())
+
+  arptable = ""
+  try:
+    f = open("/proc/net/arp", "r")
+    arptable = f.read()
+    f.close()
+  except:
+    print("Error: Unable to read arp table /proc/net/arp")
+    sys.exit(1)
+
+  mac_address_array = []
+  for line in arptable.splitlines():
+    mac_address_array.append(line.split()[3])
+
+  mac_address_array.pop(0)
+
+  unique_addresses = sorted(unique_array(mac_address_array))
+
+  i = 0
+  for s in unique_addresses:
+    unique_addresses[i] = s+"\n"
+    i = i + 1
+
+  if os.path.isfile(mac_address_whitelist):
+    whitelisted_addresses = []
+    with open(mac_address_whitelist, "r") as f:
+      for line in f:
+        whitelisted_addresses.append(line)
+    return (set(unique_addresses) - set(whitelisted_addresses))
+  else:
+    return unique_addresses
+
+
 #This function takes in a string which should be a comma seperated list of subnets.
 #It splits the list and verifies that each subnet is valid.
 def verifySubnets(subnets):
@@ -164,64 +214,20 @@ if args.setup:
 #If no mac whitelist file exists one is created
 #If a whitelist already exists then new addresses are added to it
 elif args.learn:
-  try:
-    config.read("macmon.cfg")
-  except:
-    print("Unable to read macmon.cfg.  Exiting")
-    sys.exit(1)
+  read_config()
 
-  if not verifySubnets(config['NETWORKING']['Subnets']):
-    print("Invalid information in macmon.cfg.  Ending script")
-    sys.exit(1)
+  new_addresses = find_new_mac_addresses()
 
-  subnets = config['NETWORKING']['Subnets'].split(',')
-  for subnet in subnets:
-    os.system('nmap -n -sn %(subnet)s' % locals())
-
-  arptable = ""
-  try:
-    f = open("/proc/net/arp", "r")
-    arptable = f.read()
-    f.close()
-  except:
-    print("Error: Unable to read arp table /proc/net/arp")
-    sys.exit(1)
-
-  mac_address_array = []
-  for line in arptable.splitlines():
-    mac_address_array.append(line.split()[3])
-
-  mac_address_array.pop(0)
-
-  unique_addresses = sorted(unique_array(mac_address_array))
-
-  i = 0
-  for s in unique_addresses:
-    unique_addresses[i] = s+"\n"
-    i = i + 1
-
-  if os.path.isfile(mac_address_whitelist):
-    whitelisted_addresses = []
-    with open(mac_address_whitelist, "r") as f:
-      for line in f:
-        whitelisted_addresses.append(line)
-    new_addresses = set(unique_addresses) - set(whitelisted_addresses)
-
-    if args.verbose & (new_addresses != set()):
+  if new_addresses != set():
+    if args.verbose:
       print("The following new addresses were detected.  Adding to whitelist")
       print(new_addresses)
-
+    
     with open(mac_address_whitelist, "a") as f:
       for address in new_addresses:
         f.write(address)
 
-  else:
-    with open(mac_address_whitelist, "w") as f:
-      for address in unique_addresses:
-        f.write(address)
-
   print("Learning Complete")
-  print(unique_addresses)
   sys.exit(0)
 
 #The main function to call if the --check option is selected.
@@ -230,5 +236,7 @@ elif args.learn:
 #Finally this function should scan all subnets and identify any new MAC addresses
 #If new MAC address are found an email should be generated
 else:
+  read_config()
+
   print("Checking Complete")
   sys.exit(0)
