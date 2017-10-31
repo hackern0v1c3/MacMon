@@ -1,6 +1,6 @@
 # MacMon
 THIS IS A WORK IN PROGRESS. AKA IT DOESNT WORK AT ALL YET!
-I am going to call the main branch version 1 since it's working on my development machine.  Further developing will happen on the dev branch.
+This branch uses arp-scan on Ubuntu instead of nmap and the ubuntu arp cache file
 
 Monitors the network for new connected MAC addresses
 
@@ -10,7 +10,7 @@ This script does not do anything with IPv6 Sorry!
 
 This script saves your emai username and password in clear text into a config file.  These credentials are required for the ability to send emails.  The config file should be restricted to ONLY the user who will run the script.  Use this script at your own risk!
 
-Right now this script requires nmap. I plan on changing that at some point but no promises.
+Right now this script requires arp-scan. This may change again.
 
 Instructions:
 1.  Download the script with "git clone https://github.com/hackern0v1c3/MacMon.git"
