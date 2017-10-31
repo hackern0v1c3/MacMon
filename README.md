@@ -1,5 +1,6 @@
 # MacMon
 THIS IS A WORK IN PROGRESS. AKA IT DOESNT WORK AT ALL YET!
+I am going to call the main branch version 1 since it's working on my development machine.  Further developing will happen on the dev branch.
 
 Monitors the network for new connected MAC addresses
 
@@ -10,6 +11,19 @@ This script does not do anything with IPv6 Sorry!
 This script saves your emai username and password in clear text into a config file.  These credentials are required for the ability to send emails.  The config file should be restricted to ONLY the user who will run the script.  Use this script at your own risk!
 
 Right now this script requires nmap. I plan on changing that at some point but no promises.
+
+Instructions:
+1.  Download the script with "git clone https://github.com/hackern0v1c3/MacMon.git"
+
+2.  Make the script executable with "chmod +x macmon.py"
+
+3.  Run config mode and answer the questions "macmon.py --setup"
+
+4.  Run learn mode to scan the network and auto-whitelist everything that is found "macmon.py --learn".  By default the whitelisted MAC addresses are saved in "macmon_whitelist.txt"
+
+5.  Run check mode with macmon.py with no options.  If everything works correctly you should receive an email with any newly detected MAC addresses.  The addresses are then automatically added to the whitelist so you don't keep getting notified about them.
+
+6.  To run automatic checks setup a cron job.  In version 1 the script looks for the configuration file and whitelist file in the same folder as the script.  The config file should have permssions set so only the user that ran setup mode can succesfully run the script.  Keep this in mind when setting up the cron job.
 
 Credit:
   Script idea- Brian at 7ms.us for coming up with the idea.
