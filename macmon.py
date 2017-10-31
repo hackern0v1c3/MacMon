@@ -8,6 +8,7 @@ import ipaddress
 import getpass
 import configparser
 import smtplib
+import subprocess
 
 #Configurable Options
 mac_address_whitelist = './macmon_whitelist.txt'
@@ -46,23 +47,20 @@ def read_config():
 #This function uses nmap to scan for new mac addresses on the network and returns a python set of MAC addresses
 def find_new_mac_addresses():
   subnets = config['NETWORKING']['Subnets'].split(',')
-  for subnet in subnets:
-    os.system('nmap -n -sn %(subnet)s' % locals())
-
-  arptable = ""
-  try:
-    f = open("/proc/net/arp", "r")
-    arptable = f.read()
-    f.close()
-  except:
-    print("Error: Unable to read arp table /proc/net/arp")
-    sys.exit(1)
-
   mac_address_array = []
-  for line in arptable.splitlines():
-    mac_address_array.append(line.split()[3])
 
-  mac_address_array.pop(0)
+  for subnet in subnets:
+    proc = subprocess.Popen(["arp-scan", subnet], stdout=subprocess.PIPE)
+
+    arp_scan_result_bytes = proc.stdout.read()
+    arp_scan_result_string = arp_scan_result_bytes.decode("utf-8")
+    arp_scan_results_array = arp_scan_result_string.splitlines()
+
+    i = 2
+    while i < (len(arp_scan_results_array) - 3):
+      mac = (arp_scan_results_array[i].split())[1]
+      mac_address_array.append(mac)
+      i = i + 1
 
   unique_addresses = sorted(unique_array(mac_address_array))
 
