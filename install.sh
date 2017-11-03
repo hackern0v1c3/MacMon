@@ -11,6 +11,11 @@ checkIfSudo ()
         fi
 }
 
+installCurl ()
+{
+	apt-get install curl -y
+}
+
 installNode6 ()
 {
 	#This installs node 6 using apt https://nodejs.org/en/download/package-manager/
@@ -41,6 +46,14 @@ promptNode6Install()
 
 checkPrerequisites ()
 {
+	#Make sure curl is installed
+	if curl -V | grep --quiet "Release"
+	then
+		printf "curl already installed.\n"
+	else
+		installCurl
+	fi
+	
 	#Make sure node version 6 and npm are installed.  If not this should ask if you want to install.
 	[[ $(node -v) =~ "v6." ]] || promptNode6Install
 
@@ -67,7 +80,7 @@ collectInformation ()
 	read databaseServicePassword
 	clear
 	printf "Enter a password for the database sa account:\n"
-  read mySqlPassword
+	read mySqlPassword
 	clear
 	printf "Enter a secret used to sign session cookies:\n"
 	read cookieSecret
