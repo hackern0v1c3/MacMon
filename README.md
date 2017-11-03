@@ -25,6 +25,8 @@ This script will assumes that it is running on an Ubuntu Linux system.  It may w
 
 This script won't do anything with IPv6 Sorry!
 
+to start in debug mode
+DEBUG=macmon:* npm start
 
 Credit:
   Concept- Brian at 7ms.us for coming up with the project idea.
