@@ -134,7 +134,7 @@ createConfig ()
 	echo "	\"dbUser\": \"AssetTracking_User\"," >> ./private/config.js
 	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> ./private/config.js
 	echo "	\"dbName\": \"AssetTracking\"," >> ./private/config.js
-	echo "  \"serverPort\": ${serverPort}," >> ./private/config.js
+	echo "	\"serverPort\": ${serverPort}," >> ./private/config.js
 	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
 	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
