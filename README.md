@@ -1,30 +1,30 @@
 # MacMon
 THIS IS A WORK IN PROGRESS. AKA IT DOESNT WORK AT ALL YET!
-I am going to call the main branch version 1 since it's working on my development machine.  Further developing will happen on the dev branch.
+After some consideration I am revamping the project to go in an entirely different direction.  Here is the new concept.
 
-Monitors the network for new connected MAC addresses
+Ditch python in exchange for node js.
 
-This script assumes that it will run on an Ubuntu Linux system running Python3.  It may work in othe Linux distributions but it has not been tested.
+The application will have a mysql backend for storing data and a browser interface for viewing/manipulating data.
 
-This script does not do anything with IPv6 Sorry!
+The web interface will allow you to view whitelisted devices on your network as well as some basic information about them.  For instance
+  Mac address, Name, Description, IP Address, notes, device type, nmap results
+ 
+ There should be buttons that allow you to refresh information on a particular device.  Some info like name, device type, notes, etc will be definable by the user in the broswer interface.  This will help keep a clean inventory of whitelisted devices.
+ 
+In the background on a regular basis the application should scan the network using arp-scan (this may change).  After a scan is completed a few things should happen.
+  1.  If new devices are detected an alert email should be generated and the devices should be added to the "new devices" section of the webpage.  The information should include their IP address, MAC address, and nmap scan results.
+  2.  Any whitelisted devices that are detected again should have their IP address updated in the database and browser interface.
 
-This script saves your emai username and password in clear text into a config file.  These credentials are required for the ability to send emails.  The config file should be restricted to ONLY the user who will run the script.  Use this script at your own risk!
+A "New Device" is defined by a MAC address that is not already in the database.  Once a new device is detected it's up to the user to either whitelist the device, or delete the device.  If a device is deleted it will be detected again in future scans.  So either whitelist devices or delete them and make sure they are never on your network again!
 
-Right now this script requires nmap. I plan on changing that at some point but no promises.
+The program will not have any methods for blocking devices from your network.  It will be simply for detecting and tracking.
 
-Instructions:
-1.  Download the script with "git clone https://github.com/hackern0v1c3/MacMon.git"
 
-2.  Make the script executable with "chmod +x macmon.py"
 
-3.  Run config mode and answer the questions "macmon.py --setup"
+This script will assumes that it is running on an Ubuntu Linux system.  It may work in othe Linux distributions but it will not be tested (unless other people test it).
 
-4.  Run learn mode to scan the network and auto-whitelist everything that is found "macmon.py --learn".  By default the whitelisted MAC addresses are saved in "macmon_whitelist.txt"
+This script won't do anything with IPv6 Sorry!
 
-5.  Run check mode with macmon.py with no options.  If everything works correctly you should receive an email with any newly detected MAC addresses.  The addresses are then automatically added to the whitelist so you don't keep getting notified about them.
-
-6.  To run automatic checks setup a cron job.  In version 1 the script looks for the configuration file and whitelist file in the same folder as the script.  The config file should have permssions set so only the user that ran setup mode can succesfully run the script.  Keep this in mind when setting up the cron job.
 
 Credit:
-  Script idea- Brian at 7ms.us for coming up with the idea.
-  https://www.peterbe.com/plog/uniqifiers-benchmark I stole the function for unique arrays from here
+  Concept- Brian at 7ms.us for coming up with the project idea.
