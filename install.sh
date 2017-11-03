@@ -101,6 +101,10 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('user');"
 
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
+
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Notes varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
+	
 	#Default credentials are admin@localhost / password
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userEmail, userPass, userRole) VALUES ('admin@localhost', '\$2a\$10\$tkFug74.OQ8MLiOdbEQeG.nQ2kCyPH65LdCduM6Y3IeQdNWv9gBt2', 1);"
 
@@ -109,6 +113,14 @@ createDatabase ()
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
 	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON AssetTracking.* TO 'AssetTracking_User'@'localhost'"
+
+	#Default AssetType
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
+
+	#Example inserting data into Assets table
+	#mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO Assets (MAC, IP) VALUES ('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1E', '192.168.1.240');"
+
+
 }
 
 generateSelfSignedCerts ()
