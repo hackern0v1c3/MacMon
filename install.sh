@@ -120,7 +120,7 @@ createDatabase ()
 	#Example inserting data into Assets table
 	#mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO Assets (MAC, IP) VALUES ('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1E', '192.168.1.240');"
 
-
+	#Setup stored procedure here for upserts
 }
 
 generateSelfSignedCerts ()
