@@ -1,0 +1,10 @@
+module.exports = {
+	"dbAddress": "127.0.0.1",
+	"dbPort": 1433,
+	"dbUser": "AssetTracking_User",
+	"dbPassword": "password",
+	"dbName": "AssetTracking",
+	"serverPort": 443,
+	"cookieSecret": "password",
+	"hashStrength": 10
+}

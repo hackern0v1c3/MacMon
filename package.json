@@ -1,0 +1,26 @@
+{
+  "name": "macmon",
+  "version": "0.0.0",
+  "description": "A basic asset detections, whitelisting, and tracking app",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:hackern0v1c3/MacMon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hackern0v1c3/MacMon/issues"
+  },
+  "homepage": "https://github.com/hackern0v1c3/MacMon",
+  "dependencies": {
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11",
+    "serve-favicon": "~2.4.5"
+  }
+}
