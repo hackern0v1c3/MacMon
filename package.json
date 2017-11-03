@@ -15,11 +15,17 @@
   },
   "homepage": "https://github.com/hackern0v1c3/MacMon",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.2",
+    "connect-roles": "^3.1.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
-    "express": "~4.15.5",
+    "express": "^4.15.5",
+    "express-session": "^1.15.6",
     "morgan": "~1.9.0",
+    "mysql": "^2.15.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5"
   }
