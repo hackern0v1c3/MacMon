@@ -16,10 +16,10 @@ installCurl ()
 	apt-get install curl -y
 }
 
-installNode6 ()
+installNode8 ()
 {
-	#This installs node 6 using apt https://nodejs.org/en/download/package-manager/
-	curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+	#This installs node 8 using apt https://nodejs.org/en/download/package-manager/
+	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 	apt-get install -y nodejs
 	apt-get install -y build-essential
 }
@@ -32,13 +32,13 @@ installMYSQL ()
 	systemctl enable mysql
 }
 
-promptNode6Install()
+promptNode8Install()
 {
   #This warns users in case they already have a version of node installed
 	clear
-	read -p "Node version 6 is not installed but is required.  Would you like this script to install it for you? Warning this could replace your current version of nodejs with version 6.\n" yn
+	read -p "Node version 8 is not installed but is required.  Would you like this script to install it for you? Warning this could replace your current version of nodejs with version 8.\n" yn
                 case $yn in
-                        [Yy]* ) installNode6;;
+                        [Yy]* ) installNode8;;
                         [Nn]* ) exit;;
                 * ) printf "Please answer yes to attempt to install node or no to quit.\n";;
         esac
@@ -54,8 +54,8 @@ checkPrerequisites ()
 		installCurl
 	fi
 	
-	#Make sure node version 6 and npm are installed.  If not this should ask if you want to install.
-	[[ $(node -v) =~ "v6." ]] || promptNode6Install
+	#Make sure node version 8 and npm are installed.  If not this should ask if you want to install.
+	[[ $(node -v) =~ "v8." ]] || promptNode8Install
 
 	#Check for npm just in case
 	command -v npm >/dev/null 2>&1 || { echo >&2 "Npm is not installed.  Please install the npm package and run setup again.  https://nodejs.org/en/download/package-manager/  Aborting."; exit 1; }
