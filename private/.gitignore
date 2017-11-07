@@ -1,5 +1,6 @@
 Ignore everything in this directory
 *
-# Except this file and example config
+# Except this file, example config, and db.js
 !.gitignore
 !config.example
+!db.js
