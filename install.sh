@@ -76,17 +76,43 @@ collectInformation ()
 {
 	#This asks the user a series of questions used to setup the config file.
 	clear
-	printf "Enter a password for the asset tracking database service account user:\n"
+	printf "Enter a password for the asset tracking database service account user that this script will create:\n"
 	read databaseServicePassword
 	clear
-	printf "Enter a password for the database sa account:\n"
+	printf "Enter a password for the database sa account that this script will create:\n"
 	read mySqlPassword
 	clear
-	printf "Enter a secret used to sign session cookies:\n"
+	printf "Enter a secret that will be used to sign session cookies:\n"
 	read cookieSecret
 	clear
-	printf "Enter the port you would like the web server to listen on for HTTPS (usually 443)"
+	printf "Enter the port you would like the web server to listen on for HTTPS (usually 443):\n"
 	read serverPort
+	clear
+	printf "Enter the address of the email server that you would like to use for notifications.  Example: smtp.office365.com:\n"
+	read emailServer
+	clear
+	printf "Enter the SMTP port of the email server.  Usually 25 or 587:\n"
+	read smtpPort
+	clear
+	printf "Enter the email address that will be used to send notifications:\n"
+	read emailSender
+	clear
+	printf "Enter the username for the email address that will be used to send notifications.  This is often the same as the email address:\n"
+	read emailSenderUsername
+	clear
+	printf "Enter the password for the email address that will be used to send notifications:\n"
+	read emailSenderPassword
+	clear
+	printf "Enter the email address that will receive notifications:\n"
+	read emailRecipient
+	clear
+	printf "Will the email server require tls?:\n"
+	select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) emailTls=True; break;;
+        No ) emailTls=False; break;;
+    esac
+	done
 	clear
 	printf "Type each network range that you would like to scan followed by Enter (example: 192.168.2.0/24).  When you are done press Enter on an empty line.:\n"
 	networkRanges=()
@@ -167,6 +193,13 @@ createConfig ()
 	echo "	\"serverPort\": ${serverPort}," >> ./private/config.js
 	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
 	echo "	\"CidrRanges\": ${configNetworkRanges}," >> ./private/config.js
+	echo "	\"emailServer\": \"${emailServer}\"," >> ./private/config.js
+	echo "	\"smtpPort\": ${smtpPort}," >> ./private/config.js
+	echo "	\"emailSender\": \"${emailSender}\"," >> ./private/config.js
+	echo "	\"emailSenderUsername\": \"${emailSenderUsername}\"," >> ./private/config.js
+	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> ./private/config.js
+	echo "	\"emailRecipient\": \"${emailRecipient}\"," >> ./private/config.js
+	echo "	\"emailTls\": \"${emailTls}\"," >> ./private/config.js
 	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
 }
