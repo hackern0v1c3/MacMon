@@ -6,5 +6,6 @@ module.exports = {
 	"dbName": "AssetTracking",
 	"serverPort": 443,
 	"cookieSecret": "password",
-	"hashStrength": 10
+	"hashStrength": 10,
+	"CidrRanges": ["192.168.2.0/24", "10.10.0.0/16"]
 }

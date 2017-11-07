@@ -84,8 +84,26 @@ collectInformation ()
 	clear
 	printf "Enter a secret used to sign session cookies:\n"
 	read cookieSecret
+	clear
 	printf "Enter the port you would like the web server to listen on for HTTPS (usually 443)"
 	read serverPort
+	clear
+	printf "Type each network range that you would like to scan followed by Enter (example: 192.168.2.0/24).  When you are done press Enter on an empty line.:\n"
+	networkRanges=()
+  networkRange="a"
+
+	while true; do
+  	read networkRange
+    if [[ $networkRange =~ ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$ ]]; then
+    	printf "Added\n"
+      networkRanges+=("$networkRange")
+    elif [[ -z $networkRange ]]; then
+			configNetworkRanges = '['$(IFS=, ; echo "${networkRanges[*]}")']'
+    	break;
+    else
+    	printf "Invalid\n"
+    fi
+  done
 }
 
 createDatabase ()
@@ -103,7 +121,7 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Notes varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Notes varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
 	
 	#Default credentials are admin@localhost / password
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userEmail, userPass, userRole) VALUES ('admin@localhost', '\$2a\$10\$tkFug74.OQ8MLiOdbEQeG.nQ2kCyPH65LdCduM6Y3IeQdNWv9gBt2', 1);"
@@ -149,6 +167,7 @@ createConfig ()
 	echo "	\"dbName\": \"AssetTracking\"," >> ./private/config.js
 	echo "	\"serverPort\": ${serverPort}," >> ./private/config.js
 	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
+	echo "	\"CidrRanges\": \"${configNetworkRanges}\"," >> ./private/config.js
 	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
 }
