@@ -90,15 +90,14 @@ collectInformation ()
 	clear
 	printf "Type each network range that you would like to scan followed by Enter (example: 192.168.2.0/24).  When you are done press Enter on an empty line.:\n"
 	networkRanges=()
-  networkRange="a"
 
 	while true; do
   	read networkRange
     if [[ $networkRange =~ ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$ ]]; then
     	printf "Added\n"
-      networkRanges+=("$networkRange")
+      networkRanges+=(\""$networkRange"\")
     elif [[ -z $networkRange ]]; then
-			configNetworkRanges = '['$(IFS=, ; echo "${networkRanges[*]}")']'
+			configNetworkRanges='['$(IFS=, ; echo "${networkRanges[*]}")']'
     	break;
     else
     	printf "Invalid\n"
@@ -167,7 +166,7 @@ createConfig ()
 	echo "	\"dbName\": \"AssetTracking\"," >> ./private/config.js
 	echo "	\"serverPort\": ${serverPort}," >> ./private/config.js
 	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
-	echo "	\"CidrRanges\": \"${configNetworkRanges}\"," >> ./private/config.js
+	echo "	\"CidrRanges\": ${configNetworkRanges}," >> ./private/config.js
 	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
 }
