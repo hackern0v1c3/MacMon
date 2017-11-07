@@ -1,66 +1,102 @@
 #!/usr/bin/env node
+////REMEMBER TO TAKE ALL OF THE CONSOLE LOGGING OUT OF HERE
 
 //Check if sudo
+
+//Import database module
+var db = require('../private/db.js');
+
+//Import config for subnets
+var config = require('../private/config.js');
 
 //For comparing arrays
 Array.prototype.diff = function(a) {
   return this.filter(function(i) {return a.indexOf(i) < 0;});
 };
 
-//Import database module
-var db = require('../private/db.js');
+//Define scanning promise
+function getScanResults(cidr){
+  return new Promise(function(resolve, reject){
+    const { exec } = require('child_process');
+    exec('arp-scan '+cidr, (err, stdout, stderr) => { 
+      if (err) {
+        reject(Error(err));
+      }
+      else if (stderr) {
+        reject(Error(stderr));
+      }
+      else {
+        resolve(stdout);
+      }
+    });
+  });
+}
 
-//Setup Promise
-var getMacFromDatabase = new Promise(function(resolve, reject){
-  db.assets.returnAllMac(function(err, results, fields) {
+//Setup promise that should return an array of objects.  Each object should have a MAC,IP, and Vendor property.  These represent the results of arp-scan agains all cidr networks in config.js
+var returnNetworkAssets = new Promise(function(resolve, reject){
+  //Setup scanning promises for all network ranges
+  var promises = config.CidrRanges.map(function(cidr){
+    return getScanResults(cidr);
+  });
+
+  //Execute promises and get results of scans
+  Promise.all(promises)
+    .then(function(data){
+      var  combinedResults = []
+
+      for (i=0; i < data.length; i++){
+        linesFromScan = data[i].split("\n");
+
+        for (j = 2; j < (linesFromScan.length - 4); j++) { 
+          var splitLines = linesFromScan[j].split('\t')
+          var assetObject = {}
+          assetObject.MAC = splitLines[1]
+          assetObject.IP = splitLines[0]
+          assetObject.Vendor = splitLines[2]
+          combinedResults.push(assetObject)
+        }
+      }
+
+      resolve(combinedResults);
+    })
+    .catch(function (error){
+      reject(Error(error));
+    });
+});
+
+
+//Setup Promise that should return all MAC addresses from the database
+var getMacsFromDatabase = new Promise(function(resolve, reject){
+  db.assets.returnAllMacs(function(err, results, fields) {
     db.dbConnection.disconnect(function(){});
     if(!err){
-      resolve(results);
+      var databaseMacAddresses = []
+
+      for (i=0; i < results.length; i++){
+        databaseMacAddresses.push(results[i].MAC);
+      }
+      
+      resolve(databaseMacAddresses);
     } else {
+      console.log(err);
       reject(Error(err));
     }
   });
 });
 
+Promise.all([returnNetworkAssets, getMacsFromDatabase])
+  .then(function(data){
+    console.log("Network Assets");
+    console.log(data[0]);
+    console.log("Database Records");
+    console.log(data[1]);
+  })
+  .catch(function (error){
+    reject(Error(error));
+  });
 
-var checkForNewMacs = function () {
-  getMacFromDatabase
-    .then(function (fulfilled) {
-      const { exec } = require('child_process');
-      exec('arp-scan 192.168.1.0/24', (err, stdout, stderr) => { //make this not a static network range
-        if (err) {
-          console.log("error: " + err);
-        }
-        else if (stderr) {
-          console.log(`stderr: ${stderr}`);
-        }
-        else {
-          linesFromScan = stdout.split('\n')
-          addressesFromScan = []
-          uniqueAddressesFromDatabase = []
-          for (i = 2; i < (linesFromScan.length - 4); i++) { 
-            addressesFromScan.push(linesFromScan[i].split('\t')[1])
-          }
 
-          uniqueAddressesFromScan = [...new Set(addressesFromScan)]
-
-          for (i = 0; i < fulfilled.length; i++) {
-            uniqueAddressesFromDatabase.push(fulfilled[i].MAC);
-          }
-
-          console.log("From scan:");
-          console.log(uniqueAddressesFromScan);
-          console.log("From database:");
-          console.log(uniqueAddressesFromDatabase);
-          console.log("New detected:");
-          console.log(uniqueAddressesFromScan.diff(uniqueAddressesFromDatabase));
-        }
-      })
-    })
-    .catch(function (error){
-      console.log(error);
-    });
-};
+/*
 
 checkForNewMacs();
 
@@ -69,3 +105,8 @@ checkForNewMacs();
 //Batch upsert database
 
 //If error for DB or Email send log
+
+
+
+
+*/
