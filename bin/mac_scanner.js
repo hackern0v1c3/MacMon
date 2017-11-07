@@ -3,6 +3,9 @@
 
 //Check if sudo
 
+//Import nodemailer module
+var nodemailer = require('nodemailer');
+
 //Import database module
 var db = require('../private/db.js');
 
@@ -13,6 +16,38 @@ var config = require('../private/config.js');
 Array.prototype.diff = function(a) {
   return this.filter(function(i) {return a.indexOf(i) < 0;});
 };
+
+//For making arrays unique
+Array.prototype.unique = function() {
+  return [...(new Set(this))];
+}
+
+//For grouping assets by MAC address
+function groupByMac(addressArray) {
+  groupedArray = []
+  //Loop through array of assets
+  for (i=0; i < addressArray.length; i++) {
+    var contains = false;
+    //Get rid of (DUP) label that is added to some vendors
+    addressArray[i].Vendor = addressArray[i].Vendor.split("(DUP")[0]
+    //Loop through items that have already been grouped
+    for (j=0; j < groupedArray.length; j++){
+      //If a Mac already exists in the grouped set...
+      if (groupedArray[j].MAC == addressArray[i].MAC) {
+        contains = true;
+        //Push the IP address to thr grouped object
+        groupedArray[j].IP.push(addressArray[i].IP[0]);
+        //Remove dupliacte IP addresses
+        groupedArray[j].IP = groupedArray[j].IP.unique();
+        break;
+      }
+    }
+    if (!contains) {
+      groupedArray.push(addressArray[i]);
+    }
+  }
+  return groupedArray
+}
 
 //Define scanning promise
 function getScanResults(cidr){
@@ -51,13 +86,14 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
           var splitLines = linesFromScan[j].split('\t')
           var assetObject = {}
           assetObject.MAC = splitLines[1]
-          assetObject.IP = splitLines[0]
+          assetObject.IP = []
+          assetObject.IP.push(splitLines[0])
           assetObject.Vendor = splitLines[2]
           combinedResults.push(assetObject)
         }
       }
 
-      resolve(combinedResults);
+      resolve(groupByMac(combinedResults));
     })
     .catch(function (error){
       reject(Error(error));
@@ -75,7 +111,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
       for (i=0; i < results.length; i++){
         databaseMacAddresses.push(results[i].MAC);
       }
-      
+
       resolve(databaseMacAddresses);
     } else {
       console.log(err);
@@ -84,6 +120,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
   });
 });
 
+//Scan network and query database.  Then compare results
 Promise.all([returnNetworkAssets, getMacsFromDatabase])
   .then(function(data){
     console.log("Network Assets");
