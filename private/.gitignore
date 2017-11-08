@@ -4,3 +4,4 @@ Ignore everything in this directory
 !.gitignore
 !config.example
 !db.js
+!mailer.js
