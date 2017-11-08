@@ -47,6 +47,28 @@ module.exports.assets = {
 				return cb(null, results, fields);
 			});
 		});
+	},
+
+	//Bulk Upserts Assets.  Provide an array of assets in this for [{MAC: 'abc', IP: '123', Vendor: 'fgh'}, {MAC: '321', IP: '345', Vendor: 'ghj'}]
+	upsertMany: function(assets, cb){
+		//should check here for properly formed input...
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			console.log("about to insert")
+
+			var sqlQuery = "INSERT INTO Assets (MAC, IP, Vendor) VALUES ? ON DUPLICATE KEY UPDATE IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP";
+			var values = [];
+			for (i = 0; i < assets.length; i++){
+				var value = [assets[i].MAC, assets[i].IP, assets[i].Vendor];
+				values.push(value);
+			}
+
+			connection.query(sqlQuery,[values],function(err) {
+				connection.release();
+				return cb(err);
+			});
+		});
 	}
 
 }
