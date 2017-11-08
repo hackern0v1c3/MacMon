@@ -55,8 +55,6 @@ module.exports.assets = {
 		pool.getConnection(function(err, connection) {
 			if(err){return cb(err);}
 
-			console.log("about to insert")
-
 			var sqlQuery = "INSERT INTO Assets (MAC, IP, Vendor) VALUES ? ON DUPLICATE KEY UPDATE IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP";
 			var values = [];
 			for (i = 0; i < assets.length; i++){
