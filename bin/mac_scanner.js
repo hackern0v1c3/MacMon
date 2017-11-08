@@ -3,8 +3,8 @@
 
 //Check if sudo
 
-//Import nodemailer module
-var nodemailer = require('nodemailer');
+//Import mailer module
+var mailer = require('../private/mailer');
 
 //Import database module
 var db = require('../private/db.js');
@@ -22,7 +22,7 @@ Array.prototype.unique = function() {
   return [...(new Set(this))];
 }
 
-//For grouping assets by MAC address
+//For grouping assets by MAC address.  These loops are ugly but work.  There is probably a more clever way to do this.
 function groupByMac(addressArray) {
   groupedArray = []
   //Loop through array of assets
@@ -121,29 +121,55 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
 });
 
 //Scan network and query database.  Then compare results
-Promise.all([returnNetworkAssets, getMacsFromDatabase])
-  .then(function(data){
-    console.log("Network Assets");
-    console.log(data[0]);
-    console.log("Database Records");
-    console.log(data[1]);
-  })
-  .catch(function (error){
-    reject(Error(error));
-  });
+function checkScanAndCheckDatabase(cb) {
+  Promise.all([returnNetworkAssets, getMacsFromDatabase])
+    .then(function(data){
 
+      var scanResults = data[0];
+      var databasesAddresses = data[1];
+
+      var newAddresses = []
+      for (i = 0; i < scanResults.length; i++){
+        var contains = false;
+
+        for (j=0; j<databasesAddresses.length; j++){
+          if(scanResults[i].MAC == databasesAddresses[j]){
+            contains = true;
+            break;
+          }
+        }
+        if (!contains){
+          newAddresses.push(scanResults[i]);
+        }
+      }
+      cb(null, scanResults, databasesAddresses, newAddresses);
+    })
+    .catch(function (error){
+      reject(Error(error)); ///Test failure state since this is a callback function
+    });
+}
+
+checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAddresses){
+  if(!err){
+    if (newAddresses.length > 0){
+      var body = "New MAC addresses detected on network.\r\n"
+      for (i=0; i < newAddresses.length; i++){
+        body +="MAC Address: "+newAddresses[i].MAC+"   "
+        body +="IP Address: "+newAddresses[i].IP+"   "
+        body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
+      }
+
+      mailer.sendMessage("New Devices Detected", body, function(err, message){
+        if (err){
+          console.log(err);
+        }
+      });
+    }
+  }
+});
 
 /*
-
-checkForNewMacs();
-
-//If yes send email
-
-//Batch upsert database
+//Batch upsert database with all scan results
 
 //If error for DB or Email send log
-
-
-
-
 */
