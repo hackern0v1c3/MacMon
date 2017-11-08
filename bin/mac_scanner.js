@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 ////REMEMBER TO TAKE ALL OF THE CONSOLE LOGGING OUT OF HERE
+////I have tested the ideal working scenario but not all of the possible failures
+////Error handeling and logging needs to be worked on.
 
-//Check if sudo
+//Check if sudo.  This script only works if you run as sudo because arp-scan requires it.
 
 //Import mailer module
 var mailer = require('../private/mailer');
@@ -104,7 +106,6 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
 //Setup Promise that should return all MAC addresses from the database
 var getMacsFromDatabase = new Promise(function(resolve, reject){
   db.assets.returnAllMacs(function(err, results, fields) {
-    db.dbConnection.disconnect(function(){});
     if(!err){
       var databaseMacAddresses = []
 
@@ -124,7 +125,6 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
 function checkScanAndCheckDatabase(cb) {
   Promise.all([returnNetworkAssets, getMacsFromDatabase])
     .then(function(data){
-
       var scanResults = data[0];
       var databasesAddresses = data[1];
 
@@ -145,7 +145,7 @@ function checkScanAndCheckDatabase(cb) {
       cb(null, scanResults, databasesAddresses, newAddresses);
     })
     .catch(function (error){
-      reject(Error(error)); ///Test failure state since this is a callback function
+      reject(Error(error));
     });
 }
 
@@ -158,18 +158,16 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
         body +="IP Address: "+newAddresses[i].IP+"   "
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
-
       mailer.sendMessage("New Devices Detected", body, function(err, message){
         if (err){
           console.log(err);
         }
       });
     }
+    db.assets.upsertMany(scanResult, function(err){
+      console.log(err);
+      console.log("done");
+      db.dbConnection.disconnect(function(){});
+    });
   }
 });
-
-/*
-//Batch upsert database with all scan results
-
-//If error for DB or Email send log
-*/
