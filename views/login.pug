@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  form(action='/login', method='post')
+    br
+    br
+    p Username
+    input(type='text', name='username')
+    p Password
+    input(type='password', name='password')
+    br
+    br
+    input.button(type='submit', value='Sign In')
