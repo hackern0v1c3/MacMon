@@ -58,8 +58,10 @@ function groupByMac(addressArray) {
 //Define scanning promise
 function getScanResults(cidr){
   return new Promise(function(resolve, reject){
+    logger.debug('Staring arp-scan for %s', cidr);
     const { exec } = require('child_process');
     exec('arp-scan '+cidr, (err, stdout, stderr) => { 
+      logger.debug('Completed arp-scan for %s', cidr);
       if (err) {
         reject(Error(err));
       }
@@ -83,6 +85,7 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
   //Execute promises and get results of scans
   Promise.all(promises)
     .then(function(data){
+      logger.debug('Completed all arp scans');
       var  combinedResults = []
 
       for (var i=0; i < data.length; i++){
@@ -98,7 +101,7 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
           combinedResults.push(assetObject)
         }
       }
-      logger.debug('Completed Scanning');
+      logger.debug('Organized scan results');
       resolve(groupByMac(combinedResults));
     })
     .catch(function (error){
@@ -111,6 +114,7 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
 
 //Setup Promise that should return all MAC addresses from the database
 var getMacsFromDatabase = new Promise(function(resolve, reject){
+  logger.debug("About to request MAC addresses from database");
   db.assets.returnAllMacs(function(err, results, fields) {
     if(!err){
       var databaseMacAddresses = []
@@ -118,7 +122,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
       for (var i=0; i < results.length; i++){
         databaseMacAddresses.push(results[i].MAC);
       }
-
+      logger.debug("Succesfully fetched MAC addresses from database");
       resolve(databaseMacAddresses);
     } else {
       reject(Error(err));
@@ -130,6 +134,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
 function checkScanAndCheckDatabase(cb) {
   Promise.all([returnNetworkAssets, getMacsFromDatabase])
     .then(function(data){
+      logger.debug("All data retrieved.  Comparing results.");
       var scanResults = data[0];
       var databasesAddresses = data[1];
 
@@ -150,31 +155,50 @@ function checkScanAndCheckDatabase(cb) {
       cb(null, scanResults, databasesAddresses, newAddresses);
     })
     .catch(function (error){
-      reject(Error(error));
+      cb(error);
     });
 }
 
-logger.debug('Starting scanner');
 checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAddresses){
   if(!err){
     if (newAddresses.length > 0) {
+      logger.debug("New addresses detected");
       var body = "New MAC addresses detected on network.\r\n"
       for (var i=0; i < newAddresses.length; i++){
         body +="MAC Address: "+newAddresses[i].MAC+"   "
         body +="IP Address: "+newAddresses[i].IP+"   "
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
+      logger.debug("Attempting to send email notification");
       mailer.sendMessage("New Devices Detected", body, function(err, message){
-        if (err){
+        if (!err){
+          logger.debug("Email sent succesfully");
+        } else {
+          logger.error("Error sending email notification");
+          logger.debug(err);
         }
       });
     }
     if (scanResult.length > 0) {
+      logger.debug("Preparing to upsert assets table");
       db.assets.upsertMany(scanResult, function(err){
+        if(!err){
+          logger.debug("Completed database upsert");
+        } else {
+          logger.error("Error updating database with scan results");
+          logger.debug("err");
+        }
+        logger.debug("Closing database connection");
         db.dbConnection.disconnect(function(){});
+        logger.debug("Scanner Complete");
       });
     } else {
-       db.dbConnection.disconnect(function(){});
+      logger.debug("Closing database connection");
+      db.dbConnection.disconnect(function(){});
+      logger.debug("Scanner Complete");
     }
+  } else {
+    logger.error("Error in scanning module retrieving or comparing arp-scan and database MAC addresses");
+    logger.debug("%s", err);
   }
 });
