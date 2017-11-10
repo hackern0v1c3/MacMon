@@ -2,20 +2,21 @@
 ////REMEMBER TO TAKE ALL OF THE CONSOLE LOGGING OUT OF HERE
 ////I have tested the ideal working scenario but not all of the possible failures
 ////Error handeling and logging needs to be worked on.
+"use strict";
 
 //Check if sudo.  This script only works if you run as sudo because arp-scan requires it.
 
-//import winston loggee
-var winston = require('winston');
+//import winston logger
+const logger = require('../private/logger.js');
 
 //Import mailer module
-var mailer = require('../private/mailer');
+const mailer = require('../private/mailer');
 
 //Import database module
-var db = require('../private/db.js');
+const db = require('../private/db.js');
 
 //Import config for subnets
-var config = require('../private/config.js');
+const config = require('../private/config.js');
 
 //For comparing arrays
 Array.prototype.diff = function(a) {
@@ -29,17 +30,17 @@ Array.prototype.unique = function() {
 
 //For grouping assets by MAC address.  These loops are ugly but work.  There is probably a more clever way to do this.
 function groupByMac(addressArray) {
-  groupedArray = []
+  var groupedArray = []
   //Loop through array of assets
-  for (i=0; i < addressArray.length; i++) {
+  for (var i=0; i < addressArray.length; i++) {
     var contains = false;
     //Get rid of (DUP) label that is added to some vendors
     addressArray[i].Vendor = addressArray[i].Vendor.split("(DUP")[0]
     //Loop through items that have already been grouped
-    for (j=0; j < groupedArray.length; j++){
+    for (var j=0; j < groupedArray.length; j++){
       //If a Mac already exists in the grouped set...
       if (groupedArray[j].MAC == addressArray[i].MAC) {
-        contains = true;
+        var contains = true;
         //Push the IP address to thr grouped object
         groupedArray[j].IP.push(addressArray[i].IP[0]);
         //Remove dupliacte IP addresses
@@ -84,10 +85,10 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
     .then(function(data){
       var  combinedResults = []
 
-      for (i=0; i < data.length; i++){
-        linesFromScan = data[i].split("\n");
+      for (var i=0; i < data.length; i++){
+        var linesFromScan = data[i].split("\n");
 
-        for (j = 2; j < (linesFromScan.length - 4); j++) { 
+        for (var j = 2; j < (linesFromScan.length - 4); j++) { 
           var splitLines = linesFromScan[j].split('\t')
           var assetObject = {}
           assetObject.MAC = splitLines[1]
@@ -97,10 +98,12 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
           combinedResults.push(assetObject)
         }
       }
-
+      logger.debug('Completed Scanning');
       resolve(groupByMac(combinedResults));
     })
     .catch(function (error){
+      logger.error('Error while fetching scan results:');
+      logger.debug(error);
       reject(Error(error));
     });
 });
@@ -112,13 +115,12 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
     if(!err){
       var databaseMacAddresses = []
 
-      for (i=0; i < results.length; i++){
+      for (var i=0; i < results.length; i++){
         databaseMacAddresses.push(results[i].MAC);
       }
 
       resolve(databaseMacAddresses);
     } else {
-      console.log(err);
       reject(Error(err));
     }
   });
@@ -132,10 +134,10 @@ function checkScanAndCheckDatabase(cb) {
       var databasesAddresses = data[1];
 
       var newAddresses = []
-      for (i = 0; i < scanResults.length; i++){
+      for (var i = 0; i < scanResults.length; i++){
         var contains = false;
 
-        for (j=0; j<databasesAddresses.length; j++){
+        for (var j=0; j<databasesAddresses.length; j++){
           if(scanResults[i].MAC == databasesAddresses[j]){
             contains = true;
             break;
@@ -152,18 +154,18 @@ function checkScanAndCheckDatabase(cb) {
     });
 }
 
+logger.debug('Starting scanner');
 checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAddresses){
   if(!err){
     if (newAddresses.length > 0) {
       var body = "New MAC addresses detected on network.\r\n"
-      for (i=0; i < newAddresses.length; i++){
+      for (var i=0; i < newAddresses.length; i++){
         body +="MAC Address: "+newAddresses[i].MAC+"   "
         body +="IP Address: "+newAddresses[i].IP+"   "
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
       mailer.sendMessage("New Devices Detected", body, function(err, message){
         if (err){
-          console.log(err);
         }
       });
     }
