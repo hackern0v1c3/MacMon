@@ -6,7 +6,10 @@
 
 const app = require('../app');
 const debug = require('debug')('macmon:server');
-const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const privateKey = fs.readFileSync('private/certificates/server.key', 'utf8');
+const certificate = fs.readFileSync('private/certificates/server.crt', 'utf8');
 const config = require('../private/config.js');
 
 /**
@@ -17,10 +20,12 @@ var port = normalizePort(config.serverPort || '443');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTPS server.
  */
+//Setup TLS
+var credentials = {key: privateKey, cert: certificate};
 
-var server = http.createServer(app);
+var server = https.createServer(credentials, app);
 
 /**
  * Listen on provided port, on all network interfaces.

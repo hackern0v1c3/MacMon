@@ -12,18 +12,63 @@ const config = require('./private/config.js');
 const index = require('./routes/index');
 const users = require('./routes/users');
 
+const db = require('./private/db.js');
+const passport = require('passport');
+const strategy = require('passport-local').Strategy;
+const connectRoles = require('connect-roles');
+
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+/*
+//Setup Passport for authentication
+passport.use(new Strategy(function (username, password, cb) {
+    db.users.selectUsernameAndPassword(username, password, function(err, user) {
+      return cb(err, user);
+    });
+  }));
+  
+  passport.serializeUser(function(user, cb) {
+    cb(null, user.id);
+  });
+  
+  passport.deserializeUser(function(id, cb) {
+    db.users.selectById(id, function (err, user) {
+      if (err) { return cb(err); }
+      cb(null, user);
+    });
+  });
+*/
+
+//Setup connect-roles for authorization
+var user = new connectRoles({
+    failureHandler: function (req, res, action) {
+      //optional function to run custom code when user fails authorization
+      var accept = req.headers.accept || '';
+      res.status(403);
+    }
+  });
+
+//Load Middleware
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(morgan('combined', { 'stream': logger.stream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(require('express-session')({ secret: config.cookieSecret, resave: false, saveUninitialized: false }));
+
+//Initialize Passport for authentication
+app.use(passport.initialize());
+app.use(passport.session());
+
+//Initialize connect-roles for authoerization
+app.use(user.middleware());
+
+//Routes for static public content
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
