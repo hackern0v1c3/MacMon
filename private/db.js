@@ -1,9 +1,9 @@
 "use strict";
 
 //Import modules
-var config = require('./config.js');
-var mysql = require('mysql');
-var bcrypt = require('bcrypt-nodejs');
+const config = require('./config.js');
+const mysql = require('mysql');
+const bcrypt = require('bcrypt-nodejs');
 
 //Setup SQL Server connection
 var pool = mysql.createPool({
