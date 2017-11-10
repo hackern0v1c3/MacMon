@@ -1,3 +1,4 @@
+"use strict";
 //Read config file
 const config = require('../private/config.js');
 
