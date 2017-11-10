@@ -138,7 +138,7 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.users (id INT NOT NULL AUTO_INCREMENT, userEmail varchar(1000) NOT NULL UNIQUE, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),PRIMARY KEY (id));"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(1000) NOT NULL UNIQUE, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),PRIMARY KEY (id));"
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('admin');"
 
@@ -148,10 +148,10 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Notes varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
 	
-	#Default credentials are admin@localhost / password
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userEmail, userPass, userRole) VALUES ('admin@localhost', '\$2a\$10\$tkFug74.OQ8MLiOdbEQeG.nQ2kCyPH65LdCduM6Y3IeQdNWv9gBt2', 1);"
+	#Default credentials are admin / admin
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userEmail, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
 
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
