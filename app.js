@@ -11,6 +11,7 @@ const config = require('./private/config.js');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const login = require('./routes/login.js');
 
 const db = require('./private/db.js');
 const passport = require('passport');
@@ -23,9 +24,8 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-/*
 //Setup Passport for authentication
-passport.use(new Strategy(function (username, password, cb) {
+passport.use(new strategy(function (username, password, cb) {
     db.users.selectUsernameAndPassword(username, password, function(err, user) {
       return cb(err, user);
     });
@@ -41,7 +41,6 @@ passport.use(new Strategy(function (username, password, cb) {
       cb(null, user);
     });
   });
-*/
 
 //Setup connect-roles for authorization
 var user = new connectRoles({
@@ -71,8 +70,10 @@ app.use(user.middleware());
 //Routes for static public content
 app.use(express.static(path.join(__dirname, 'public')));
 
+//Include all routes
 app.use('/', index);
 app.use('/users', users);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
