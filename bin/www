@@ -1,18 +1,19 @@
 #!/usr/bin/env node
-
+"use strict";
 /**
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('macmon:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('macmon:server');
+const http = require('http');
+const config = require('../private/config.js');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.serverPort || '443');
 app.set('port', port);
 
 /**
