@@ -1,3 +1,5 @@
+"use strict";
+
 //Import modules
 var config = require('./config.js');
 var mysql = require('mysql');
@@ -57,7 +59,7 @@ module.exports.assets = {
 
 			var sqlQuery = "INSERT INTO Assets (MAC, IP, Vendor) VALUES ? ON DUPLICATE KEY UPDATE IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP";
 			var values = [];
-			for (i = 0; i < assets.length; i++){
+			for (var i = 0; i < assets.length; i++){
 				var value = [assets[i].MAC, assets[i].IP, assets[i].Vendor];
 				values.push(value);
 			}

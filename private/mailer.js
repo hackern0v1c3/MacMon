@@ -7,6 +7,7 @@ When the script completes it triggers the callback with the message response and
 callback(error, message)
 
 ******************/
+"use strict";
 
 const nodemailer = require('nodemailer');
 const config = require('./config.js');
