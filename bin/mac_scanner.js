@@ -5,6 +5,9 @@
 
 //Check if sudo.  This script only works if you run as sudo because arp-scan requires it.
 
+//import winston loggee
+var winston = require('winston');
+
 //Import mailer module
 var mailer = require('../private/mailer');
 
@@ -151,7 +154,7 @@ function checkScanAndCheckDatabase(cb) {
 
 checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAddresses){
   if(!err){
-    if (newAddresses.length > 0){
+    if (newAddresses.length > 0) {
       var body = "New MAC addresses detected on network.\r\n"
       for (i=0; i < newAddresses.length; i++){
         body +="MAC Address: "+newAddresses[i].MAC+"   "
@@ -164,10 +167,12 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
         }
       });
     }
-    db.assets.upsertMany(scanResult, function(err){
-      console.log(err);
-      console.log("done");
-      db.dbConnection.disconnect(function(){});
-    });
+    if (scanResult.length > 0) {
+      db.assets.upsertMany(scanResult, function(err){
+        db.dbConnection.disconnect(function(){});
+      });
+    } else {
+       db.dbConnection.disconnect(function(){});
+    }
   }
 });
