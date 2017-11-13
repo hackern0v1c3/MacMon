@@ -6,3 +6,4 @@ Ignore everything in this directory
 !db.js
 !mailer.js
 !logger.js
+!roles.js

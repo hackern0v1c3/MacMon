@@ -8,15 +8,15 @@ const logger = require('./private/logger.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const config = require('./private/config.js');
-
 const index = require('./routes/index');
 const users = require('./routes/users');
 const login = require('./routes/login.js');
+const admin = require('./routes/admin.js');
+const user = require('./private/roles.js');
 
 const db = require('./private/db.js');
 const passport = require('passport');
 const strategy = require('passport-local').Strategy;
-const connectRoles = require('connect-roles');
 
 var app = express();
 
@@ -42,15 +42,6 @@ passport.use(new strategy(function (username, password, cb) {
     });
   });
 
-//Setup connect-roles for authorization
-var user = new connectRoles({
-    failureHandler: function (req, res, action) {
-      //optional function to run custom code when user fails authorization
-      var accept = req.headers.accept || '';
-      res.status(403);
-    }
-  });
-
 //Load Middleware
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -64,7 +55,7 @@ app.use(require('express-session')({ secret: config.cookieSecret, resave: false,
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Initialize connect-roles for authoerization
+//Initialize connect-roles for authorization
 app.use(user.middleware());
 
 //Routes for static public content
@@ -74,6 +65,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
+app.use('/admin', admin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
