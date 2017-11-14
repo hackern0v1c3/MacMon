@@ -12,6 +12,9 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const login = require('./routes/login.js');
 const admin = require('./routes/admin.js');
+const pending = require('./routes/pending.js');
+const settings = require('./routes/settings.js');
+const logout = require('./routes/logout.js');
 const user = require('./private/roles.js');
 
 const db = require('./private/db.js');
@@ -44,7 +47,7 @@ passport.use(new strategy(function (username, password, cb) {
 
 //Load Middleware
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, '/public/', 'favicon.ico')));
 app.use(morgan('combined', { 'stream': logger.stream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -66,6 +69,9 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 app.use('/admin', admin);
+app.use('/pending', pending);
+app.use('/settings', settings);
+app.use('/logout', logout);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
