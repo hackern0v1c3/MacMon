@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt-nodejs');
 //Setup SQL Server connection
 var pool = mysql.createPool({
 	host		: config.dbAddress,
+	datestrings: 'datetime',
 	user		: config.dbUser,
 	password	: config.dbPassword,
 	database	:  config.dbName
