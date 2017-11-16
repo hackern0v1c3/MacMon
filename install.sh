@@ -146,12 +146,18 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Notes varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
 	
 	#Default credentials are admin / admin
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
+
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;"
+
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
+
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW unnaprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;"
 
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
