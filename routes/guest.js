@@ -8,9 +8,9 @@ router.get('/', function (req, res) {
   if (!req.user) {
     res.redirect('/login');
   } else {
-    db.assets.returnApprovedAssets(function(err, results, fields){
+    db.assets.returnGuestAssets(function(err, results, fields){
       if(!err){
-        res.render('index', { title: 'Express', username: req.user.userName, assets: results })
+        res.render('pending', { title: 'Express', username: req.user.userName, assets: results })
       } else {
         res.send('Internal server error: Error retrieving data', 500);
       }

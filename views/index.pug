@@ -2,7 +2,35 @@ extends navbar
 block selected
   -var selected = 'Approved Devices';
 block body
-  h1= title
-  p Hi #{username}! Welcome to #{title}
-
-  p This is where all the data for whitelisted assets will be displayed!
+  .container.no-gutters
+    .row
+      .col-md-3 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo, aliquid unde possimus quibusdam perspiciatis ipsum, eius adipisci repellendus quae reprehenderit, quidem laborum nisi accusamus molestiae soluta libero nesciunt sed! Odio.
+      .col-md-9
+        table.table.table-striped.table-bordered
+          thead
+            tr
+              th
+              th Mac Address
+              th Name
+              th Decription
+              th Vendor
+              th IP Addresses
+              th Asset Type
+              th Last Updated
+          tbody
+            - var i = 0
+            each asset in assets
+              - i++
+              tr(id=asset.MAC)
+                td
+                td #{asset.MAC}
+                td
+                  input.inputField
+                td
+                  input.inputField
+                td #{asset.Vendor}
+                td #{asset.IP}
+                td
+                  select
+                    option.selected(value=asset.AssetType) #{asset.AssetTypeName}
+                td #{asset.LastUpdated}
