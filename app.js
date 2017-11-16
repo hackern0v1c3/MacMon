@@ -13,6 +13,7 @@ const login = require('./routes/login.js');
 const admin = require('./routes/admin.js');
 const guest = require('./routes/guest.js');
 const pending = require('./routes/pending.js');
+const assets = require('./routes/assets.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const user = require('./private/roles.js');
@@ -71,6 +72,7 @@ app.use('/admin', admin);
 app.use('/guest', guest);
 app.use('/pending', pending);
 app.use('/settings', settings);
+app.use('/assets', assets);
 app.use('/logout', logout);
 
 // catch 404 and forward to error handler

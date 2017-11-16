@@ -91,6 +91,22 @@ module.exports.assets = {
 		});
 	},
 
+	//This function takes in a MAC address.  Then updates the database to change the approved state to 1
+	approveAsset: function(assetMac, cb){
+		//should check here for properly formed input...
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			var sqlQuery = "INSERT INTO Assets (MAC, IP, Vendor) VALUES ? ON DUPLICATE KEY UPDATE IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP";
+			var sqlQuery = "UPDATE Assets SET Whitelisted = true WHERE MAC = ?;"
+
+			connection.query(sqlQuery,[assetMac],function(err) {
+				connection.release();
+				return cb(err);
+			});
+		});
+	},
+
 	//Bulk Upserts Assets.  Provide an array of assets in this for [{MAC: 'abc', IP: '123', Vendor: 'fgh'}, {MAC: '321', IP: '345', Vendor: 'ghj'}]
 	upsertMany: function(assets, cb){
 		//should check here for properly formed input...
