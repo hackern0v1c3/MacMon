@@ -9,7 +9,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const config = require('./private/config.js');
 const index = require('./routes/index');
-const users = require('./routes/users');
 const login = require('./routes/login.js');
 const admin = require('./routes/admin.js');
 const guest = require('./routes/guest.js');
@@ -67,7 +66,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Include all routes
 app.use('/', index);
-app.use('/users', users);
 app.use('/login', login);
 app.use('/admin', admin);
 app.use('/guest', guest);
