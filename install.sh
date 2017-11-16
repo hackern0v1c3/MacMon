@@ -157,7 +157,7 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW unnaprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;"
 
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
