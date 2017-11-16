@@ -25,12 +25,51 @@ module.exports.dbConnection = {
 //Export SQL Queries For Assets
 module.exports.assets = {
 
-  //Return all MAC addresses from database
+  //Return all Assets assets from database
   returnAllAssets: function(cb) {
 		pool.getConnection(function(err, connection) {
 			if(err){return cb(err);}
 
 			connection.query('SELECT * from Assets', function(error, results, fields) {
+				connection.release();
+				if(err){return cb(err, null, null);}
+				return cb(null, results, fields);
+			});
+		});
+	},
+
+	//Return all approved assets from database that are not marked as guest assets
+  returnApprovedAssets: function(cb) {
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			connection.query('SELECT * from whitelistedAssetsWithTypes', function(error, results, fields) {
+				connection.release();
+				if(err){return cb(err, null, null);}
+				return cb(null, results, fields);
+			});
+		});
+	},
+
+	//Return all approved assets from database that are marked as guest assets
+  returnGuestAssets: function(cb) {
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			connection.query('SELECT * from whitelistedGuestAssetsWithTypes', function(error, results, fields) {
+				connection.release();
+				if(err){return cb(err, null, null);}
+				return cb(null, results, fields);
+			});
+		});
+	},
+
+	//Return all unapproved assets from database
+  returnUnapprovedAssets: function(cb) {
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			connection.query('SELECT * from unapprovedAssetsWithTypes', function(error, results, fields) {
 				connection.release();
 				if(err){return cb(err, null, null);}
 				return cb(null, results, fields);
