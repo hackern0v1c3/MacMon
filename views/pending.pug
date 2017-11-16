@@ -1,12 +1,21 @@
 extends navbar
+block header
+  script(src='/js/asset-tables.js')
 block selected
   -var selected = 'New Detected Devices';
 block body
-  .container.no-gutters
+  .container-fluid
     .row
-      .col-md-3 Lorem ipsum, dolor sit amet consectetur adipisicing elit. Explicabo, aliquid unde possimus quibusdam perspiciatis ipsum, eius adipisci repellendus quae reprehenderit, quidem laborum nisi accusamus molestiae soluta libero nesciunt sed! Odio.
-      .col-md-9
-        table.table.table-striped.table-bordered
+      .col
+        p
+          | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe illum fugit nam vero omnis atque vitae, quo aperiam autem fugiat accusamus laborum accusantium eligendi molestias. Blanditiis culpa aperiam ducimus pariatur.
+          br
+          | Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat ratione velit perferendis error veritatis vel maiores rerum. Esse non beatae omnis consequuntur velit corrupti repudiandae repellat, placeat voluptas nesciunt doloribus?
+          br
+          | Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam maiores, dolorum excepturi, laborum ipsam quia magni incidunt ab delectus ipsa veritatis eligendi fuga consequatur beatae, ea odio sunt atque nesciunt?
+    .row
+      .col
+        table#assetTable.table.table-responsive.table-sm.table-striped
           thead
             tr
               th
@@ -23,11 +32,17 @@ block body
               - i++
               tr(id=asset.MAC)
                 td
+                  button.btn.btn-primary.btn-sm(onClick=('Approve("'+asset.MAC+'")')) Approve
+                  br
+                  button.btn.btn-success.btn-sm(disabled, onClick=('Update("'+ asset.MAC +'")')) Save
+                  br
+                  button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
                 td #{asset.MAC}
                 td
-                  input.inputField
+                  input.inputField(value=asset.Name)
                 td
-                  input.inputField
+                  textarea.form-control
+                    | #{asset.Description}
                 td #{asset.Vendor}
                 td #{asset.IP}
                 td
