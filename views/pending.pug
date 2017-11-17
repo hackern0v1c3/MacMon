@@ -8,15 +8,15 @@ block body
     .row
       .col
         p
-          | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Saepe illum fugit nam vero omnis atque vitae, quo aperiam autem fugiat accusamus laborum accusantium eligendi molestias. Blanditiis culpa aperiam ducimus pariatur.
+          | Some controls will go here
           br
-          | Lorem ipsum, dolor sit amet consectetur adipisicing elit. Placeat ratione velit perferendis error veritatis vel maiores rerum. Esse non beatae omnis consequuntur velit corrupti repudiandae repellat, placeat voluptas nesciunt doloribus?
+          | Thigs like view filters
           br
-          | Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam maiores, dolorum excepturi, laborum ipsam quia magni incidunt ab delectus ipsa veritatis eligendi fuga consequatur beatae, ea odio sunt atque nesciunt?
+          | Also probably export to pdf, excel, etc
     .row
       .col
-        table#assetTable.table.table-responsive.table-sm.table-striped
-          thead
+        table#assetTable.table.table-responsive.table-sm.table-hover
+          thead.thead-dark
             tr
               th
               th Mac Address
@@ -34,18 +34,18 @@ block body
                 td
                   button.btn.btn-primary.btn-sm(onClick=('Approve("'+asset.MAC+'")')) Approve
                   br
-                  button.btn.btn-success.btn-sm(disabled, onClick=('Update("'+ asset.MAC +'")')) Save
+                  button.btn.btn-success.btn-sm(onClick=('Update("'+ asset.MAC +'")')) Save
                   br
                   button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
                 td #{asset.MAC}
                 td
-                  input.inputField(value=asset.Name)
-                td
-                  textarea.form-control
+                  input.nameInput.inputField(value=asset.Name)
+                td.col
+                  textarea.descriptionInput.form-control
                     | #{asset.Description}
                 td #{asset.Vendor}
                 td #{asset.IP}
                 td
-                  select
+                  select.assetTypeSelector
                     option.selected(value=asset.AssetType) #{asset.AssetTypeName}
                 td #{asset.LastUpdated}
