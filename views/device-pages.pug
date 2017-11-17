@@ -1,0 +1,28 @@
+extends navbar
+block header
+  script(src='/js/asset-tables.js')
+block body
+  .container-fluid
+    .row
+      .col
+        p
+          | Some controls will go here
+          br
+          | Thigs like view filters
+          br
+          | Also probably export to pdf, excel, etc
+    .row
+      .col
+        table#assetTable.table.table-responsive.table-sm.table-hover
+          thead.thead-dark
+            tr
+              th
+              th Mac Address
+              th Name
+              th Decription
+              th Vendor
+              th IP Addresses
+              th Asset Type
+              th Last Updated
+          tbody
+            block assetTable

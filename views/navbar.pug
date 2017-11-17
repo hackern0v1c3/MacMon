@@ -3,7 +3,9 @@ extends boilerplate
 block content
   block selected
     -var selected = 'Approved Devices';
-  -var menu = {'Approved Devices':'/', 'Approved Guest Devices':'/guest', 'New Detected Devices':'/pending', 'Settings':'/settings'};
+  //Hiding Guest Devices menu for now because I am not ready to use it in alpha
+  //-var menu = {'Approved Devices':'/', 'Approved Guest Devices':'/guest', 'New Detected Devices':'/pending', 'Settings':'/settings'};
+  -var menu = {'Approved Devices':'/', 'New Detected Devices':'/pending', 'Settings':'/settings'};
 
   nav.navbar.fixed-top.navbar-expand-md.navbar-dark.bg-dark
     span.navbar-brand
