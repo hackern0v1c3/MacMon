@@ -17,6 +17,8 @@ const assets = require('./routes/assets.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const user = require('./private/roles.js');
+const childProcess = require('child_process');
+const timers = require('timers');
 
 const db = require('./private/db.js');
 const passport = require('passport');
@@ -92,5 +94,30 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+//Start timer to run network scanner
+var scannerTimer = timers.setInterval(function(){
+  try{
+    const { exec } = require('child_process');
+    exec(__dirname + '/bin/mac_scanner.js', (err, stdout, stderr) => { 
+      if (err) {
+        logger.error('Error launching scanner');
+        logger.debug(err);
+      }
+      else if (stderr) {
+        logger.error('Arpscan error');
+        logger.debug('Arpscan error: %s', stderr);
+      }
+      else {
+        logger.info(stdout);
+        logger.debug('Done scanning');
+      }
+    });
+  }
+  catch(err){
+    logger.error('Error setting timer for network scans');
+    logger.debug('Error in network_scanner.js: %s', err);
+  }
+},(config.scanInterval * 1000));
 
 module.exports = app;
