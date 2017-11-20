@@ -206,6 +206,7 @@ createConfig ()
 	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> ./private/config.js
 	echo "	\"emailRecipient\": \"${emailRecipient}\"," >> ./private/config.js
 	echo "	\"emailTls\": \"${emailTls}\"," >> ./private/config.js
+	echo "	\"scanInterval\": 300," >> ./private/config.js
 	echo "	\"environment\": \"production\"," >> ./private/config.js
 	echo "	\"hashStrength\": 10" >> ./private/config.js
 	echo "}" >> ./private/config.js
