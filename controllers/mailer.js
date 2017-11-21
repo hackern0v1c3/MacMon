@@ -10,7 +10,7 @@ callback(error, message)
 "use strict";
 
 const nodemailer = require('nodemailer');
-const config = require('./config.js');
+const config = require('../private/config.js');
 
 exports.sendMessage = function(messageSubject, messageBody, cb) {
 	

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../private/db.js');
-const user = require('../private/roles.js');
-const logger = require('../private/logger.js');
+const db = require('../controllers/db.js');
+const user = require('../controllers/roles.js');
+const logger = require('../controllers/logger.js');
 
 /* Routes for Asset Operations */
 //For approving a MAC address

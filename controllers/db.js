@@ -1,7 +1,7 @@
 "use strict";
 
 //Import modules
-const config = require('./config.js');
+const config = require('../private/config.js');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt-nodejs');
 

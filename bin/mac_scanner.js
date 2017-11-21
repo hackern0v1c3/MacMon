@@ -7,13 +7,13 @@
 //Check if sudo.  This script only works if you run as sudo because arp-scan requires it.
 
 //import winston logger
-const logger = require('../private/logger.js');
+const logger = require('../controllers/logger.js');
 
 //Import mailer module
-const mailer = require('../private/mailer');
+const mailer = require('../controllers/mailer');
 
 //Import database module
-const db = require('../private/db.js');
+const db = require('../controllers/db.js');
 
 //Import config for subnets
 const config = require('../private/config.js');

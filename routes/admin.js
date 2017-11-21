@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const user = require('../private/roles.js');
+const user = require('../controllers/roles.js');
 
 /* GET admin page. */
 router.get('/', user.can('be admin'), function (req, res) {

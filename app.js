@@ -4,7 +4,7 @@ const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
-const logger = require('./private/logger.js');
+const logger = require('./controllers/logger.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const config = require('./private/config.js');
@@ -16,11 +16,11 @@ const pending = require('./routes/pending.js');
 const assets = require('./routes/assets.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
-const user = require('./private/roles.js');
+const user = require('./controllers/roles.js');
 const childProcess = require('child_process');
 const timers = require('timers');
 
-const db = require('./private/db.js');
+const db = require('./controllers/db.js');
 const passport = require('passport');
 const strategy = require('passport-local').Strategy;
 

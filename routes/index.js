@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../private/db.js');
+const db = require('../controllers/db.js');
 
 /* GET home page. */
 //Redirect if not logged in
