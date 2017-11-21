@@ -177,10 +177,33 @@ createDatabase ()
 	#INSERT INTO Assets (MAC, IP) VALUES('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1F','192.168.1.251') ON DUPLICATE KEY UPDATE  IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP;
 }
 
+createServiceAccount ()
+{
+	useradd -r -s /bin/false MacMon
+}
+
+extractApplication ()
+{
+	mkdir -p /var/www
+	tar -xzvf MacMon.tar.gz -C /var/www/
+}
+
+setApplicationPermissions ()
+{
+	chown MacMon /var/www/MacMon/
+	chmod 550 /var/www/MacMon/
+	chmod 660 /var/www/MacMon/private
+}
+
+sudoForArpscan ()
+{
+	echo 'MacMon ALL=(ALL) NOPASSWD: /usr/bin/arp-scan' >> /etc/sudoers
+}
+
 generateSelfSignedCerts ()
 {
   #User openssl to genererate a self signed cert for HTTPS connections
-	[[ -d ./private/certificates ]] || mkdir ./private/certificates
+	[[ -d /var/www/MacMon/private/certificates ]] || mkdir /var/www/MacMon/private/certificates
 	openssl req \
 	-new \
 	-newkey rsa:4096 \
@@ -188,32 +211,32 @@ generateSelfSignedCerts ()
 	-nodes \
 	-x509 \
 	-subj "/C=US/ST=MA/L=Boston/O=Nope/CN=AssetTracking" \
-	-keyout ./private/certificates/server.key \
-	-out ./private/certificates/server.crt
+	-keyout /var/www/MacMon/private/certificates/server.key \
+	-out /var/www/MacMon/private/certificates/server.crt
 }
 
 createConfig ()
 {
-	echo "module.exports = {" > ./private/config.js
-	echo "	\"dbAddress\": \"127.0.0.1\"," >> ./private/config.js
-	echo "	\"dbPort\": 1433," >> ./private/config.js
-	echo "	\"dbUser\": \"AssetTracking_User\"," >> ./private/config.js
-	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> ./private/config.js
-	echo "	\"dbName\": \"AssetTracking\"," >> ./private/config.js
-	echo "	\"serverPort\": ${serverPort}," >> ./private/config.js
-	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> ./private/config.js
-	echo "	\"CidrRanges\": ${configNetworkRanges}," >> ./private/config.js
-	echo "	\"emailServer\": \"${emailServer}\"," >> ./private/config.js
-	echo "	\"smtpPort\": ${smtpPort}," >> ./private/config.js
-	echo "	\"emailSender\": \"${emailSender}\"," >> ./private/config.js
-	echo "	\"emailSenderUsername\": \"${emailSenderUsername}\"," >> ./private/config.js
-	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> ./private/config.js
-	echo "	\"emailRecipient\": \"${emailRecipient}\"," >> ./private/config.js
-	echo "	\"emailTls\": \"${emailTls}\"," >> ./private/config.js
-	echo "	\"scanInterval\": 300," >> ./private/config.js
-	echo "	\"environment\": \"production\"," >> ./private/config.js
-	echo "	\"hashStrength\": 10" >> ./private/config.js
-	echo "}" >> ./private/config.js
+	echo "module.exports = {" > /var/www/MacMon/private/config.js
+	echo "	\"dbAddress\": \"127.0.0.1\"," >> /var/www/MacMon/private/config.js
+	echo "	\"dbPort\": 1433," >> /var/www/MacMon/private/config.js
+	echo "	\"dbUser\": \"AssetTracking_User\"," >> /var/www/MacMon/private/config.js
+	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"dbName\": \"AssetTracking\"," >> /var/www/MacMon/private/config.js
+	echo "	\"serverPort\": ${serverPort}," >> /var/www/MacMon/private/config.js
+	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"CidrRanges\": ${configNetworkRanges}," >> /var/www/MacMon/private/config.js
+	echo "	\"emailServer\": \"${emailServer}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"smtpPort\": ${smtpPort}," >> /var/www/MacMon/private/config.js
+	echo "	\"emailSender\": \"${emailSender}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"emailSenderUsername\": \"${emailSenderUsername}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"emailRecipient\": \"${emailRecipient}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"emailTls\": \"${emailTls}\"," >> /var/www/MacMon/private/config.js
+	echo "	\"scanInterval\": 300," >> /var/www/MacMon/private/config.js
+	echo "	\"environment\": \"production\"," >> /var/www/MacMon/private/config.js
+	echo "	\"hashStrength\": 10" >> /var/www/MacMon/private/config.js
+	echo "}" >> /var/www/MacMon/private/config.js
 }
 
 allowPort443 ()
@@ -222,10 +245,46 @@ allowPort443 ()
 	sudo setcap 'cap_net_bind_service=+ep' $(readlink -f $(which node))
 }
 
+createSystemdService ()
+{
+	echo "[Unit]" > /etc/systemd/system/macmon.service
+	echo "Description=MacMon Web Service" >> /etc/systemd/system/macmon.service
+	echo "After=network.target" >> /etc/systemd/system/macmon.service
+	echo "Wants=mysql.service" >> /etc/systemd/system/macmon.service
+	echo "" >> /etc/systemd/system/macmon.service
+	echo "[Service]" >> /etc/systemd/system/macmon.service
+	echo "User=MacMon" >> /etc/systemd/system/macmon.service
+	echo "Group=MacMon" >> /etc/systemd/system/macmon.service
+	echo "WorkingDirectory=/var/www/MacMon" >> /etc/systemd/system/macmon.service
+	echo "ExecStart=/var/www/MacMon/bin/www" >> /etc/systemd/system/macmon.service
+	echo "Restart=always" >> /etc/systemd/system/macmon.service
+	echo "  RestartSec=10" >> /etc/systemd/system/macmon.service
+	echo "StandardOutput=journal" >> /etc/systemd/system/macmon.service
+	echo "StandardError=journal" >> /etc/systemd/system/macmon.service
+	echo "" >> /etc/systemd/system/macmon.service
+	echo "[Install]" >> /etc/systemd/system/macmon.service
+	echo "WantedBy=multi-user.target" >> /etc/systemd/system/macmon.service
+
+	systemctl enable macmon.service
+	systemctl start macmon.service
+}
+
+completedMessage ()
+{
+	clear
+	echo "MacMon Installation Complete"
+}
+
 checkIfSudo
 collectInformation
 checkPrerequisites
 createDatabase
+createServiceAccount
+extractApplication
+setApplicationPermissions
+sudoForArpscan
 generateSelfSignedCerts
 createConfig
 allowPort443
+createSystemdService
+completedMessage
