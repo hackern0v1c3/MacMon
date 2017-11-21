@@ -1,5 +1,5 @@
 # MacMon
-<h1>THIS IS A SUPER EARLY PRE-ALPHA PROOF OF CONCEPT.  IT IS FULL OF BUGS, HALF COMPLETED FEATURES, AND SECURITY HOLES.  PLEASE DO NOT USE IN A PRODUCTION ENVIRONMENT!!!</h1>
+<h1>THIS IS A SUPER EARLY PRE-ALPHA PROOF OF CONCEPT.  IT IS FULL OF BUGS, HALF COMPLETED FEATURES, AND SECURITY HOLES.  PLEASE DO NOT USE IN A PRODUCTION ENVIRONMENT AND ESPECIALLY DONT OPEN THE WEB INTERFACE DIRECTLY TO THE INTERNET!!!  Hopefully this project will be fully featured and secure some day but right now it is not.</h1>
 <hr>
 
 <h1>Information:</h1>
@@ -19,6 +19,7 @@
   <li>sudo ./install.sh</li>
   <li>The installer script will install some packages and ask a series of questions.  If at any point you want to cancel the installation because you mistyped something, or just want to back out use Ctrl+c.  Most of the answers will be saved in /var/www/MacMon/private/config.js and can be manually edited at any time.</li>
   <li>The install.sh script also runs mysql_secure_installation after mysql is installed.  Most of the defaults can be selected during this wizard.</li>
+  <li>Once the install is complete all of the required files will be in /var/www/MacMon.  You can delete the folder that was created during the git clone.</li>
 </ol>
 <hr>
 

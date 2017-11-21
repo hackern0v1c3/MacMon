@@ -175,8 +175,8 @@ createServiceAccount ()
 
 extractApplication ()
 {
-	mkdir -p /var/www
-	tar -xzvf MacMon.tar.gz -C /var/www/
+	mkdir -p /var/www/MacMon
+	cp -rf ./* /var/www/MacMon
 }
 
 installRequiredPackages ()
