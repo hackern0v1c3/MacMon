@@ -166,12 +166,6 @@ createDatabase ()
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
-
-	#Example inserting data into Assets table
-	#mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO Assets (MAC, IP) VALUES ('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1E', '192.168.1.240');"
-
-	#Example upsert
-	#INSERT INTO Assets (MAC, IP) VALUES('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1F','192.168.1.251') ON DUPLICATE KEY UPDATE  IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP;
 }
 
 createServiceAccount ()
