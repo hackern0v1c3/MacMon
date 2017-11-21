@@ -163,8 +163,12 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON AssetTracking.* TO 'AssetTracking_User'@'localhost'"
 
-	#Default AssetType
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('ComingSoon');"
+	#Default Asset Types
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Desktop');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
 
 	#Example inserting data into Assets table
 	#mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO Assets (MAC, IP) VALUES ('00-01-00-01-21-84-4B-25-B4-AE-2B-CE-A8-1E', '192.168.1.240');"
