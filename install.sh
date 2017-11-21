@@ -67,9 +67,6 @@ checkPrerequisites ()
 	else
 		installMYSQL
 	fi
-
-  #Install required node packages
-	npm install
 }
 
 collectInformation ()
@@ -188,11 +185,19 @@ extractApplication ()
 	tar -xzvf MacMon.tar.gz -C /var/www/
 }
 
+installRequiredPackages ()
+{
+	#Install required node packages
+	apt-get install -y arp-scan
+	cd /var/www/MacMon/
+	npm install
+}
+
 setApplicationPermissions ()
 {
-	chown MacMon /var/www/MacMon/
-	chmod 550 /var/www/MacMon/
-	chmod 660 /var/www/MacMon/private
+	chown -R MacMon:MacMon /var/www/MacMon/
+	chmod 550 -R /var/www/MacMon/
+	chmod 770 -R /var/www/MacMon/private
 }
 
 sudoForArpscan ()
@@ -281,6 +286,7 @@ checkPrerequisites
 createDatabase
 createServiceAccount
 extractApplication
+installRequiredPackages
 setApplicationPermissions
 sudoForArpscan
 generateSelfSignedCerts
