@@ -12,7 +12,7 @@ router.get('/', function (req, res) {
       if(!err){
         res.render('index', { title: 'Express', username: req.user.userName, assets: results })
       } else {
-        res.send('Internal server error: Error retrieving data', 500);
+        res.status(500).send('Internal server error: Error retrieving data');
       }
     });
   }

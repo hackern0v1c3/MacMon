@@ -9,10 +9,10 @@ const logger = require('../private/logger.js');
 router.get('/approve/:MAC', user.can('update data'), function (req, res) {
   db.assets.approveAsset(req.params.MAC, function(err){
     if(!err){
-      res.send('MAC Approved', 200);
+      res.status(200).send('MAC Approved');
     } else {
       logger.debug('Error updating database: %s', err);
-      res.send('Internal server error: Error updating data', 500);
+      res.status(500).send('Internal server error: Error updating data');
     }
   });
 });
@@ -20,10 +20,10 @@ router.get('/approve/:MAC', user.can('update data'), function (req, res) {
 router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
   db.assets.deleteAsset(req.params.MAC, function(err){
     if(!err){
-      res.send('MAC Deleted', 200);
+      res.status(200).send('MAC Deleted');
     } else {
       logger.debug('Error updating database: %s', err);
-      res.send('Internal server error: Error updating data', 500);
+      res.status(500).send('Internal server error: Error updating data');
     }
   });
 });
@@ -32,10 +32,10 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
 router.post('/update', user.can('update data'), function(req, res) {
   db.assets.updateAsset(req.body, function(err){
     if(!err){
-      res.send('Asset Updated', 200);
+      res.status(200).send('MAC Updated');
     } else {
       logger.debug('Error updating database: %s', err);
-      res.send('Internal server error: Error updating data', 500);
+      res.status(500).send('Internal server error: Error updating data');
     }
   });
 });
