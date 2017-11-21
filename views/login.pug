@@ -1,13 +1,16 @@
-extends layout
+extends boilerplate
 
 block content
-  form(action='/login', method='post')
-    br
-    br
-    p Username
-    input(type='text', name='username')
-    p Password
-    input(type='password', name='password')
-    br
-    br
-    input.button(type='submit', value='Sign In')
+  .container-fluid
+    .row
+      .col-md-4
+      .col-md-4
+        form.form-horizonal.justify-content-center(action='/login', method='post')
+          .form-group
+            label Username
+            input.form-control(type='text', name='username')
+          .form-group
+            label Password
+            input.form-control(type='password', name='password')
+          button.btn.btn-primary(type='submit') Sign In
+      .col-md-4
