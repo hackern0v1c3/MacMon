@@ -1,0 +1,24 @@
+extends device-pages
+block selected
+  -var selected = 'Approved Devices';
+block assetTable
+  - var i = 0
+  each asset in assets
+    - i++
+    tr(id=asset.MAC)
+      td
+        button.btn.btn-success.btn-sm(onClick=('Update("'+ asset.MAC +'")')) Save
+        br
+        button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
+      td #{asset.MAC}
+      td
+        input.nameInput.inputField(value=asset.Name)
+      td.col
+        textarea.descriptionInput.form-control
+          | #{asset.Description}
+      td #{asset.Vendor}
+      td #{asset.IP}
+      td
+        select.assetTypeSelector
+          option.selected(value=asset.AssetType) #{asset.AssetTypeName}
+      td #{asset.LastUpdated}

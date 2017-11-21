@@ -1,4 +1,2 @@
 .vscode
-macmon.cfg
-argparse
-macmon_whitelist.txt
+node_modules

@@ -1,0 +1,16 @@
+extends boilerplate
+
+block content
+  .container-fluid
+    .row
+      .col-md-4
+      .col-md-4
+        form.form-horizonal.justify-content-center(action='/login', method='post')
+          .form-group
+            label Username
+            input.form-control(type='text', name='username')
+          .form-group
+            label Password
+            input.form-control(type='password', name='password')
+          button.btn.btn-primary(type='submit') Sign In
+      .col-md-4
