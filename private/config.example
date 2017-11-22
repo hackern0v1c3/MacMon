@@ -14,6 +14,7 @@ module.exports = {
 	"emailSenderPassword": "password",
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
+	"scanInterval": 300,
 	"environment": "production",
 	"hashStrength": 10
 }
