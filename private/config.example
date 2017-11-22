@@ -14,10 +14,6 @@ module.exports = {
 	"emailSenderPassword": "password",
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
-<<<<<<< HEAD
-=======
-	"scanInterval": 300,
->>>>>>> node_branch
 	"environment": "production",
 	"hashStrength": 10
 }

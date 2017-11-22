@@ -26,8 +26,7 @@
 <h1>Usage Instructions:</h1>
 <ul>
   <li>Browse to the web interface by browsing to your Ubuntu machine using https.  Example: https://192.168.1.50</li>
-  <li>Login using the username "admin" and password "admin".</li>
-  <li>If you forget your admin password you can use the emergency reset tool to change the password back to "admin" but running "sudo /var/www/MacMon/bin/reset_admin_password.js"</li>
+  <li>Login using the username "admin" and password "admin".  I haven't added the change password form yet so this can't easily be changed in this version.</li>
   <li>By default every 300 seconds (5 minutes) the network will be scanned for devices.  If new devices are detected you should receive an email.</li>
   <li>Currently the application does not do a scan when it first starts so nothing will appear for 5 minutes.  I'll change that soon.</li>
   <li>After a scan is complete you will have a list of devices on the "New Detected Devices" tab.</li>
@@ -44,6 +43,7 @@
 <p> The current version is a very basic proof of concept.  Currently it just scans the network and saves the results in the database.  Then the results can be viewed and slightly modified in the web interface.</p>
 <p>The following list are features that I will be working on in the rough order that I plan on adding them</p>
 <ol>
+  <li>Ability to reset admin password.</li>
   <li>Fix access denied logic.  Right now the redirects and access denied messages are a mess...</li>
   <li>Get the Asset Type column working.  Right now it doesn't do anything.  You will eventually be able to select asset types like laptop, computer, etc and add your own asset types.</li>
   <li>Ability to sort and filter tables so it's easier to find what you are looking for.</li>
@@ -52,7 +52,6 @@
   <li>Add a manual way to check a devices vendor using macvendors.com API.  The arp-scan vendor list is pretty spotty but I don't want to rely 100% on macvendors.com</li>
   <li>Add a button to do nmap scanning against any device to collect more information</li>
   <li>Add a button to block devices on the network.  This could be useful if a rogue device is detected and you want to block it from the network while you identify and remove it.</li>
-  <li>Add better validation and requirements for the password reset form.</li>
   <li>Better CSS look and feel</li>
   <li>Impliment better security</li>
 </ol>
