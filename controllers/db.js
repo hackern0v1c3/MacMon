@@ -160,26 +160,6 @@ module.exports.assets = {
 
 //Export SQL Queries For Users
 module.exports.users = {
-	insertNew: function(userName, userPassword, userRole, userEmail, cb) {
-		if(userName === null || userPassword === null || userRole === null || userEmail === null) {
-			return cb('username, password, role, and email cannot be null');
-		}
-		
-		bcrypt.genSalt(config.hashStrength, function(err, salt) {
-			if(err){return cb(err);}
-			bcrypt.hash(userPassword, salt, null, function(err, hash) {
-				if(err){return cb(err);}
-				pool.getConnection(function(err, connection) {
-					if(err){return cb(err);}
-					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
-						connection.release();
-						if(err){return cb(err);}
-						return cb(null);
-					}); 
-				});
-			});
-		});
-	},
 
 	//Inserts a new record into the users table
 	insertNew: function(userName, userPassword, userRole, cb) {
@@ -196,6 +176,33 @@ module.exports.users = {
 				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
 					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+						connection.release();
+						if(err){return cb(err);}
+						return cb(null);
+					}); 
+				});
+			});
+		});
+	},
+
+	//Update the password for a current user
+	updatePassword: function(userName, newPassword, cb) {
+		if(userName === null || newPassword === null) {
+			return cb('username, password, and role cannot be null');
+		}
+
+		bcrypt.genSalt(config.hashStrength, function(err, salt) {
+			if(err){return cb(err);}
+
+			bcrypt.hash(newPassword, salt, null, function(err, hash) {
+				if(err){return cb(err);}
+				
+				pool.getConnection(function(err, connection) {
+					if(err){return cb(err);}
+
+					var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
+
+					connection.query(sqlQuery, [hash, userName], function(err) {
 						connection.release();
 						if(err){return cb(err);}
 						return cb(null);
