@@ -28,7 +28,7 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
   });
 });
 
-/* POST login for authentication */
+/* POST for updating data */
 router.post('/update', user.can('update data'), function(req, res) {
   db.assets.updateAsset(req.body, function(err){
     if(!err){
