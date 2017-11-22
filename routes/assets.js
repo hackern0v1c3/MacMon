@@ -28,7 +28,11 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
   });
 });
 
+<<<<<<< HEAD
 /* POST login for authentication */
+=======
+/* POST for updating data */
+>>>>>>> node_branch
 router.post('/update', user.can('update data'), function(req, res) {
   db.assets.updateAsset(req.body, function(err){
     if(!err){
@@ -40,4 +44,8 @@ router.post('/update', user.can('update data'), function(req, res) {
   });
 });
 
+<<<<<<< HEAD
 module.exports = router;
+=======
+module.exports = router;
+>>>>>>> node_branch

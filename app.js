@@ -16,6 +16,10 @@ const pending = require('./routes/pending.js');
 const assets = require('./routes/assets.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
+<<<<<<< HEAD
+=======
+const passwordreset = require('./routes/passwordreset.js');
+>>>>>>> node_branch
 const user = require('./controllers/roles.js');
 const childProcess = require('child_process');
 const timers = require('timers');
@@ -76,6 +80,10 @@ app.use('/pending', pending);
 app.use('/settings', settings);
 app.use('/assets', assets);
 app.use('/logout', logout);
+<<<<<<< HEAD
+=======
+app.use('/passwordreset', passwordreset);
+>>>>>>> node_branch
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

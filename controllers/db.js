@@ -160,18 +160,36 @@ module.exports.assets = {
 
 //Export SQL Queries For Users
 module.exports.users = {
+<<<<<<< HEAD
 	insertNew: function(userName, userPassword, userRole, userEmail, cb) {
 		if(userName === null || userPassword === null || userRole === null || userEmail === null) {
 			return cb('username, password, role, and email cannot be null');
+=======
+
+	//Inserts a new record into the users table
+	insertNew: function(userName, userPassword, userRole, cb) {
+		if(userName === null || userPassword === null || userRole === null) {
+			return cb('username, password, and role cannot be null');
+>>>>>>> node_branch
 		}
 		
 		bcrypt.genSalt(config.hashStrength, function(err, salt) {
 			if(err){return cb(err);}
+<<<<<<< HEAD
 			bcrypt.hash(userPassword, salt, null, function(err, hash) {
 				if(err){return cb(err);}
 				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
 					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+=======
+			
+			bcrypt.hash(userPassword, salt, null, function(err, hash) {
+				if(err){return cb(err);}
+		
+				pool.getConnection(function(err, connection) {
+					if(err){return cb(err);}
+					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+>>>>>>> node_branch
 						connection.release();
 						if(err){return cb(err);}
 						return cb(null);
@@ -181,6 +199,7 @@ module.exports.users = {
 		});
 	},
 
+<<<<<<< HEAD
 	//Inserts a new record into the users table
 	insertNew: function(userName, userPassword, userRole, cb) {
 		if(userName === null || userPassword === null || userRole === null) {
@@ -196,6 +215,26 @@ module.exports.users = {
 				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
 					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+=======
+	//Update the password for a current user
+	updatePassword: function(userName, newPassword, cb) {
+		if(userName === null || newPassword === null) {
+			return cb('username, password, and role cannot be null');
+		}
+
+		bcrypt.genSalt(config.hashStrength, function(err, salt) {
+			if(err){return cb(err);}
+
+			bcrypt.hash(newPassword, salt, null, function(err, hash) {
+				if(err){return cb(err);}
+				
+				pool.getConnection(function(err, connection) {
+					if(err){return cb(err);}
+
+					var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
+
+					connection.query(sqlQuery, [hash, userName], function(err) {
+>>>>>>> node_branch
 						connection.release();
 						if(err){return cb(err);}
 						return cb(null);
