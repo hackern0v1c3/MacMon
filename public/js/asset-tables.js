@@ -29,11 +29,20 @@ function Update(mac){
   });
 }
 
+//For sorting text boxes in datatable
+$.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
+{
+    return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+        return $('input', td).val();
+    } );
+}
+
 $(document).ready( function () {
   $('#assetTable').DataTable({
     "order": [1, 'asc'],
     "columnDefs": [
-      { "orderable": false, "targets": 0 }
+      { "orderable": false, "targets": 0 },
+      { "orderDataType": "dom-text", "targets": 2 }
     ],
     "fixedHeader": {
       header: true
