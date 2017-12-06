@@ -27,5 +27,20 @@ function Update(mac){
   $.post('/assets/update/', assetToBeSaved, function(){
 
   });
-
 }
+
+$(document).ready( function () {
+  $('#assetTable').DataTable({
+    "order": [1, 'asc'],
+    "columnDefs": [
+      { "orderable": false, "targets": 0 }
+    ],
+    "fixedHeader": {
+      header: true
+    },
+    "scrollY": "575px",
+    "scrollCollapse": true,
+    "lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
+    
+  });
+});
