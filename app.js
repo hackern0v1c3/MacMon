@@ -18,7 +18,11 @@ const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const passwordreset = require('./routes/passwordreset.js');
 const user = require('./controllers/roles.js');
+<<<<<<< HEAD
 const childProcess = require('child_process');
+=======
+const run_scanner = require('./controllers/run_scanner.js');
+>>>>>>> node_branch
 const timers = require('timers');
 
 const db = require('./controllers/db.js');
@@ -98,6 +102,7 @@ app.use(function(err, req, res, next) {
 });
 
 //Start timer to run network scanner
+<<<<<<< HEAD
 var scannerTimer = timers.setInterval(function(){
   try{
     const { exec } = require('child_process');
@@ -120,6 +125,12 @@ var scannerTimer = timers.setInterval(function(){
     logger.error('Error setting timer for network scans');
     logger.debug('Error in network_scanner.js: %s', err);
   }
+=======
+run_scanner.runOnce();
+
+var scannerTimer = timers.setInterval(function(){
+  run_scanner.runOnce();
+>>>>>>> node_branch
 },(config.scanInterval * 1000));
 
 module.exports = app;
