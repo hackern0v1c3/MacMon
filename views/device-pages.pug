@@ -5,6 +5,28 @@ block header
   script(src='/js/asset-tables.js')
 
 block body
+  //Modal for editing a record
+  #editAsset.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editAssetModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#editAssetModalLabel.modal-title Edit
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form.form-horizonal.justify-content-center(action='/assets/update', method='post')
+            input#editAssetMac(type='hidden',name='MAC')
+            .form-group
+              label(for='editAssetName') Name
+              input#editAssetName.form-control(type='text', name='Name')
+            .form-group
+              label(for='editAssetDescription') Description
+              textarea#editAssetDescription.form-control(rows='3', name='Description')
+            .form-group
+              label(for='assetType') Asset Type
+              select#assetType.form-control(name='AssetType')
+            button#editAssetSubmitButton.btn.btn-primary(type='button', enabled) Submit
+  //Header for filtering table
   .container-fluid
     .row
       .col
@@ -14,18 +36,17 @@ block body
           | Thigs like view filters
           br
           | Also probably export to pdf, excel, etc
-    .row
-      .col
-        table#assetTable.table.table-responsive.table-sm.table-hover
-          thead.thead-dark
-            tr
-              th
-              th Mac Address
-              th Name
-              th Decription
-              th Vendor
-              th IP Addresses
-              th Asset Type
-              th Last Updated
-          tbody
-            block assetTable
+  //Main datatable
+  table#assetTable.table.table-hover.table-sm
+    thead.thead-dark
+      tr
+        th
+        th Mac Address
+        th Name
+        th Decription
+        th Vendor
+        th IP Addresses
+        th Asset Type
+        th Last Updated
+    tbody
+      block assetTable
