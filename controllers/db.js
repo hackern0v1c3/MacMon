@@ -39,6 +39,29 @@ module.exports.assets = {
 		});
 	},
 
+	//Return one Assets assets from database by MAC address
+  returnAsset: function(mac, cb) {
+
+		if (mac === null) {
+			return cb('mac cannot be null');
+		}
+	
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err, null);}
+		
+			connection.query('SELECT * from Assets WHERE MAC = ?', [mac], function (err, results, fields) {
+				connection.release();
+				if(err){return cb(err, null);}
+				
+				if (results.length === 1){
+					cb(null, results[0]);
+				} else {
+					return cb('asset not found', null);
+				}
+			});
+		});
+	},
+
 	//Return all approved assets from database that are not marked as guest assets
   returnApprovedAssets: function(cb) {
 		pool.getConnection(function(err, connection) {
@@ -259,6 +282,22 @@ module.exports.users = {
 				} else {
 					return cb('id not found', null);
 				}
+			});
+		});
+	}
+}
+
+//Export SQL Queries For Asset Types
+module.exports.assetTypes = {
+	//Return all Assets Types from database
+  returnAllAssetTypes: function(cb) {
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			connection.query('SELECT * from AssetTypes', function(error, results, fields) {
+				connection.release();
+				if(err){return cb(err, null, null);}
+				return cb(null, results, fields);
 			});
 		});
 	}
