@@ -14,6 +14,7 @@ const admin = require('./routes/admin.js');
 const guest = require('./routes/guest.js');
 const pending = require('./routes/pending.js');
 const assets = require('./routes/assets.js');
+const assettypes = require('./routes/assettypes.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const passwordreset = require('./routes/passwordreset.js');
@@ -76,6 +77,7 @@ app.use('/guest', guest);
 app.use('/pending', pending);
 app.use('/settings', settings);
 app.use('/assets', assets);
+app.use('/assettypes', assettypes);
 app.use('/logout', logout);
 app.use('/passwordreset', passwordreset);
 
