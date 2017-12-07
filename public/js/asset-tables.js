@@ -1,4 +1,25 @@
+function Edit(mac) {
+  $.ajax({url:'/assettypes/'}).done(function(assetTypes) {
+    $.ajax({url:'/assets/' + mac}).done(function(asset) {
+      $('#editAssetMac').val(mac);
+      $('#editAssetModalLabel').text('Edit ' + mac);  
+      $('#editAssetName').val(asset.Name);
+      $('#editAssetDescription').val(asset.Description);
+      $('#assetType').empty();
 
+      $.each(assetTypes, function() {
+        $('#assetType').append($("<option/>", {
+            value: this.ID,
+            text: this.Name
+        }));
+      });
+      
+      $('#assetType option[value=' + asset.AssetType + ']').prop('selected', 'selected').change();
+
+      $('#editAsset').modal('show');
+    });
+  });
+}
 
 function Approve(mac) {
   $.ajax({url:'/assets/approve/' + mac}).done(function() {
@@ -14,15 +35,13 @@ function Delete(mac){
   });
 }
 
-function Update(mac){
+function Update(){
   //{MAC: 'abc', Name: 'abc', Description: 'fgh', AssetType: 2}
-  var rowid = $(document.getElementById(mac));
-
   var assetToBeSaved = {}
-  assetToBeSaved.MAC = mac
-  assetToBeSaved.Name = $($(rowid).find(".nameInput")).val();
-  assetToBeSaved.Description = $($(rowid).find(".descriptionInput")).val();
-  assetToBeSaved.AssetType = $($(rowid).find(".assetTypeSelector")).val();
+  assetToBeSaved.MAC = $('#editAssetMac').val();
+  assetToBeSaved.Name = $('#editAssetName').val();
+  assetToBeSaved.Description = $('#editAssetDescription').val();
+  assetToBeSaved.AssetType = $('#assetType').val();
 
   $.post('/assets/update/', assetToBeSaved, function(){
 
@@ -43,14 +62,17 @@ $(document).ready( function () {
     "columnDefs": [
       { "orderable": false, "targets": 0 },
       { "searchable": false, "targets": 0 },
-      { "orderDataType": "dom-text", "targets": 2 }
+      { "width": "100%", "targets": 3 }
     ],
     "fixedHeader": {
-      header: true
+      header: false
     },
-    "scrollY": "575px",
-    "scrollCollapse": true,
+    "scrollY": "565px",
     "lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
-    
+    "responsive": true
+  });
+
+  $("#editAssetSubmitButton").click( function() {
+    Update();
   });
 });
