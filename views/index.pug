@@ -9,9 +9,9 @@ block assetTable
         br
         button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}
-      td #{asset.Name}
-      td #{asset.Description}
+      td.nameColumn #{asset.Name}
+      td.descriptionColumn #{asset.Description}
       td #{asset.Vendor}
       td #{asset.IP}
-      td #{asset.AssetTypeName}
+      td.assetTypeColumn #{asset.AssetTypeName}
       td #{asset.LastUpdated}
