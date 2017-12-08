@@ -29,7 +29,6 @@
   <li>Login using the username "admin" and password "admin".</li>
   <li>If you forget your admin password you can use the emergency reset tool to change the password back to "admin" but running "sudo /var/www/MacMon/bin/reset_admin_password.js"</li>
   <li>By default every 300 seconds (5 minutes) the network will be scanned for devices.  If new devices are detected you should receive an email.</li>
-  <li>Currently the application does not do a scan when it first starts so nothing will appear for 5 minutes.  I'll change that soon.</li>
   <li>After a scan is complete you will have a list of devices on the "New Detected Devices" tab.</li>
   <li>Ideally you would track down each device on the New Devices list and identify them.  You should then add a name and notes to the device and click save.  Once a device is identified and labeled click the "Approve" button to move the device to the "Approved Devices" tab.  That list will act as your approved network device inventory.</li>
   <li>Devices can be deleted from either list by clicking the "Delete" button.  However during the next scan if the deviec is detected again you will be notified and the device will appear again on the New Devices tab.  This is intentional.  Devices should only be deleted if you think they are gone for good.  Otherwise they should be approved.  If you don't approve of a device on your network you should remove it from your network!</li>
@@ -45,10 +44,9 @@
 <p>The following list are features that I will be working on in the rough order that I plan on adding them</p>
 <ol>
   <li>Fix access denied logic.  Right now the redirects and access denied messages are a mess...</li>
-  <li>Get the Asset Type column working.  Right now it doesn't do anything.  You will eventually be able to select asset types like laptop, computer, etc and add your own asset types.</li>
-  <li>Ability to sort and filter tables so it's easier to find what you are looking for.</li>
   <li>Add another tab for guest devices.  This way you can approve things like gues cell phones without cluttering up your own asset inventory.</li>
   <li>Impliment the settings menu so application settings can be set from the web interface.</li>
+  <li>Add the ability to create new asset types on the settigns menu.</li>
   <li>Add a manual way to check a devices vendor using macvendors.com API.  The arp-scan vendor list is pretty spotty but I don't want to rely 100% on macvendors.com</li>
   <li>Add a button to do nmap scanning against any device to collect more information</li>
   <li>Add a button to block devices on the network.  This could be useful if a rogue device is detected and you want to block it from the network while you identify and remove it.</li>
