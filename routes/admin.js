@@ -4,7 +4,7 @@ const user = require('../controllers/roles.js');
 
 /* GET admin page. */
 router.get('/', user.can('be admin'), function (req, res) {
-    res.render('index', { title: 'Express', username: req.user.userName });
+    res.render('index', { username: req.user.userName });
 });
 
 
