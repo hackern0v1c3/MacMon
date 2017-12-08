@@ -42,9 +42,13 @@ function Update(){
   assetToBeSaved.Name = $('#editAssetName').val();
   assetToBeSaved.Description = $('#editAssetDescription').val();
   assetToBeSaved.AssetType = $('#assetType').val();
+  assetToBeSaved.AssetTypeName = $('#assetType option:selected').text();
 
   $.post('/assets/update/', assetToBeSaved, function(){
-
+    var rowid = $(document.getElementById(assetToBeSaved.MAC));
+    $($(rowid).find(".nameColumn")).text(assetToBeSaved.Name);
+    $($(rowid).find(".descriptionColumn")).text(assetToBeSaved.Description);
+    $($(rowid).find(".assetTypeColumn")).text(assetToBeSaved.AssetTypeName);
   });
 }
 
