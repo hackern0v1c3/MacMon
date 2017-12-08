@@ -2,7 +2,54 @@ extends navbar
 block selected
   -var selected = 'Settings';
 block body
-  h1= title
-  p Hi #{username}! Welcome to #{title}
-
-  p This is where the applications settings will be displayed!
+  form.form-horizonal.justify-content-center(action='/config/update', method='post')
+    h4 Database Settings
+    .form-group
+      label(for='dbAddressInput') Database Address
+      input#dbAddressInput.form-control(type='text', name='dbAddress', value=conf.dbAddress)
+    .form-group
+      label(for='dbPortInput') Database Port
+      input#dbPortInput.form-control(type='text', name='dbPort', value=conf.dbPort)
+    .form-group
+      label(for='dbUserInput') Database User
+      input#dbUserInput.form-control(type='text', name='dbUser', value=conf.dbUser)
+    .form-group
+      label(for='dbNameInput') Database Name
+      input#dbNameInput.form-control(type='text', name='dbName', value=conf.dbName)
+    .form-group
+      label(for='hashStrengthInput') BCrypt hash Iterations.  (Don't change unless you know what you are doing)
+      input#hashStrengthInput.form-control(type='text', name='hashStrength', value=conf.hashStrength)
+    hr
+    h4 Web Server Settings
+    .form-group
+      label(for='serverPortInput') Web Server Port
+      input#serverPortInput.form-control(type='text', name='serverPort', value=conf.serverPort)
+    hr
+    h4 Scanner Settings
+    .form-group
+      label(for='CidrRangesInput') Scanner CIDR Ranges
+      input#CidrRangesInput.form-control(type='text', name='CidrRanges', value=conf.CidrRanges)
+    .form-group
+      label(for='scanIntervalInput') Scanner Frequency in Seconds
+      input#scanIntervalInput.form-control(type='text', name='scanInterval', value=conf.scanInterval)
+    hr
+    h4 Email Settings
+    .form-group
+      label(for='emailServerInput') Email Server Address
+      input#emailServerInput.form-control(type='text', name='emailServer', value=conf.emailServer)
+    .form-group
+      label(for='smtpPortInput') Email Server SMTP Port
+      input#smtpPortInput.form-control(type='text', name='smtpPort', value=conf.smtpPort)
+    .form-group
+      label(for='emailSenderInput') Email Address for Sending Notifications
+      input#emailSenderInput.form-control(type='text', name='emailSender', value=conf.emailSender)
+    .form-group
+      label(for='emailSenderUsernameInput') Email Server Username
+      input#emailSenderUsernameInput.form-control(type='text', name='emailSenderUsername', value=conf.emailSenderUsername)
+    .form-group
+      label(for='emailRecipientInput') Email Address for Receiving Notifications
+      input#emailRecipientInput.form-control(type='text', name='emailRecipient', value=conf.emailRecipient)
+    .form-group
+      label(for='emailTlsInput') Email Server Requires TLS 
+        input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))
+    button#editAssetSubmitButton.btn.btn-primary(type='button', enabled) Submit
