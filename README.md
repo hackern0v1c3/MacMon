@@ -17,7 +17,7 @@
   <li>git clone https://github.com/hackern0v1c3/MacMon.git</li>
   <li>cd MacMon</li>
   <li>sudo ./install.sh</li>
-  <li>The installer script will install some packages and ask a series of questions.  If at any point you want to cancel the installation because you mistyped something, or just want to back out use Ctrl+c.  Most of the answers will be saved in /var/www/MacMon/private/config.js and can be manually edited at any time.</li>
+  <li>The installer script will install some packages and ask a series of questions.  If at any point you want to cancel the installation because you mistyped something, or just want to back out use Ctrl+c.  Most of the answers will be saved in /var/www/MacMon/private/config.json and can be manually edited at any time.  MacMon will need to be restarted for changes to take effect.</li>
   <li>The install.sh script also runs mysql_secure_installation after mysql is installed.  Most of the defaults can be selected during this wizard.</li>
   <li>Once the install is complete all of the required files will be in /var/www/MacMon.  You can delete the folder that was created during the git clone.</li>
 </ol>
@@ -33,8 +33,8 @@
   <li>Ideally you would track down each device on the New Devices list and identify them.  You should then add a name and notes to the device and click save.  Once a device is identified and labeled click the "Approve" button to move the device to the "Approved Devices" tab.  That list will act as your approved network device inventory.</li>
   <li>Devices can be deleted from either list by clicking the "Delete" button.  However during the next scan if the deviec is detected again you will be notified and the device will appear again on the New Devices tab.  This is intentional.  Devices should only be deleted if you think they are gone for good.  Otherwise they should be approved.  If you don't approve of a device on your network you should remove it from your network!</li>
   <li>The "Last Updated" column should show the last time any device was detected on your network.  This can be handy for identifying old or powered off devices.</li>
-  <li>The application will be installed to /var/www/MacMon.  Most of the applications configuration is stored in /var/www/MacMon/private/config.js and can be manually edited.</li>
-  <li>The application runs as a systemd service.  To view the application logs use this command "journalctl -u macmon".  The loggin level can be set to "production" or "development" in the config.js file using the environment property.</li>
+  <li>The application will be installed to /var/www/MacMon.  Most of the applications configuration is stored in /var/www/MacMon/private/config.json and can be manually edited.</li>
+  <li>The application runs as a systemd service.  To view the application logs use this command "journalctl -u macmon".  The loggin level can be set to "production" or "development" in the config.json file using the environment property.</li>
   <li>The application generates a self signed certificate for HTTPS during installation.  If you want to use your own certificate you can replace the files in /var/www/MacMon/private/certificates</li>
 </ul>
 <hr>

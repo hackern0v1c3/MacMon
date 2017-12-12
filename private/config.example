@@ -1,4 +1,4 @@
-module.exports = {
+{
 	"dbAddress": "127.0.0.1",
 	"dbPort": 1433,
 	"dbUser": "AssetTracking_User",

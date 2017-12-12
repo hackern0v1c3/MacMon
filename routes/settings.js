@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-var config = require('../private/config.js');
+var config = require('../private/config.json');
 
 /* GET home page. */
 //Redirect if not logged in
