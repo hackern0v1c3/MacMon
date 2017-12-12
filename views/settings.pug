@@ -29,7 +29,7 @@ block body
     hr
     h4 Scanner Settings
     .form-group
-      label(for='CidrRangesInput') Scanner CIDR Ranges
+      label(for='CidrRangesInput') Scanner CIDR Ranges (Example: ["192.168.1.0/24", "172.16.0.0/12", "10.0.0.0/8"])
       input#CidrRangesInput.form-control(type='text', name='CidrRanges', value=conf.CidrRanges)
     .form-group
       label(for='scanIntervalInput') Scanner Frequency in Seconds
