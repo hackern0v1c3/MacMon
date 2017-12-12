@@ -216,25 +216,25 @@ generateSelfSignedCerts ()
 
 createConfig ()
 {
-	echo "{" > /var/www/MacMon/private/config.json
+	echo "{" > /var/www/MacMon/private/config.json  
 	echo "	\"dbAddress\": \"127.0.0.1\"," >> /var/www/MacMon/private/config.json
 	echo "	\"dbPort\": 1433," >> /var/www/MacMon/private/config.json
 	echo "	\"dbUser\": \"AssetTracking_User\"," >> /var/www/MacMon/private/config.json
-	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"dbName\": \"AssetTracking\"," >> /var/www/MacMon/private/config.json
+	echo "	\"hashStrength\": 10," >> /var/www/MacMon/private/config.json
 	echo "	\"serverPort\": ${serverPort}," >> /var/www/MacMon/private/config.json
-	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"CidrRanges\": ${configNetworkRanges}," >> /var/www/MacMon/private/config.json
+	echo "	\"scanInterval\": 300," >> /var/www/MacMon/private/config.json
 	echo "	\"emailServer\": \"${emailServer}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"smtpPort\": ${smtpPort}," >> /var/www/MacMon/private/config.json
 	echo "	\"emailSender\": \"${emailSender}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"emailSenderUsername\": \"${emailSenderUsername}\"," >> /var/www/MacMon/private/config.json
-	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"emailRecipient\": \"${emailRecipient}\"," >> /var/www/MacMon/private/config.json
 	echo "	\"emailTls\": \"${emailTls}\"," >> /var/www/MacMon/private/config.json
-	echo "	\"scanInterval\": 300," >> /var/www/MacMon/private/config.json
-	echo "	\"environment\": \"production\"," >> /var/www/MacMon/private/config.json
-	echo "	\"hashStrength\": 10" >> /var/www/MacMon/private/config.json
+	echo "	\"dbPassword\": \"${databaseServicePassword}\"," >> /var/www/MacMon/private/config.json
+	echo "	\"cookieSecret\": \"${cookieSecret}\"," >> /var/www/MacMon/private/config.json
+	echo "	\"emailSenderPassword\": \"${emailSenderPassword}\"," >> /var/www/MacMon/private/config.json
+	echo "	\"environment\": \"production\"" >> /var/www/MacMon/private/config.json
 	echo "}" >> /var/www/MacMon/private/config.json
 }
 

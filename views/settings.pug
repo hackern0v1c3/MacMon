@@ -1,8 +1,10 @@
 extends navbar
+block header
+  script(src='/js/settings.js')
 block selected
   -var selected = 'Settings';
 block body
-  form.form-horizonal.justify-content-center(action='/config/update', method='post')
+  form.form-horizonal.justify-content-center(action='/settings', method='post')
     h4 Database Settings
     .form-group
       label(for='dbAddressInput') Database Address
@@ -52,4 +54,4 @@ block body
     .form-group
       label(for='emailTlsInput') Email Server Requires TLS 
         input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))
-    button#editAssetSubmitButton.btn.btn-primary(type='button', enabled) Submit
+    button#editSettingsSubmitButton.btn.btn-primary(type='button', enabled) Submit
