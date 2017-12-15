@@ -54,4 +54,94 @@ router.post('/', user.can('update data'), function(req, res) {
   });
 });
 
+/* POST for updating database password in config.json */
+router.post('/dbPassword', user.can('update data'), function(req, res) {
+  newConfig = req.body;
+
+  var configFileName = path.join(__dirname, '..', 'private', 'config.json');
+
+  fs.readFile(configFileName, 'utf8', function (err, data) {
+    if (err) {
+      logger.debug('Error reading config file: %s', err);
+      res.status(500).send('Internal server error: Error updating data');
+    }
+
+    var oldConfig = JSON.parse(data);
+  
+    //update any relevant settings
+    oldConfig.dbPassword = newConfig.dbPassword;
+
+    //write file async
+    fs.writeFile(configFileName, JSON.stringify(oldConfig, null, 2), 'utf8', function (err) {
+      if (err) {
+        logger.debug('Error reading config file: %s', err);
+        res.status(500).send('Internal server error: Error updating data');
+      } else {
+        logger.info('Wrote new config to disk');
+        res.status(200).send();
+      }
+    });
+  });
+});
+
+/* POST for updating email password in config.json */
+router.post('/emailPassword', user.can('update data'), function(req, res) {
+  newConfig = req.body;
+
+  var configFileName = path.join(__dirname, '..', 'private', 'config.json');
+
+  fs.readFile(configFileName, 'utf8', function (err, data) {
+    if (err) {
+      logger.debug('Error reading config file: %s', err);
+      res.status(500).send('Internal server error: Error updating data');
+    }
+
+    var oldConfig = JSON.parse(data);
+  
+    //update any relevant settings
+    oldConfig.emailSenderPassword = newConfig.emailSenderPassword;
+
+    //write file async
+    fs.writeFile(configFileName, JSON.stringify(oldConfig, null, 2), 'utf8', function (err) {
+      if (err) {
+        logger.debug('Error reading config file: %s', err);
+        res.status(500).send('Internal server error: Error updating data');
+      } else {
+        logger.info('Wrote new config to disk');
+        res.status(200).send();
+      }
+    });
+  });
+});
+
+/* POST for updating cookie signing secret in config.json */
+router.post('/cookieSecret', user.can('update data'), function(req, res) {
+  newConfig = req.body;
+
+  var configFileName = path.join(__dirname, '..', 'private', 'config.json');
+
+  fs.readFile(configFileName, 'utf8', function (err, data) {
+    if (err) {
+      logger.debug('Error reading config file: %s', err);
+      res.status(500).send('Internal server error: Error updating data');
+    }
+
+    var oldConfig = JSON.parse(data);
+  
+    //update any relevant settings
+    oldConfig.cookieSecret = newConfig.cookieSecret;
+
+    //write file async
+    fs.writeFile(configFileName, JSON.stringify(oldConfig, null, 2), 'utf8', function (err) {
+      if (err) {
+        logger.debug('Error reading config file: %s', err);
+        res.status(500).send('Internal server error: Error updating data');
+      } else {
+        logger.info('Wrote new config to disk');
+        res.status(200).send();
+      }
+    });
+  });
+});
+
 module.exports = router;
