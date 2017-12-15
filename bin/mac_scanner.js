@@ -16,7 +16,7 @@ const mailer = require('../controllers/mailer');
 const db = require('../controllers/db.js');
 
 //Import config for subnets
-const config = require('../private/config.js');
+const config = require('../private/config.json');
 
 //For comparing arrays
 Array.prototype.diff = function(a) {

@@ -10,7 +10,7 @@ router.get('/', function (req, res) {
   } else {
     db.assets.returnUnapprovedAssets(function(err, results, fields){
       if(!err){
-        res.render('pending', { title: 'Express', username: req.user.userName, assets: results })
+        res.render('pending', { username: req.user.userName, assets: results })
       } else {
         res.status(500).send('Internal server error: Error retrieving data');
       }

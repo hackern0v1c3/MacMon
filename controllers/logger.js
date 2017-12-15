@@ -1,6 +1,6 @@
 "use strict";
 //Read config file
-const config = require('../private/config.js');
+const config = require('../private/config.json');
 
 //Sets up a reusable winston logger for the rest of the application.  It reads the log level from the "environment" value in config.
 const winston = require("winston");

@@ -1,20 +1,23 @@
-module.exports = {
+{
 	"dbAddress": "127.0.0.1",
 	"dbPort": 1433,
 	"dbUser": "AssetTracking_User",
-	"dbPassword": "password",
 	"dbName": "AssetTracking",
+	"hashStrength": 10,
 	"serverPort": 443,
-	"cookieSecret": "password",
-	"CidrRanges": ["192.168.2.0/24", "10.10.0.0/16"],
+	"CidrRanges": [
+		"192.168.2.0/24", 
+		"10.10.0.0/16"
+	],
+	"scanInterval": 300,
 	"emailServer": "smtp.office365.com",
 	"smtpPort": 587,
 	"emailSender": "sender@example.local",
 	"emailSenderUsername": "sender@example.local",
-	"emailSenderPassword": "password",
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
-	"scanInterval": 300,
+	"dbPassword": "password",
+	"cookieSecret": "password",
+	"emailSenderPassword": "password",
 	"environment": "production",
-	"hashStrength": 10
 }
