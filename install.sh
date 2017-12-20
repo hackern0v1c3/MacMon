@@ -27,8 +27,9 @@ installNode8 ()
 installMYSQL ()
 {
   #This installs mysql and runs a script to set some basic security options
+	debconf-set-selections <<< "mysql-server mysql-server/root_password password ${mySqlPassword}"
+	debconf-set-selections <<< "mysql-server mysql-server/root_password_again password ${mySqlPassword}"
 	apt-get install -y mysql-server
-	mysql_secure_installation
 	systemctl enable mysql
 }
 
@@ -36,7 +37,7 @@ promptNode8Install()
 {
   #This warns users in case they already have a version of node installed
 	clear
-	read -p "Node version 8 is not installed but is required.  Would you like this script to install it for you? Warning this could replace your current version of nodejs with version 8.\n" yn
+	read -p "Node version 8 is not installed but is required.  Would you like this script to install it for you? Warning this could replace your current version of nodejs with version 8." yn
                 case $yn in
                         [Yy]* ) installNode8;;
                         [Nn]* ) exit;;
@@ -76,7 +77,7 @@ collectInformation ()
 	printf "Enter a password for the asset tracking database service account user that this script will create:\n"
 	read databaseServicePassword
 	clear
-	printf "Enter a password for the database sa account that this script will create:\n"
+	printf "Enter a password for the database root account that this script will create:\n"
 	read mySqlPassword
 	clear
 	printf "Enter a secret that will be used to sign session cookies:\n"
@@ -150,11 +151,11 @@ createDatabase ()
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;'
 
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;'
 
 	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
 
@@ -166,6 +167,9 @@ createDatabase ()
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
 	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Server');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
+	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
 }
 
 createServiceAccount ()
