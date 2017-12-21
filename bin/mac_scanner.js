@@ -18,6 +18,9 @@ const db = require('../controllers/db.js');
 //Import config for subnets
 const config = require('../private/config.json');
 
+//Import https for macvendor api
+const fetch = require("node-fetch");
+
 //For comparing arrays
 Array.prototype.diff = function(a) {
   return this.filter(function(i) {return a.indexOf(i) < 0;});
@@ -72,6 +75,37 @@ function getScanResults(cidr){
         resolve(stdout);
       }
     });
+  });
+}
+
+//Promise to resolve vendors using macvendor.com
+var getVendorsFromApi = function getVendors(asset) {
+  return new Promise(function(resolve, reject) {
+    if (asset.Vendor.includes("(Unknown)")) {
+      var url = "https://api.macvendors.com/"+asset.MAC;
+
+      logger.info("Going to fetch this url: " + url);
+
+      fetch(url)
+        .then(function (res) {
+            logger.info("Vendor retrieved for asset " +asset.MAC);
+            return res.text();
+        })
+        .then(function(resText){
+          logger.debug("Text for " + asset.MAC + " Vendor: " + resText.trim());
+          asset.Vendor = resText.trim();
+          resolve(asset);
+        })
+        .catch(error => {
+          logger.error("Error fetching vendor from macvendors.com: " + error);
+          asset.Vendor = ('Vendor not found');
+          resolve(asset);
+        });
+    } 
+    else {
+      logger.debug("Already know vendor for "+ asset.MAC +": " + asset.Vendor);
+      resolve(asset);
+    }
   });
 }
 
@@ -152,7 +186,16 @@ function checkScanAndCheckDatabase(cb) {
           newAddresses.push(scanResults[i]);
         }
       }
-      cb(null, scanResults, databasesAddresses, newAddresses);
+
+      //Setup  promises for resolving vendor on all new devices
+      var vendorPromises = newAddresses.map(getVendorsFromApi);
+
+      var newAssetsWithVendors = Promise.all(vendorPromises);
+
+      //Resolve all vendor.com promises then return data
+      newAssetsWithVendors.then(newAssets =>
+        cb(null, scanResults, databasesAddresses, newAssets)
+      );
     })
     .catch(function (error){
       cb(error);

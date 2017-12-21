@@ -1,3 +1,9 @@
+var myAssetTable;
+
+function FilterDates() {
+  myAssetTable.draw();
+}
+
 function Edit(mac) {
   $.ajax({url:'/assettypes/'}).done(function(assetTypes) {
     $.ajax({url:'/assets/' + mac}).done(function(asset) {
@@ -61,7 +67,8 @@ $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
 }
 
 $(document).ready( function () {
-  $('#assetTable').DataTable({
+  myAssetTable = $('#assetTable').DataTable({
+    //dom: 'Bfrtip',
     "order": [1, 'asc'],
     "columnDefs": [
       { "orderable": false, "targets": 0 },
@@ -73,10 +80,35 @@ $(document).ready( function () {
     },
     "scrollY": "565px",
     "lengthMenu": [ 5, 10, 25, 50, 75, 100 ],
-    "responsive": true
+    "responsive": true,
+    buttons: [
+      'copy', 'excel', 'csv'
+    ]
   });
+
+  myAssetTable.buttons().container().appendTo( '#buttonContainer' );
 
   $("#editAssetSubmitButton").click( function() {
     Update();
   });
+
+  $("#datePickerStart").datepicker();
+  $("#datePickerEnd").datepicker();
+
+  $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+      var min = Date.parse( $('#datePickerStart').datepicker("getDate") );
+      var max = Date.parse( $('#datePickerEnd').datepicker("getDate") );
+      var date = Date.parse( data[7] ) || 0;
+     
+       if ( ( isNaN( min ) && isNaN( max ) ) ||
+            ( isNaN( min ) && date <= max ) ||
+            ( min <= date   && isNaN( max ) ) ||
+            ( min <= date   && date <= max ) )
+       {
+         return true;
+       }
+       return false;
+   }
+  );
 });
