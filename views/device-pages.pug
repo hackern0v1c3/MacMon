@@ -1,8 +1,11 @@
 extends navbar
 block header
   link(rel='stylesheet', type='text/css', href='datatables/datatables.min.css')
+  link(rel='stylesheet', type='text/css', href='jqueryui/jquery-ui.min.css')
+  link(rel='stylesheet', type='text/css', href='stylesheets/datatables.css')
   script(type='text/javascript', charset='utf8', src='/datatables/datatables.min.js')
   script(src='/js/asset-tables.js')
+  script(src='/jqueryui/jquery-ui.min.js')
 
 block body
   //Modal for editing a record
@@ -29,24 +32,28 @@ block body
   //Header for filtering table
   .container-fluid
     .row
+      strong Filter By Date:
+      .col-lg
+        input#datePickerStart.form-control(type="text", placeholder="Start Date")
+      .col-lg
+        input#datePickerEnd.form-control(type="text", placeholder="End Date ")
+      .col-lg
+        button.btn.btn-secondary.btn-sm(onClick=('FilterDates()')) Filter
+      .col-lg
+        #buttonContainer
+    //Main datatable
+    .row.top-buffer
       .col
-        p
-          | Some controls will go here
-          br
-          | Thigs like view filters
-          br
-          #buttonContainer
-  //Main datatable
-  table#assetTable.table.table-hover.table-sm
-    thead.thead-dark
-      tr
-        th
-        th Mac Address
-        th Name
-        th Decription
-        th Vendor
-        th IP Addresses
-        th Asset Type
-        th Last Updated
-    tbody
-      block assetTable
+        table#assetTable.table.table-hover.table-sm
+          thead.thead-dark
+            tr
+              th
+              th Mac Address
+              th Name
+              th Decription
+              th Vendor
+              th IP Addresses
+              th Asset Type
+              th Last Updated
+          tbody
+            block assetTable
