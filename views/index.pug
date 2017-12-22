@@ -5,9 +5,13 @@ block assetTable
   each asset in assets
     tr(id=asset.MAC)
       td
-        button.btn.btn-primary.btn-sm(onClick=('Edit("'+ asset.MAC +'")')) Edit
-        br
-        button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
+        table
+          tr
+            td
+              button.btn.btn-primary.btn-sm.btn-block(onClick=('Edit("'+ asset.MAC +'")')) Edit
+          tr
+            td
+              button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}
       td.nameColumn #{asset.Name}
       td.descriptionColumn #{asset.Description}
