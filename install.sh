@@ -187,6 +187,7 @@ installRequiredPackages ()
 {
 	#Install required node packages
 	apt-get install -y arp-scan
+	apt-get install -y dsniff
 	cd /var/www/MacMon/
 	npm install
 }
@@ -201,6 +202,11 @@ setApplicationPermissions ()
 sudoForArpscan ()
 {
 	echo 'MacMon ALL=(ALL) NOPASSWD: /usr/bin/arp-scan' >> /etc/sudoers
+}
+
+setUidForArpspoof ()
+{
+	chmod 4755 /usr/sbin/arpspoof
 }
 
 generateSelfSignedCerts ()
@@ -287,6 +293,7 @@ extractApplication
 installRequiredPackages
 setApplicationPermissions
 sudoForArpscan
+setUidForArpspoof
 generateSelfSignedCerts
 createConfig
 allowPort443
