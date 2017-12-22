@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../controllers/db.js');
 const user = require('../controllers/roles.js');
 const logger = require('../controllers/logger.js');
+var blocker = require('../controllers/run_blocker.js');
 
 /* Routes for Asset Operations */
 //For retrieving an asset by MAC address
@@ -39,6 +40,12 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
       res.status(500).send('Internal server error: Error updating data');
     }
   });
+});
+
+//For toggling blocking a device on the network by IP Address
+router.get('/block/:IpAddress', user.can('write data'), function (req, res) {
+  blocker.toggleBlocking(req.params.IpAddress);
+  res.status(200).send();
 });
 
 /* POST for updating data */

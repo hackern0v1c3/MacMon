@@ -13,7 +13,7 @@ block assetTable
               button.btn.btn-success.btn-sm.btn-block(onClick=('Approve("'+asset.MAC+'")')) Approve
           tr
             td
-              button.btn.btn-warning.btn-sm.btn-block(onClick=('Block("'+ asset.MAC +'")')) Block
+              button.btn.btn-warning.btn-sm.btn-block(onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Block
             td
               button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}

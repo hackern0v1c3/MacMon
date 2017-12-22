@@ -4,6 +4,13 @@ function FilterDates() {
   myAssetTable.draw();
 }
 
+function Block(mac, ipAddress) {
+  $.ajax({url:'/assets/block/' + ipAddress}).done(function() {
+    var rowid = $(document.getElementById(mac));
+    rowid.toggleClass('blocked-row');
+  });
+}
+
 function Edit(mac) {
   $.ajax({url:'/assettypes/'}).done(function(assetTypes) {
     $.ajax({url:'/assets/' + mac}).done(function(asset) {
