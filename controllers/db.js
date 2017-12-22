@@ -138,7 +138,7 @@ module.exports.assets = {
 
 			var sqlQuery = "UPDATE Assets SET Name=?, Description=?, AssetType=? WHERE MAC = ?;"
 
-			connection.query(sqlQuery,[asset.Name, asset.Description, asset.AssetType, asset.MAC],function(err) {
+			connection.query(sqlQuery,[asset.Name.toString().substr(0,49), asset.Description.toString().substr(0,999), asset.AssetType, asset.MAC.toString().substr(0,49)],function(err) {
 				connection.release();
 				return cb(err);
 			});
@@ -169,7 +169,7 @@ module.exports.assets = {
 			var sqlQuery = "INSERT INTO Assets (MAC, IP, Vendor) VALUES ? ON DUPLICATE KEY UPDATE IP = VALUES(IP), LastUpdated = CURRENT_TIMESTAMP";
 			var values = [];
 			for (var i = 0; i < assets.length; i++){
-				var value = [assets[i].MAC, assets[i].IP, assets[i].Vendor];
+				var value = [assets[i].MAC.toString().substr(0,49), assets[i].IP.toString().substr(0,49), assets[i].Vendor.toString().substr(0,999)];
 				values.push(value);
 			}
 
