@@ -19,3 +19,7 @@ exports.toggleBlocking = function(ipAddress) {
     blockedDevices.push(newChildProcessHolder);
   }
 };
+
+exports.getBlockedDevices = function(){
+  return blockedDevices;
+};
