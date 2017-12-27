@@ -8,7 +8,17 @@ function Block(mac, ipAddress) {
   $.ajax({url:'/assets/block/' + ipAddress}).done(function() {
     var rowid = $(document.getElementById(mac));
     rowid.toggleClass('blocked-row');
+    toggleBlockButtonText(ipAddress);
   });
+}
+
+function toggleBlockButtonText(blockButtonId) {
+  var buttonid = $(document.getElementById(blockButtonId));
+  if (buttonid.text() === 'Block') {
+    buttonid.html('Unblock');
+  } else {
+    buttonid.html('Block');
+  }
 }
 
 function Edit(mac) {

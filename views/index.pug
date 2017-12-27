@@ -11,9 +11,12 @@ block assetTable
               button.btn.btn-primary.btn-sm.btn-block(onClick=('Edit("'+ asset.MAC +'")')) Edit
           tr
             td
-              button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
+              if asset.blocked === true
+                button.btn.btn-warning.btn-sm.btn-block(id=asset.IP, onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Unblock
+              else
+                button.btn.btn-warning.btn-sm.btn-block(id=asset.IP, onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Block
             td
-              button.btn.btn-warning.btn-sm.btn-block(onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Block
+              button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}
       td.nameColumn #{asset.Name}
       td.descriptionColumn #{asset.Description}
