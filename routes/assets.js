@@ -44,8 +44,15 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
 
 //For toggling blocking a device on the network by IP Address
 router.get('/block/:IpAddress', user.can('write data'), function (req, res) {
-  blocker.toggleBlocking(req.params.IpAddress);
-  res.status(200).send();
+
+  //Validate that the IP address is legitimate
+  if (validateIPaddress(req.params.IpAddress)) {
+    blocker.toggleBlocking(req.params.IpAddress);
+    res.status(200).send();
+  } else {
+    logger.debug('Tried to block invalid IP address: %s', req.params.IpAddress);
+    res.status(500).send('Internal server error: Invalid IP Address');
+  }
 });
 
 /* POST for updating data */
@@ -59,5 +66,14 @@ router.post('/update', user.can('update data'), function(req, res) {
     }
   });
 });
+
+function validateIPaddress(ipaddress)   
+{  
+ if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))  
+  {  
+    return (true);
+  }   
+  return (false);
+}  
 
 module.exports = router;
