@@ -17,11 +17,13 @@ checkOsVersion ()
 	runningCodename=$(lsb_release -c | awk '{print tolower($2)}')
 
 	if [ "$runningDistribution" != "ubuntu" && "$runningDistribution" != "raspbian" ]
+	then
 		printf "Unsupported OS.  MacMon has only been tested on Ubuntu Artful, Ubuntu Xenial, and Raspbian Stretch."
 		exit 1
 	fi
 
 	if [ "$runningCodename" != "stretch" && "$runningCodename" != "xenial" && "$runningCodename" != "artful" && "$runningCodename" != "buster" ]
+	then
 		printf "Unsupported OS.  MacMon has only been tested on Ubuntu Artful, Ubuntu Xenial, and Raspbian Stretch."
 		exit 1
 	fi
@@ -218,6 +220,7 @@ installDsniff ()
 			echo "Pin-Priority: 500" | sudo tee -a /etc/apt/preferences.d/artful.pref
 		fi
 	elif [ "$runningDistribution" == "raspbian" ]
+	then
 		if [ "$runningCodename" == "stretch" ]
 		then
 			echo "#Add buster repo for newer dsniff package" | sudo tee -a /etc/apt/sources.list
