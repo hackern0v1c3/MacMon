@@ -4,11 +4,14 @@
 
 <h1>Information:</h1>
 <ul>
-  <li>This application is intended to be installed on home or small business networks to help identify all of the devices on the network and help keep them organized.  It can also be used for detecting new unauthorized devices on a network.</li>
+  <li>This application is intended to be installed on home or small business networks to help identify all of the devices on the network and help keep them organized.  It can also be used for detecting new unauthorized devices on a network and manually temporarily blocking them from accessing the network if you chose to do so.</li>
   <li>This application stores its information in a mysql database, uses the ubuntu package arp-scan to detect network devices, and lets you interact with the information by using a nodejs web server.</li>
-  <li>This app has only been tested on Ubuntu server 16.04 and Ubuntu workstation 17.10.  I want to test it working on Raspbian as well when it's closer to being complete</li>
+  <li>This app has only been tested on Ubuntu server 16.04, Ubuntu workstation 17.10, and Raspbian Stretch Lite.</li>
   <li>See below for installation and usage instructions</li>
   <li>The install.sh script sets up a service user account named MacMon which is used to run the node application.  It is given sudo rights ONLY to arp-scan since it is require.</li>
+  <li>The install.sh script will make arpspoof runnable as root for any user the machine that has MacMon installed.</li>
+  <li>If you are running Ubuntu 16.04 or Raspbian Stretch the install.sh script will pin the dsniff package from a newer OS version.</li>
+  <li>Because of these signifigant changes to the OS it is HIGHLY recomended that MacMon be installed on it's own dedicated machine.</li>
 </ul>
 <hr>
 
@@ -18,7 +21,6 @@
   <li>cd MacMon</li>
   <li>sudo ./install.sh</li>
   <li>The installer script will install some packages and ask a series of questions.  If at any point you want to cancel the installation because you mistyped something, or just want to back out use Ctrl+c.  Most of the answers will be saved in /var/www/MacMon/private/config.json and can be manually edited at any time.  MacMon will need to be restarted for changes to take effect.</li>
-  <li>The install.sh script also runs mysql_secure_installation after mysql is installed.  Most of the defaults can be selected during this wizard.</li>
   <li>Once the install is complete all of the required files will be in /var/www/MacMon.  You can delete the folder that was created during the git clone.</li>
 </ol>
 <hr>
@@ -40,15 +42,14 @@
 <hr>
 
 <h1>Development Path:</h1>
-<p> The current version is a very basic proof of concept.  Currently it just scans the network and saves the results in the database.  Then the results can be viewed and slightly modified in the web interface.</p>
+<p> The current version is a proof of concept.</p>
 <p>The following list are features that I will be working on in the rough order that I plan on adding them</p>
 <ol>
   <li>Fix access denied logic.  Right now the redirects and access denied messages are a mess...</li>
   <li>Add another tab for guest devices.  This way you can approve things like gues cell phones without cluttering up your own asset inventory.</li>
-  <li>Impliment the settings menu so application settings can be set from the web interface.</li>
-  <li>Add the ability to create new asset types on the settigns menu.</li>
-  <li>Add a manual way to check a devices vendor using macvendors.com API.  The arp-scan vendor list is pretty spotty but I don't want to rely 100% on macvendors.com</li>
-  <li>Add a button to do nmap scanning against any device to collect more information</li>
+  <li>Restyle the settings page.</li>
+  <li>Add the ability to create new asset types on the settigns page.</li>
+  <li>Add a button to do nmap scanning against any device to collect more information.</li>
   <li>Add a button to block devices on the network.  This could be useful if a rogue device is detected and you want to block it from the network while you identify and remove it.</li>
   <li>Add better validation and requirements for the password reset form.</li>
   <li>Better CSS look and feel</li>
