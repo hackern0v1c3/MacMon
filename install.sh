@@ -381,6 +381,7 @@ sudoForArpscan
 setUidForArpspoof
 generateSelfSignedCerts
 createConfig
+setApplicationPermissions
 allowPort443
 createSystemdService
 completedMessage
