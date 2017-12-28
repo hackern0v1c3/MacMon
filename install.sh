@@ -11,6 +11,23 @@ checkIfSudo ()
         fi
 }
 
+checkOsVersion ()
+{
+	runningDistribution=$(lsb_release -i | awk '{print tolower($3)}')
+	runningCodename=$(lsb_release -c | awk '{print tolower($2)}')
+
+	if [ "$runningDistribution" != "ubuntu" && "$runningDistribution" != "raspbian" ]
+		printf "Unsupported OS.  MacMon has only been tested on Ubuntu Artful, Ubuntu Xenial, and Raspbian Stretch."
+		exit 1
+	fi
+
+	if [ "$runningCodename" != "stretch" && "$runningCodename" != "xenial" && "$runningCodename" != "artful" && "$runningCodename" != "buster" ]
+		printf "Unsupported OS.  MacMon has only been tested on Ubuntu Artful, Ubuntu Xenial, and Raspbian Stretch."
+		exit 1
+	fi
+
+}
+
 installCurl ()
 {
 	apt-get install curl -y
@@ -183,11 +200,50 @@ extractApplication ()
 	cp -rf ./* /var/www/MacMon
 }
 
+installDsniff ()
+{
+
+	if [ "$runningDistribution" == "ubuntu" ]
+	then
+		if [ "$runningCodename" == "xenial" ]
+		then
+			echo "#Add artful universe for newer dsniff package" | sudo tee -a /etc/apt/sources.list
+			echo "deb http://us.archive.ubuntu.com/ubuntu/ artful universe" | sudo tee -a /etc/apt/sources.list
+			echo "Package: *" | sudo tee /etc/apt/preferences.d/artful.pref
+			echo "Pin: release n=artful" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin-Priority: -10" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Package: dsniff" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin: release n=artful" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin-Priority: 500" | sudo tee -a /etc/apt/preferences.d/artful.pref
+		fi
+	elif [ "$runningDistribution" == "raspbian" ]
+		if [ "$runningCodename" == "stretch" ]
+		then
+			echo "#Add buster repo for newer dsniff package" | sudo tee -a /etc/apt/sources.list
+			echo "deb http://mirrordirector.raspbian.org/raspbian/ buster main contrib non-free rpi" | sudo tee -a /etc/apt/sources.list
+			echo "Package: *" | sudo tee /etc/apt/preferences.d/artful.pref
+			echo "Pin: release n=buster" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin-Priority: -10" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Package: dsniff" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin: release n=buster" | sudo tee -a /etc/apt/preferences.d/artful.pref
+			echo "Pin-Priority: 500" | sudo tee -a /etc/apt/preferences.d/artful.pref
+		fi
+	else
+		printf "Unsupported OS"
+		exit 1
+	fi
+
+	apt-get update
+	apt-get install -y dsniff
+}
+
 installRequiredPackages ()
 {
 	#Install required node packages
 	apt-get install -y arp-scan
-	apt-get install -y dsniff
+	installDsniff
 	cd /var/www/MacMon/
 	npm install
 }
@@ -285,6 +341,7 @@ completedMessage ()
 }
 
 checkIfSudo
+checkOsVersion
 collectInformation
 checkPrerequisites
 createDatabase
