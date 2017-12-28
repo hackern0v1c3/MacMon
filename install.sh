@@ -150,45 +150,70 @@ collectInformation ()
 
 createDatabase ()
 {
-	#This should create the MYSQL database
-	mysql -uroot -p${mySqlPassword} -e "CREATE DATABASE AssetTracking;"
+	if [ "$runningDistribution" == "ubuntu" ]
+	then
+		#This should create the MYSQL database
+		mysql -uroot -p${mySqlPassword} -e "CREATE DATABASE AssetTracking;"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(100) NOT NULL UNIQUE, userPass varchar(100) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),PRIMARY KEY (id));"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('admin');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('user');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Nmap varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
+		#Default credentials are admin / admin
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;'
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;'
+		mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
+		mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON AssetTracking.* TO 'AssetTracking_User'@'localhost'"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(1000) NOT NULL UNIQUE, userPass varchar(1000) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),PRIMARY KEY (id));"
+		#Default Asset Types
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Desktop');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Server');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('admin');"
+		mysql -uroot -p${mySqlPassword} -D AssetTracking -e "flush privileges"
+	fi
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('user');"
+	if [ "$runningDistribution" == "raspbian" ]
+	then
+		#This should create the MYSQL database
+		mysql -uroot -e "CREATE DATABASE AssetTracking;"
+		mysql -uroot -D AssetTracking -e "CREATE TABLE AssetTracking.roles (id INT NOT NULL AUTO_INCREMENT, roleName varchar(32) NOT NULL UNIQUE, PRIMARY KEY (id));"
+		mysql -uroot -D AssetTracking -e "CREATE TABLE AssetTracking.users (id INT NOT NULL AUTO_INCREMENT, userName varchar(100) NOT NULL UNIQUE, userPass varchar(100) NOT NULL, userRole INT NOT NULL, FOREIGN KEY (userRole) REFERENCES roles(id),PRIMARY KEY (id));"
+		mysql -uroot -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('admin');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('user');"
+		mysql -uroot -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
+		mysql -uroot -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Nmap varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.AssetTypes (ID INT NOT NULL AUTO_INCREMENT, Name varchar(100) DEFAULT NULL, PRIMARY KEY (ID));"
+		#Default credentials are admin / admin
+		mysql -uroot -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
+		mysql -uroot -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
+		mysql -uroot -D AssetTracking -e 'CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;'
+		mysql -uroot -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
+		mysql -uroot -D AssetTracking -e 'CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;'
+		mysql -uroot -e "GRANT ALL ON AssetTracking.* TO 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}'"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE TABLE AssetTracking.Assets (MAC varchar(50) NOT NULL, Name varchar(50) DEFAULT NULL, Description varchar(1000) DEFAULT NULL, Vendor varchar(1000) DEFAULT NULL, IP varchar(1000) DEFAULT NULL, Nmap varchar(1000) DEFAULT NULL, Whitelisted BIT(1) NOT NULL DEFAULT b'0', Guest BIT(1) NOT NULL DEFAULT b'0', AssetType INT NOT NULL DEFAULT 1, FOREIGN KEY (AssetType) REFERENCES AssetTypes(ID), LastUpdated DATETIME DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MAC));"
-	
-	#Default credentials are admin / admin
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
+		#Default Asset Types
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Desktop');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Server');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
+		mysql -uroot -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
 
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW usersWithRoles AS SELECT users.id, users.userName, users.userPass, users.userRole, roles.roleName FROM users INNER JOIN roles ON users.userRole=roles.id;"
-
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND !Assets.Guest;'
-
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "CREATE VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as 'AssetTypeName' FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE Assets.Whitelisted AND Assets.Guest;"
-
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e 'CREATE VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC, Assets.Name, Assets.Description, Assets.Vendor, Assets.IP, Assets.LastUpdated, Assets.Nmap, Assets.AssetType, AssetTypes.Name as "AssetTypeName" FROM Assets INNER JOIN AssetTypes ON Assets.AssetType=AssetTypes.id WHERE !Assets.Whitelisted;'
-
-	mysql -uroot -p${mySqlPassword} -e "CREATE USER 'AssetTracking_User'@'localhost' IDENTIFIED BY '${databaseServicePassword}';"
-
-	mysql -uroot -p${mySqlPassword} -e "GRANT ALL ON AssetTracking.* TO 'AssetTracking_User'@'localhost'"
-
-	#Default Asset Types
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Desktop');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Server');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
-	mysql -uroot -p${mySqlPassword} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
+		mysql -uroot -e "flush privileges"
+	fi
 }
 
 createServiceAccount ()
