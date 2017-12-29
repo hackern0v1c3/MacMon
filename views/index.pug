@@ -3,11 +3,20 @@ block selected
   -var selected = 'Approved Devices';
 block assetTable
   each asset in assets
-    tr(id=asset.MAC)
+    tr(id=asset.MAC, class=asset.blocked && 'blocked-row' )
       td
-        button.btn.btn-primary.btn-sm(onClick=('Edit("'+ asset.MAC +'")')) Edit
-        br
-        button.btn.btn-danger.btn-sm(onClick=('Delete("'+ asset.MAC +'")')) Delete
+        table
+          tr
+            td(colspan='2')
+              button.btn.btn-primary.btn-sm.btn-block(onClick=('Edit("'+ asset.MAC +'")')) Edit
+          tr
+            td
+              if asset.blocked === true
+                button.btn.btn-warning.btn-sm.btn-block(id=asset.IP, onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Unblock
+              else
+                button.btn.btn-warning.btn-sm.btn-block(id=asset.IP, onClick=('Block("'+ asset.MAC +'", "'+ asset.IP +'")')) Block
+            td
+              button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}
       td.nameColumn #{asset.Name}
       td.descriptionColumn #{asset.Description}
