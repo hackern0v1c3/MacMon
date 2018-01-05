@@ -45,7 +45,7 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
 
     parser.parseString(stdout, function (err, result) {
       var ports = result.nmaprun.host[0].ports[0].port;
-      var portInfo = ""
+      var portInfo = "Scan complete on " + Date.now();
 
       ports.forEach(function(port) {
         portInfo += "Port " + port.$.portid + ": "
