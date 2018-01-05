@@ -75,6 +75,15 @@ function Update(){
   });
 }
 
+function Scan(mac, ip){
+  var assetToScan = {}
+  assetToScan.MAC = mac;
+  assetToScan.IP = ip;
+  $.post('/assets/scan/', assetToScan, function(){
+    console.log('scan started');
+  });
+}
+
 //For sorting text boxes in datatable
 $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
 {
@@ -89,8 +98,7 @@ $(document).ready( function () {
     "order": [1, 'asc'],
     "columnDefs": [
       { "orderable": false, "targets": 0 },
-      { "searchable": false, "targets": 0 },
-      { "width": "100%", "targets": 3 }
+      { "searchable": false, "targets": 0 }
     ],
     "fixedHeader": {
       header: false
