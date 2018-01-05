@@ -20,6 +20,14 @@ block assetTable
       td #{asset.MAC}
       td.nameColumn #{asset.Name}
       td.descriptionColumn #{asset.Description}
+      td.nmapColumn
+        if asset.Nmap != null
+          #nmapDiv
+            button.btn.btn-light.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
+            p(style='white-space:pre;')
+              | #{asset.Nmap}
+        else
+          button.btn.btn-light.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
       td #{asset.Vendor}
       td #{asset.IP}
       td.assetTypeColumn #{asset.AssetTypeName}
