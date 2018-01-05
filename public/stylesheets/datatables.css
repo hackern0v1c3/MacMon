@@ -1,3 +1,8 @@
 .top-buffer { margin-top:20px; }
 
 .blocked-row { color:rgb(255, 65, 65) }
+
+#nmapDiv {
+  overflow:scroll;
+  height: 5em;
+}
