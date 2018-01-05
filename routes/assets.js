@@ -4,6 +4,7 @@ const db = require('../controllers/db.js');
 const user = require('../controllers/roles.js');
 const logger = require('../controllers/logger.js');
 const utils = require('../controllers/utils.js');
+const run_nmap = require('../controllers/run_nmap.js');
 var blocker = require('../controllers/run_blocker.js');
 
 /* Routes for Asset Operations */
@@ -66,6 +67,12 @@ router.post('/update', user.can('update data'), function(req, res) {
       res.status(500).send('Internal server error: Error updating data');
     }
   });
+});
+
+//Post for starting a nmap scan
+router.post('/scan', user.can('update data'), function(req, res) {
+  run_nmap.runOnce(req.body.MAC, req.body.IP);
+  res.status(200).send();
 });
 
 module.exports = router;
