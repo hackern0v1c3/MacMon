@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../controllers/db.js');
 const user = require('../controllers/roles.js');
 const logger = require('../controllers/logger.js');
+const utils = require('../controllers/utils.js');
 var blocker = require('../controllers/run_blocker.js');
 
 /* Routes for Asset Operations */
@@ -46,7 +47,7 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
 router.get('/block/:IpAddress', user.can('write data'), function (req, res) {
 
   //Validate that the IP address is legitimate
-  if (validateIPaddress(req.params.IpAddress)) {
+  if (utils.validateIPaddress(req.params.IpAddress)) {
     blocker.toggleBlocking(req.params.IpAddress);
     res.status(200).send();
   } else {
@@ -66,14 +67,5 @@ router.post('/update', user.can('update data'), function(req, res) {
     }
   });
 });
-
-function validateIPaddress(ipaddress)   
-{  
- if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))  
-  {  
-    return (true);
-  }   
-  return (false);
-}  
 
 module.exports = router;
