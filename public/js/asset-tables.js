@@ -80,7 +80,15 @@ function Scan(mac, ip){
   assetToScan.MAC = mac;
   assetToScan.IP = ip;
   $.post('/assets/scan/', assetToScan, function(){
-    console.log('scan started');
+    $('#nmapBody').text('A scan has begun for MAC ' + mac + ' IP ' + ip + '.\nThe scan can take 5-10 minutes to complete.\nWhen it finishes the results should appear in the table.\nPlease be patient.');
+    $('#nmapModal').modal('show');
+  });
+}
+
+function ScanResults(mac, ip){
+  $.ajax({url:'/assets/' + mac}).done(function(asset) {
+    $('#nmapBody').text('Port scan results for MAC ' + mac + ' IP ' + ip  + '\n' + asset.Nmap);
+    $('#nmapModal').modal('show');
   });
 }
 

@@ -23,11 +23,18 @@ block assetTable
       td.nmapColumn
         if asset.Nmap != null
           #nmapDiv
-            button.btn.btn-light.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
-            p(style='white-space:pre;')
-              | #{asset.Nmap}
+            table
+              tr
+                td
+                  button.btn.btn-secondary.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
+                td
+                  button.btn.btn-light.btn-sm(onClick=('ScanResults("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan Results
+              tr
+                td(colspan='2')
+                  p(style='white-space:pre;')
+                    | #{asset.Nmap}
         else
-          button.btn.btn-light.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
+          button.btn.btn-secondary.btn-sm(onClick=('Scan("'+ asset.MAC +'", "'+ asset.IP +'")')) Scan
       td #{asset.Vendor}
       td #{asset.IP}
       td.assetTypeColumn #{asset.AssetTypeName}
