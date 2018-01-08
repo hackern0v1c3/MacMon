@@ -271,6 +271,7 @@ installRequiredPackages ()
 {
 	#Install required node packages
 	apt-get install -y arp-scan
+	apt-get install -y nmap
 	installDsniff
 	cd /var/www/MacMon/
 	npm install
