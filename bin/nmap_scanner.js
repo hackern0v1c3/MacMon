@@ -31,7 +31,7 @@ if (!utils.validateIPaddress(ip)) {
 logger.info('Running nmap scan of: %s', ip);
 
 exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
-  console.log('Completed nmap for %s', ip);
+  logger.info('Completed nmap for %s', ip);
   if (err) {
     logger.error('Error: %s', err);
     process.exit(1);
@@ -46,7 +46,7 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
     parser.parseString(stdout, function (err, result) {
       var ports = result.nmaprun.host[0].ports[0].port;
       var d = new Date();
-      var portInfo = "Scan complete on " + d + "\r\n"
+      var portInfo = d + "\r\n"
 
       ports.forEach(function(port) {
         portInfo += "Port " + port.$.portid + ": "
@@ -69,11 +69,11 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
 
       db.assets.updateNmap(mac, portInfo, function(err){
         if (err) {
-          console.error("Error updating database with nmap data: %s %s", mac, ip);
-          console.debug("Nmap scanner debug: %s", err);
+          logger.error("Error updating database with nmap data: %s %s", mac, ip);
+          logger.debug("Nmap scanner debug: %s", err);
         }
         else {
-          console.info('Database Nmap Update Complete for %s %s', mac, ip);
+          logger.info('Database Nmap Update Complete for %s %s', mac, ip);
         }
         logger.info("Closing database connection");
         db.dbConnection.disconnect(function(){});
