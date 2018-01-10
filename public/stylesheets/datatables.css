@@ -1,3 +1,8 @@
 .top-buffer { margin-top:20px; }
 
 .blocked-row { color:rgb(255, 65, 65) }
+
+.scrollable {
+  overflow:auto;
+  height: 5em;
+}

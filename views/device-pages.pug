@@ -29,6 +29,18 @@ block body
               label(for='assetType') Asset Type
               select#assetType.form-control(name='AssetType')
             button#editAssetSubmitButton.btn.btn-primary(type='button', enabled) Submit
+  //Modal for nmap scan warning
+  #nmapModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='nmapModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#nmapModal.modal-title Port Scan
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          p#nmapBody(style='white-space:pre;')
+        .modal-footer
+          button.btn.btn-primary(data-dismiss="modal") Close
   //Header for filtering table
   .container-fluid
     .row
@@ -51,6 +63,7 @@ block body
               th Mac Address
               th Name
               th Decription
+              th Open Ports
               th Vendor
               th IP Addresses
               th Asset Type

@@ -75,6 +75,23 @@ function Update(){
   });
 }
 
+function Scan(mac, ip){
+  var assetToScan = {}
+  assetToScan.MAC = mac;
+  assetToScan.IP = ip;
+  $.post('/assets/scan/', assetToScan, function(){
+    $('#nmapBody').text('A scan has begun for MAC ' + mac + ' IP ' + ip + '.\nThe scan can take 5-10 minutes to complete.\nWhen it finishes the results should appear in the table.\nPlease be patient.');
+    $('#nmapModal').modal('show');
+  });
+}
+
+function ScanResults(mac, ip){
+  $.ajax({url:'/assets/' + mac}).done(function(asset) {
+    $('#nmapBody').text('Port scan results for MAC ' + mac + ' IP ' + ip  + '\n' + asset.Nmap);
+    $('#nmapModal').modal('show');
+  });
+}
+
 //For sorting text boxes in datatable
 $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
 {
@@ -89,8 +106,7 @@ $(document).ready( function () {
     "order": [1, 'asc'],
     "columnDefs": [
       { "orderable": false, "targets": 0 },
-      { "searchable": false, "targets": 0 },
-      { "width": "100%", "targets": 3 }
+      { "searchable": false, "targets": 0 }
     ],
     "fixedHeader": {
       header: false

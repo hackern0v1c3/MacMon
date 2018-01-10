@@ -49,8 +49,6 @@
   <li>Add another tab for guest devices.  This way you can approve things like gues cell phones without cluttering up your own asset inventory.</li>
   <li>Restyle the settings page.</li>
   <li>Add the ability to create new asset types on the settigns page.</li>
-  <li>Add a button to do nmap scanning against any device to collect more information.</li>
-  <li>Add a button to block devices on the network.  This could be useful if a rogue device is detected and you want to block it from the network while you identify and remove it.</li>
   <li>Add better validation and requirements for the password reset form.</li>
   <li>Better CSS look and feel</li>
   <li>Impliment better security</li>

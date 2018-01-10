@@ -178,6 +178,20 @@ module.exports.assets = {
 				return cb(err);
 			});
 		});
+	},
+
+	//Insert nmap scan data for an asset
+	updateNmap: function(assetMac, nmapData, cb){
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			var sqlQuery = "UPDATE Assets SET Nmap=? WHERE MAC = ?;"
+
+			connection.query(sqlQuery,[nmapData.toString().substr(0,999), assetMac.toString()],function(err) {
+				connection.release();
+				return cb(err);
+			});
+		});
 	}
 }
 
