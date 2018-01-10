@@ -21,10 +21,11 @@ block assetTable
               button.btn.btn-danger.btn-sm.btn-block(onClick=('Delete("'+ asset.MAC +'")')) Delete
       td #{asset.MAC}
       td.nameColumn #{asset.Name}
-      td.descriptionColumn #{asset.Description}
+      td.descriptionColumn
+        .scrollable #{asset.Description}
       td.nmapColumn
         if asset.Nmap != null
-          #nmapDiv
+          #nmapDiv.scrollable
             table
               tr
                 td

@@ -2,7 +2,7 @@
 
 .blocked-row { color:rgb(255, 65, 65) }
 
-#nmapDiv {
-  overflow:scroll;
+.scrollable {
+  overflow:auto;
   height: 5em;
 }
