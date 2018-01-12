@@ -132,7 +132,7 @@ $(document).ready( function () {
     function( settings, data, dataIndex ) {
       var min = Date.parse( $('#datePickerStart').datepicker("getDate") );
       var max = Date.parse( $('#datePickerEnd').datepicker("getDate") );
-      var date = Date.parse( data[7] ) || 0;
+      var date = Date.parse( data[8] ) || 0;
      
        if ( ( isNaN( min ) && isNaN( max ) ) ||
             ( isNaN( min ) && date <= max ) ||
