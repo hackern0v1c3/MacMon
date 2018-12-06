@@ -1,7 +1,6 @@
 {
 	"dbAddress": "127.0.0.1",
-	"dbPort": 1433,
-	"dbUser": "AssetTracking_User",
+	"dbPort": 3306,
 	"dbName": "AssetTracking",
 	"hashStrength": 10,
 	"serverPort": 443,
@@ -16,8 +15,7 @@
 	"emailSenderUsername": "sender@example.local",
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
-	"dbPassword": "password",
 	"cookieSecret": "password",
 	"emailSenderPassword": "password",
-	"environment": "production",
+	"environment": "production"
 }
