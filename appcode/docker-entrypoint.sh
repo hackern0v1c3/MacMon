@@ -159,4 +159,4 @@ generateSelfSignedCerts ()
 
 generateSelfSignedCerts
 
-npm start
+exec "$@"

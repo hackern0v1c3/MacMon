@@ -71,6 +71,8 @@ RUN npm install
 
 COPY ./appcode .
 
+VOLUME /usr/src/app/private
+
 ENTRYPOINT [ "/usr/src/app/docker-entrypoint.sh" ]
 
 CMD [ "npm", "start" ]
