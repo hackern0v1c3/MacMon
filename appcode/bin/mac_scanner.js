@@ -63,7 +63,7 @@ function getScanResults(cidr){
   return new Promise(function(resolve, reject){
     logger.info('Staring arp-scan for %s', cidr);
     const { exec } = require('child_process');
-    exec('sudo arp-scan '+cidr, (err, stdout, stderr) => { 
+    exec('arp-scan '+cidr, (err, stdout, stderr) => { 
       logger.info('Completed arp-scan for %s', cidr);
       if (err) {
         reject(Error(err));
