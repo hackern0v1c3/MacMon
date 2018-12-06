@@ -9,8 +9,8 @@ const bcrypt = require('bcrypt-nodejs');
 var pool = mysql.createPool({
 	host		: config.dbAddress,
 	dateStrings: true,
-	user		: config.dbUser,
-	password	: config.dbPassword,
+	user		: process.env.MYSQL_USER,
+	password	: process.env.MYSQL_PASSWORD,
 	database	:  config.dbName
 });
 
