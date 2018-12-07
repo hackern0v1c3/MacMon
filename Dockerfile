@@ -54,10 +54,7 @@ RUN { \
 	&& chown -R mysql:mysql /var/lib/mysql /var/run/mysqld \
   && chmod 777 /var/run/mysqld
 
-VOLUME /var/lib/mysql
-
 COPY mysql_config/ /etc/mysql/
-
 
 #Setup macmon
 RUN apt-get update && \
@@ -71,7 +68,7 @@ RUN npm install
 
 COPY ./appcode .
 
-VOLUME /usr/src/app/private
+VOLUME [ "/var/lib/mysql", "/usr/src/app/private" ]
 
 ENTRYPOINT [ "/usr/src/app/docker-entrypoint.sh" ]
 
