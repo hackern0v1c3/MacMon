@@ -1,4 +1,6 @@
 #!/bin/bash
+set -eo pipefail
+shopt -s nullglob
 
 #Prepmysql
 _check_config() {
@@ -43,6 +45,7 @@ if command -v mysql_ssl_rsa_setup > /dev/null && [ ! -e "$DATADIR/server-key.pem
 fi
 
 SOCKET="$(_get_config 'socket' mysqld)"
+
 mysqld --skip-networking --socket="${SOCKET}" --user=root & pid="$!"
 mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
 
@@ -96,10 +99,12 @@ echo "GENERATED MSQL User Account"
 echo "USER: $MYSQL_USER"
 echo "PASSWORD: $MYSQL_PASSWORD"
 
-echo "CREATE USER '$MYSQL_USER'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
+echo "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
 
 ### Build AssetTracking Database
-echo "CREATE DATABASE AssetTracking;" | "${mysql[@]}"
+echo "CREATE DATABASE IF NOT EXISTS AssetTracking;" | "${mysql[@]}"
+
+######IF CREATE DATABASE DID SOMETHING THEN
 mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking < ./private/schema.sql
 
 #defalut roles
@@ -119,14 +124,20 @@ mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetType
 mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
 mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
 
-echo "GRANT ALL ON AssetTracking.* TO '$MYSQL_USER'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
+echo "GRANT ALL ON AssetTracking.* TO '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
 
 echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 
+
+######END IF
+
+
+
+
 ###expire mysql root password
-"${mysql[@]}" <<-EOSQL
-	ALTER USER 'root'@'%' PASSWORD EXPIRE;
-EOSQL
+#"${mysql[@]}" <<-EOSQL
+#	ALTER USER 'root'@'%' PASSWORD EXPIRE;
+#EOSQL
 
 if ! kill -s TERM "$pid" || ! wait "$pid"; then
 	echo >&2 'MySQL init process failed.'
