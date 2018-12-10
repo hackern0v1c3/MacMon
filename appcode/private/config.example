@@ -12,6 +12,5 @@
 	"emailSenderUsername": "sender@example.local",
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
-	"cookieSecret": "password",
 	"emailSenderPassword": "password"
 }

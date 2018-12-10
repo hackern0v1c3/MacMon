@@ -6,15 +6,9 @@ block selected
 block body
   form.form-horizonal.justify-content-center(action='/settings', method='post')
     h4 Password Settings
-    button#editDatabasePasswordButton.btn.btn-primary(type='button', enabled) Edit Database Password
-    br
-    br
     button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Edit Email Password for Notificaions
     br
     br
-    button#editCookieSecretButton.btn.btn-primary(type='button', enabled) Edit Cookie Signing Secret
-    br
-    hr
     h4 Database Settings
     .form-group
       label(for='dbAddressInput') Database Address
@@ -65,24 +59,6 @@ block body
       label(for='emailTlsInput') Email Server Requires TLS 
         input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))
     button#editSettingsSubmitButton.btn.btn-primary(type='button', enabled) Submit
-
-  //Modal for editing database password
-  #databasePasswordResetModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='databasePasswordResetModalLabel', aria-hidden='true')
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header
-          h5#databasePasswordResetModalLabel.modal-title Please enter a new database password
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') &times;
-        .modal-body
-          form.form-horizonal.justify-content-center(action='/settings/dbPassword', method='post')
-            .form-group
-              label Password
-              input#databasePassword1.form-control(type='password', name='dbPassword')
-            .form-group
-              label Confirm Password
-              input#databasePassword2.form-control(type='password', name='confirmDbPassword')
-            button#databasePasswordResetSubmitButton.btn.btn-primary(type='button', disabled) Submit
         
   //Modal for editing email password
   #emailPasswordResetModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='emailPasswordResetModalLabel', aria-hidden='true')
@@ -101,21 +77,3 @@ block body
               label Confirm Password
               input#emailPassword2.form-control(type='password', name='confirmPassword')
             button#emailPasswordResetSubmitButton.btn.btn-primary(type='button', disabled) Submit
-
-  //Modal for editing cookie signing secret
-  #cookieSecretResetModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='cookieSecretResetModalLabel', aria-hidden='true')
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header
-          h5#cookieSecretResetModalLabel.modal-title Please enter a new cookie signing secret
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') &times;
-        .modal-body
-          form.form-horizonal.justify-content-center(action='/passwordreset', method='post')
-            .form-group
-              label Password
-              input#cookieSecret1.form-control(type='password', name='password')
-            .form-group
-              label Confirm Password
-              input#cookieSecret2.form-control(type='password', name='confirmPassword')
-            button#cookieSecretResetSubmitButton.btn.btn-primary(type='button', disabled) Submit
