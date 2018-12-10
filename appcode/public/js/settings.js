@@ -1,7 +1,6 @@
 function Update(){
   
   var newConfig = {}
-  newConfig.dbUser = $('#dbUserInput').val();
   newConfig.hashStrength = parseInt($('#hashStrengthInput').val());
   newConfig.serverPort = parseInt($('#serverPortInput').val());
 

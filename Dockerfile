@@ -63,11 +63,13 @@ COPY mysql_config/ /etc/mysql/
 ARG DB_ADDRESS=127.0.0.1
 ARG DB_PORT=3306
 ARG DB_NAME=AssetTracking
+ARG DB_USER=AssetTrackingUser
 ARG LOG_LEVEL=production
 
 ENV DB_ADDRESS="${DB_ADDRESS}"
 ENV DB_PORT="${DB_PORT}"
 ENV DB_NAME="${DB_NAME}"
+ENV DB_USER="${DB_USER}"
 ENV LOG_LEVEL="${LOG_LEVEL}"
  
 RUN apt-get update && \

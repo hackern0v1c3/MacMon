@@ -30,7 +30,7 @@ DATADIR="$(_get_config 'datadir' mysqld)"
 mkdir -p "$DATADIR"
 chown -R mysql:mysql "$DATADIR"
 
-echo "MYSQL ROOT PASSWORD: $MYSQL_ROOT_PASSWORD"
+echo "MYSQL ROOT PASSWORD: $DB_ROOT_PASSWORD"
 
 if [ ! -f "$DATADIR/server-key.pem" ]; then
   echo 'Initializing database'
@@ -74,7 +74,7 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 		# no, we don't care if read finds a terminating character in this heredoc
 		# https://unix.stackexchange.com/questions/265149/why-is-set-o-errexit-breaking-this-read-heredoc-expression/265151#265151
 		read -r -d '' rootCreate <<-EOSQL || true
-			CREATE USER 'root'@'${MYSQL_ROOT_HOST}' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
+			CREATE USER 'root'@'${MYSQL_ROOT_HOST}' IDENTIFIED BY '${DB_ROOT_PASSWORD}' ;
 			GRANT ALL ON *.* TO 'root'@'${MYSQL_ROOT_HOST}' WITH GRANT OPTION ;
 		EOSQL
 	fi
@@ -83,19 +83,19 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 		-- What's done in this file shouldn't be replicated
 		--  or products like mysql-fabric won't work
 		SET @@SESSION.SQL_LOG_BIN=0;
-		ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
+		ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}' ;
 		GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION ;
 		${rootCreate}
 		DROP DATABASE IF EXISTS test ;
 		FLUSH PRIVILEGES ;
 	EOSQL
 
-	mysql+=( -p"${MYSQL_ROOT_PASSWORD}" )
+	mysql+=( -p"${DB_ROOT_PASSWORD}" )
 
-	echo "MYSQL_USER: $MYSQL_USER"
-	echo "MYSQL_PASSWORD: $MYSQL_PASSWORD"
+	echo "DB_USER: $DB_USER"
+	echo "DB_PASSWORD: $DB_PASSWORD"
 
-	echo "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
+	echo "CREATE USER IF NOT EXISTS '${DB_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD' ;" | "${mysql[@]}"
 
 
 	### Build AssetTracking Database
@@ -103,9 +103,9 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 
 	mysql+=( --database=AssetTracking )
 
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking < ./private/schema.sql
+	mysql -uroot -p${DB_ROOT_PASSWORD} -D AssetTracking < ./private/schema.sql
 
-	echo "GRANT ALL ON AssetTracking.* TO '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
+	echo "GRANT ALL ON AssetTracking.* TO '${DB_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
 	echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 
 	#defalut roles
