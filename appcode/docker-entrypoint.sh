@@ -96,31 +96,34 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 	echo "MYSQL_PASSWORD: $MYSQL_PASSWORD"
 
 	echo "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$MYSQL_PASSWORD' ;" | "${mysql[@]}"
-	echo "GRANT ALL ON AssetTracking.* TO '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
 
-	echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 
 	### Build AssetTracking Database
 	echo "CREATE DATABASE IF NOT EXISTS AssetTracking;" | "${mysql[@]}"
 
+	mysql+=( --database=AssetTracking )
+
 	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking < ./private/schema.sql
 
+	echo "GRANT ALL ON AssetTracking.* TO '${MYSQL_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
+	echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
+
 	#defalut roles
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('admin');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO roles (roleName) VALUES ('user');"
+	echo "INSERT INTO roles (roleName) VALUES ('admin');" | "${mysql[@]}"
+	echo "INSERT INTO roles (roleName) VALUES ('user');" | "${mysql[@]}"
 
 	#default account admin/admin
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);"
+	echo "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);" | "${mysql[@]}"
 
 	#default asset types
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Desktop');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Laptop');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Printer');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Phone');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Server');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Firewall');"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -D AssetTracking -e "INSERT INTO AssetTypes (Name) VALUES ('Switch');"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Desktop');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Laptop');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Printer');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Phone');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Server');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Firewall');" | "${mysql[@]}"
+	echo "INSERT INTO AssetTypes (Name) VALUES ('Switch');" | "${mysql[@]}"
 
 	if ! kill -s TERM "$pid" || ! wait "$pid"; then
 		echo >&2 'MySQL init process failed.'
