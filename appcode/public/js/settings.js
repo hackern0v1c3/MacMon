@@ -1,10 +1,7 @@
 function Update(){
   
   var newConfig = {}
-  newConfig.dbAddress = $('#dbAddressInput').val();
-  newConfig.dbPort = parseInt($('#dbPortInput').val());
   newConfig.dbUser = $('#dbUserInput').val();
-  newConfig.dbName = $('#dbNameInput').val();
   newConfig.hashStrength = parseInt($('#hashStrengthInput').val());
   newConfig.serverPort = parseInt($('#serverPortInput').val());
 

@@ -1,7 +1,4 @@
 {
-	"dbAddress": "127.0.0.1",
-	"dbPort": 3306,
-	"dbName": "AssetTracking",
 	"hashStrength": 10,
 	"serverPort": 443,
 	"CidrRanges": [
@@ -16,6 +13,5 @@
 	"emailRecipient": "recipient@example.local",
 	"emailTls": "True",
 	"cookieSecret": "password",
-	"emailSenderPassword": "password",
-	"environment": "production"
+	"emailSenderPassword": "password"
 }

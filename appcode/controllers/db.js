@@ -7,11 +7,11 @@ const bcrypt = require('bcrypt-nodejs');
 
 //Setup SQL Server connection
 var pool = mysql.createPool({
-	host		: config.dbAddress,
+	host		: process.env.DB_ADDRESS,
 	dateStrings: true,
 	user		: process.env.MYSQL_USER,
 	password	: process.env.MYSQL_PASSWORD,
-	database	:  config.dbName
+	database	:  process.env.DB_NAME
 });
 
 //Exports a way to gracefully shutdown the database connection

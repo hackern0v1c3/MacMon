@@ -2,12 +2,12 @@
 //Read config file
 const config = require('../private/config.json');
 
-//Sets up a reusable winston logger for the rest of the application.  It reads the log level from the "environment" value in config.
+//Sets up a reusable winston logger for the rest of the application.  It reads the log level from the environmental variable LOG_LEVEL.
 const winston = require("winston");
 
 var logLevel = 'error';
 
-if (config.environment === 'development'){
+if (process.env.LOG_LEVEL === 'development'){
   var logLevel = 'debug';
 }
 

@@ -18,16 +18,16 @@ block body
     h4 Database Settings
     .form-group
       label(for='dbAddressInput') Database Address
-      input#dbAddressInput.form-control(type='text', name='dbAddress', value=conf.dbAddress)
+      input#dbAddressInput.form-control(type='text', name='dbAddress', value=process.env.DB_ADDRESS)
     .form-group
       label(for='dbPortInput') Database Port
-      input#dbPortInput.form-control(type='text', name='dbPort', value=conf.dbPort)
+      input#dbPortInput.form-control(type='text', name='dbPort', value=process.env.PORT)
     .form-group
       label(for='dbUserInput') Database User
       input#dbUserInput.form-control(type='text', name='dbUser', value=conf.dbUser)
     .form-group
       label(for='dbNameInput') Database Name
-      input#dbNameInput.form-control(type='text', name='dbName', value=conf.dbName)
+      input#dbNameInput.form-control(type='text', name='dbName', value=process.env.DB_NAME)
     .form-group
       label(for='hashStrengthInput') BCrypt hash Iterations.  (Don't change unless you know what you are doing)
       input#hashStrengthInput.form-control(type='text', name='hashStrength', value=conf.hashStrength)

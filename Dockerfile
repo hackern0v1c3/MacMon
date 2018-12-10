@@ -1,6 +1,9 @@
 #start with node container
 FROM node:lts
 
+#Labels
+LABEL maintainer="admin@hackernovice.com"
+
 #create mysql environment based on here https://github.com/docker-library/mysql/blob/696fc899126ae00771b5d87bdadae836e704ae7d/8.0/Dockerfile
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
@@ -57,8 +60,21 @@ RUN { \
 COPY mysql_config/ /etc/mysql/
 
 #Setup macmon
+ARG DB_ADDRESS=127.0.0.1
+ARG DB_PORT=3306
+ARG DB_NAME=AssetTracking
+ARG LOG_LEVEL=production
+
+ENV DB_ADDRESS="${DB_ADDRESS}"
+ENV DB_PORT="${DB_PORT}"
+ENV DB_NAME="${DB_NAME}"
+ENV LOG_LEVEL="${LOG_LEVEL}"
+ 
 RUN apt-get update && \
-  apt-get install -y nmap dsniff arp-scan
+  apt-get install -y --no-install-recommends \
+	nmap \
+	dsniff arp-scan \
+	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

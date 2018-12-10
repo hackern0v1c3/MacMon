@@ -39,7 +39,6 @@ router.post('/', user.can('update data'), function(req, res) {
     newConfig.dbPassword = oldConfig.dbPassword;
     newConfig.cookieSecret = oldConfig.cookieSecret;
     newConfig.emailSenderPassword = oldConfig.emailSenderPassword;
-    newConfig.environment = oldConfig.environment;
 
     //write file async
     fs.writeFile(configFileName, JSON.stringify(newConfig, null, 2), 'utf8', function (err) {
