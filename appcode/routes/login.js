@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST login for authentication */
-router.post('/', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }), function(req, res, next) {
+router.post('/', passport.authenticate('local', { successRedirect: '/pending', failureRedirect: '/login' }), function(req, res, next) {
   
 });
 

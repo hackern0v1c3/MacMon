@@ -5,10 +5,10 @@ block boilerplateheader
 
 block content
   block selected
-    -var selected = 'Approved Devices';
+    -var selected = 'New Detected Devices';
   //Hiding Guest Devices menu for now because I am not ready to use it in alpha
   //-var menu = {'Approved Devices':'/', 'Approved Guest Devices':'/guest', 'New Detected Devices':'/pending', 'Settings':'/settings'};
-  -var menu = {'Approved Devices':'/', 'New Detected Devices':'/pending', 'Settings':'/settings'};
+  -var menu = {'New Detected Devices':'/pending', 'Approved Devices':'/', 'Settings':'/settings'};
 
   nav.navbar.fixed-top.navbar-expand-md.navbar-dark.bg-dark
     span.navbar-brand
