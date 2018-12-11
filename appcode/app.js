@@ -18,6 +18,7 @@ const assettypes = require('./routes/assettypes.js');
 const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const passwordreset = require('./routes/passwordreset.js');
+const dbbackup = require('./routes/dbbackup.js');
 const user = require('./controllers/roles.js');
 const run_scanner = require('./controllers/run_scanner.js');
 const timers = require('timers');
@@ -80,6 +81,7 @@ app.use('/assets', assets);
 app.use('/assettypes', assettypes);
 app.use('/logout', logout);
 app.use('/passwordreset', passwordreset);
+app.use('/dbbackup', dbbackup);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
