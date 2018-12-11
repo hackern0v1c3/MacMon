@@ -65,18 +65,24 @@ ARG DB_PORT=3306
 ARG DB_NAME=AssetTracking
 ARG DB_USER=AssetTrackingUser
 ARG LOG_LEVEL=production
+ARG HTTPS_PORT=443
+ARG RUN_AS=node
 
 ENV DB_ADDRESS="${DB_ADDRESS}"
 ENV DB_PORT="${DB_PORT}"
 ENV DB_NAME="${DB_NAME}"
 ENV DB_USER="${DB_USER}"
 ENV LOG_LEVEL="${LOG_LEVEL}"
+ENV HTTPS_PORT="${HTTPS_PORT}"
+ENV RUN_AS="${RUN_AS}"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
 	nmap \
 	dsniff arp-scan \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN chmod u+s /usr/bin/arp-scan
 
 WORKDIR /usr/src/app
 
@@ -85,6 +91,8 @@ COPY ./appcode/package*.json ./
 RUN npm install
 
 COPY ./appcode .
+
+RUN chown -R node:node /usr/src/app
 
 VOLUME [ "/var/lib/mysql", "/usr/src/app/private" ]
 

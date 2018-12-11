@@ -26,11 +26,6 @@ block body
       label(for='hashStrengthInput') BCrypt hash Iterations.  (Don't change unless you know what you are doing)
       input#hashStrengthInput.form-control(type='text', name='hashStrength', value=conf.hashStrength)
     hr
-    h4 Web Server Settings
-    .form-group
-      label(for='serverPortInput') Web Server Port
-      input#serverPortInput.form-control(type='text', name='serverPort', value=conf.serverPort)
-    hr
     h4 Scanner Settings
     .form-group
       label(for='CidrRangesInput') Scanner CIDR Ranges (Example: ["192.168.1.0/24", "172.16.0.0/12", "10.0.0.0/8"])

@@ -1,6 +1,5 @@
 {
 	"hashStrength": 10,
-	"serverPort": 443,
 	"CidrRanges": [
 		"192.168.2.0/24", 
 		"10.10.0.0/16"

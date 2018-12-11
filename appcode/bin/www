@@ -16,7 +16,7 @@ const config = require('../private/config.json');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(config.serverPort || '443');
+var port = normalizePort(process.env.HTTPS_PORT || '443');
 app.set('port', port);
 
 /**

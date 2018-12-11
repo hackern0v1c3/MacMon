@@ -2,7 +2,6 @@ function Update(){
   
   var newConfig = {}
   newConfig.hashStrength = parseInt($('#hashStrengthInput').val());
-  newConfig.serverPort = parseInt($('#serverPortInput').val());
 
   var CidrArray = JSON.parse($('#CidrRangesInput').val());
   newConfig.CidrRanges = CidrArray;

@@ -154,9 +154,10 @@ generateSelfSignedCerts ()
     -keyout /usr/src/app/private/certificates/server.key \
     -out /usr/src/app/private/certificates/server.crt
   fi
+	chown -R node:node /usr/src/app/private/certificates
 }
 
 generateSelfSignedCerts
 export 'COOKIE_SECRET'="$(pwgen -1 32)"
 
-exec "$@"
+exec gosu node "$@"
