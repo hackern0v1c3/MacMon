@@ -28,7 +28,6 @@ _get_config() {
 _check_config mysqld
 DATADIR="$(_get_config 'datadir' mysqld)"
 mkdir -p "$DATADIR"
-chown -R mysql:mysql "$DATADIR"
 
 echo "MYSQL ROOT PASSWORD: $DB_ROOT_PASSWORD"
 
@@ -46,7 +45,9 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 
 	SOCKET="$(_get_config 'socket' mysqld)"
 
-	mysqld --skip-networking --socket="${SOCKET}" --user=root & pid="$!"
+	chown -R mysql:mysql "$DATADIR"
+
+	gosu mysql mysqld --skip-networking --socket="${SOCKET}" & pid="$!"
 	mysql=( mysql --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" )
 
 	for i in {30..0}; do
@@ -135,7 +136,7 @@ echo
 echo 'MySQL init process done. Ready for start up.'
 echo
 
-exec mysqld --user=root &
+exec gosu mysql mysqld &
 
 #Setup node app
 generateSelfSignedCerts ()
