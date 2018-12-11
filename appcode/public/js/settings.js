@@ -26,6 +26,21 @@ function Update(){
   });
 }
 
+function BackupDb(){
+  $.ajax({
+    url: '/dbbackup', 
+    type: 'POST', 
+    contentType: 'application/json', 
+    data: JSON.stringify({"action":"backup"}),
+    success: function(data) {
+      alert("save success");
+    },
+    error: function(error){
+      alert("save failed" + error);
+    }
+  });
+}
+
 $(document).ready( function () {
   $("#editSettingsSubmitButton").click( function() {
     Update();
@@ -46,6 +61,11 @@ $(document).ready( function () {
     UpdateEmailPassword();
   });
 
+  //Called when backup database button is pressed
+  $("#backupDatabaseButton").click( function() {
+    BackupDb();
+  });
+  
 });
 
 //Used to validate the email password input fields

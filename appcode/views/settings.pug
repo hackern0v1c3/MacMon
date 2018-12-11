@@ -5,11 +5,13 @@ block selected
   -var selected = 'Settings';
 block body
   form.form-horizonal.justify-content-center(action='/settings', method='post')
-    h4 Password Settings
-    button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Edit Email Password for Notificaions
-    br
-    br
     h4 Database Settings
+    button#backupDatabaseButton.btn.btn-primary(type='button', enabled) Backup Database
+    br
+    br
+    button#restoreDatabaseButton.btn.btn-primary(type='button', enabled) Restore Database
+    br
+    br
     .form-group
       label(for='dbAddressInput') Database Address
       input#dbAddressInput.form-control(type='text', name='dbAddress', value=process.env.DB_ADDRESS)
@@ -50,9 +52,11 @@ block body
     .form-group
       label(for='emailRecipientInput') Email Address for Receiving Notifications
       input#emailRecipientInput.form-control(type='text', name='emailRecipient', value=conf.emailRecipient)
+    button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Change Email Password
     .form-group
       label(for='emailTlsInput') Email Server Requires TLS 
-        input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))
+        input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))  
+    hr
     button#editSettingsSubmitButton.btn.btn-primary(type='button', enabled) Submit
         
   //Modal for editing email password
