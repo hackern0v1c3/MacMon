@@ -43,6 +43,22 @@ function BackupDb(){
   });
 }
 
+//Used to request a database restore from filename
+function RestoreDatabase(filename){
+  $.ajax({
+    url: '/dbbackup', 
+    type: 'POST', 
+    contentType: 'application/json', 
+    data: JSON.stringify({"action":"restore", "filename":filename}),
+    success: function(data) {
+      alert("restore requested");
+    },
+    error: function(error){
+      alert("restore error " + error);
+    }
+  });
+}
+
 //Used to retrieve a list of backup files on the server
 function GetBackupFiles(cb){
   $.ajax({
@@ -76,8 +92,6 @@ $(document).ready( function () {
   $("#restoreDatabaseButton").click(function () {
     GetBackupFiles(function(err, data){
       if (!err){
-        console.log(data);
-
         $('#databaseRestoreSelection').empty();
 
         $.each(data, function(val, text) {
@@ -93,6 +107,10 @@ $(document).ready( function () {
 
   $("#emailPasswordResetSubmitButton").click( function() {
     UpdateEmailPassword();
+  });
+
+  $("#databaseRestoreSubmitButton").click( function() {  
+    RestoreDatabase($("#databaseRestoreSelection option:selected").text());
   });
 
   //Called when backup database button is pressed

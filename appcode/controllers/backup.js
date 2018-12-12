@@ -16,7 +16,7 @@ module.exports.utils = {
       exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
         logger.info("mysql dump complete");
         exec('wc -l <'+ backupFileName, function (error, results) {
-          logger.info("mysqldump file is %s lines long", results);
+          logger.info("mysqldump file lines: %s", results);
           if (results > 10) {
             return cb(null);
           } 
@@ -44,6 +44,27 @@ module.exports.utils = {
         cb(err, null);
       }
     });
+  },
+
+  //For restoring the database
+  restoreDatabase: function(filename, cb) {
+    var restoreFileName = path.join(__dirname, '..', 'private', 'backups', filename);
+    try{
+      exec('mysql -uroot -p'+process.env.DB_ROOT_PASSWORD+' '+process.env.DB_NAME+' <'+restoreFileName, (err, stdout, stderr) => {
+        logger.info("mysql restore complete");
+        if (err){
+          logger.debug("Restore Error: %s", err);
+        }
+        if (stderr)
+        {
+          logger.debug("Restore Error: %s", stderr);
+        }
+        cb(null);
+      });
+		}
+		catch(err){
+			cb(err);
+		}
   }
 }
 

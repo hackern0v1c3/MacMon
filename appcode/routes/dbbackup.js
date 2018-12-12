@@ -19,7 +19,15 @@ router.post('/', user.can('be admin'), function(req, res) {
       });      
       break;
     case "restore":
-    logger.info("Database restore request received");
+      logger.info("Database restore request received.  Filename: %s", req.body.filename);
+      backup.utils.restoreDatabase(req.body.filename, function(err){
+        if (!err){
+          res.status(200).send();
+        } else {
+          logger.debug('Error restoring database: %s', err);
+          res.status(500).send('Internal server error: Error restoring database');
+        }
+      });
       break;
     case "getfilelist":
       logger.info("Backup file list request received");
