@@ -36,7 +36,7 @@ function BackupDb(){
       alert("save success");
     },
     error: function(error){
-      alert("save failed" + error);
+      alert("save failed " + error);
     }
   });
 }

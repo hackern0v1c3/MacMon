@@ -16,16 +16,12 @@ const filename = process.argv[2];
 logger.info('Running backup to: %s', filename);
 
 exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+filename, (err, stdout, stderr) => {
-  logger.info('mysqldump completed');
-  if (err) {
-    logger.error('Error: %s', err);
-    process.exit(1);
-  }
-  else if (stderr) {
-    logger.error('Error: %s', stderr);
-    process.exit(1);
-  }
-  else {
-    logger.info('Backup complete');
-  }
+  exec('wc'+ filename, function (error, results) {
+    if (results > 10) {
+      console.log(results);
+    } 
+    else {
+      process.exit(1);
+    }    
+  });
 });

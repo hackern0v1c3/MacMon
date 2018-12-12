@@ -324,12 +324,12 @@ module.exports.backup = {
 	newBackup: function(cb) {
 		var d = new Date();
 		var filename = 'backup.' + formatDate(d) + '.sql'
-		var backupFileName = path.join(__dirname, '..', 'private', filename);
+		var backupFileName = path.join(__dirname, '..', 'private', 'backups', filename);
 
 		try{
 			exec(__dirname + '/../bin/dbbackup.js '+ backupFileName, (err, stdout, stderr) => {
-				if (err) {
-					return cb(err);
+				if (stderr) {
+					return cb("Backup failed");
 				}
 				else {
 					return cb(null);
