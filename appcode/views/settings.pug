@@ -76,3 +76,19 @@ block body
               label Confirm Password
               input#emailPassword2.form-control(type='password', name='confirmPassword')
             button#emailPasswordResetSubmitButton.btn.btn-primary(type='button', disabled) Submit
+
+  //Modal for restoring database
+  #databaseRestoreModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='databaseRestoreModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#databaseRestoreModalLabel.modal-title Please select a restore point
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form.form-horizonal.justify-content-center(action='/dbbackup', method='post')
+            .form-group
+              label Restore Points
+              select#databaseRestoreSelection.select.form-control
+                option(value='0', selected= true) -- Select --
+            button#databaseRestoreSubmitButton.btn.btn-primary(type='button', disabled) Submit

@@ -318,32 +318,3 @@ module.exports.assetTypes = {
 		});
 	}
 }
-
-//Exports a way to backup the database
-module.exports.backup = {
-	newBackup: function(cb) {
-		var d = new Date();
-		var filename = 'backup.' + formatDate(d) + '.sql'
-		var backupFileName = path.join(__dirname, '..', 'private', 'backups', filename);
-
-		try{
-			exec(__dirname + '/../bin/dbbackup.js '+ backupFileName, (err, stdout, stderr) => {
-				if (stderr) {
-					return cb("Backup failed");
-				}
-				else {
-					return cb(null);
-				}
-			});
-		}
-		catch(err){
-			return cb(err);
-		}
-	}
-}
-
-/* For formatting date to include in backup file names */
-function formatDate(date) {
-  return [date.getMonth() + 1, date.getDate(), date.getFullYear()].join('-') + ':' +
-      [date.getHours(), date.getMinutes(), date.getSeconds()].join(':');
-}

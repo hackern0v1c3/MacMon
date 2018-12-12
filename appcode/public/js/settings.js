@@ -1,3 +1,4 @@
+//User to update the config.js file
 function Update(){
   
   var newConfig = {}
@@ -26,6 +27,7 @@ function Update(){
   });
 }
 
+//Used to request a database backup
 function BackupDb(){
   $.ajax({
     url: '/dbbackup', 
@@ -41,6 +43,22 @@ function BackupDb(){
   });
 }
 
+//Used to retrieve a list of backup files on the server
+function GetBackupFiles(cb){
+  $.ajax({
+    url: '/dbbackup', 
+    type: 'POST', 
+    contentType: 'application/json', 
+    data: JSON.stringify({"action":"getfilelist"}),
+    success: function(data) {
+      cb(null, data);
+    },
+    error: function(error){
+      cb(error, null);
+    }
+  });
+}
+
 $(document).ready( function () {
   $("#editSettingsSubmitButton").click( function() {
     Update();
@@ -52,6 +70,22 @@ $(document).ready( function () {
     $('#emailPassword2').val('');
     $('#emailPasswordResetSubmitButton').prop('disabled', true);
     $('#emailPasswordResetModal').modal('show');
+  });
+
+  //Used to display the database restore modal
+  $("#restoreDatabaseButton").click(function () {
+    GetBackupFiles(function(err, data){
+      if (!err){
+        console.log(data);
+
+        $('#databaseRestoreSelection').empty();
+
+        $.each(data, function(val, text) {
+          $('#databaseRestoreSelection').append($('<option></option>').val(val).html(text));
+        });
+        $('#databaseRestoreModal').modal('show');
+      } 
+    });  
   });
 
   $('#emailPassword1').keyup(validateEmailPasswordInputFields);
