@@ -104,7 +104,7 @@ if [ ! -f "$DATADIR/server-key.pem" ]; then
 
 	mysql+=( --database=AssetTracking )
 
-	mysql -uroot -p${DB_ROOT_PASSWORD} -D AssetTracking < ./private/schema.sql
+	mysql -uroot -p${DB_ROOT_PASSWORD} -D AssetTracking < ./private/backups/newdb.sql
 
 	echo "GRANT ALL ON AssetTracking.* TO '${DB_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
 	echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
