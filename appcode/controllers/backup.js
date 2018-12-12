@@ -2,6 +2,7 @@
 const path = require('path');
 const { exec } = require('child_process');
 const fs = require('fs');
+const logger = require('./logger.js');
 
 //Exports backup utilities
 module.exports.utils = {
@@ -12,14 +13,19 @@ module.exports.utils = {
 		var backupFileName = path.join(__dirname, '..', 'private', 'backups', filename);
 
 		try{
-			exec(__dirname + '/../bin/dbbackup.js '+ backupFileName, (err, stdout, stderr) => {
-				if (stderr) {
-					return cb("Backup failed");
-				}
-				else {
-					return cb(null);
-				}
-			});
+      exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
+        logger.info("mysql dump complete");
+        exec('wc -l <'+ backupFileName, function (error, results) {
+          logger.info("mysqldump file is %s lines long", results);
+          if (results > 10) {
+            return cb(null);
+          } 
+          else {
+            logger.debug("error: %s", error);
+            return cb("Backup failed");
+          }    
+        });
+      });
 		}
 		catch(err){
 			return cb(err);
@@ -32,6 +38,7 @@ module.exports.utils = {
 
     fs.readdir(backupFolder, function(err, files){
       if (!err){
+        files.reverse();
         cb(null, files);
       } else {
         cb(err, null);
