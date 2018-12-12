@@ -3,4 +3,4 @@ Ignore everything in this directory
 # Except this file, example config, and schema file
 !.gitignore
 !config.example
-!schema.sql
+!newdb.sql
