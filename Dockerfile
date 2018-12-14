@@ -67,6 +67,7 @@ ARG DB_USER=AssetTrackingUser
 ARG LOG_LEVEL=production
 ARG HTTPS_PORT=443
 ARG RUN_AS=node
+ARG NO_LOCAL_DB=false
 
 ENV DB_ADDRESS="${DB_ADDRESS}"
 ENV DB_PORT="${DB_PORT}"
@@ -75,6 +76,7 @@ ENV DB_USER="${DB_USER}"
 ENV LOG_LEVEL="${LOG_LEVEL}"
 ENV HTTPS_PORT="${HTTPS_PORT}"
 ENV RUN_AS="${RUN_AS}"
+ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
