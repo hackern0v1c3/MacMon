@@ -4,8 +4,15 @@ function Update(){
   var newConfig = {}
   newConfig.hashStrength = parseInt($('#hashStrengthInput').val());
 
-  var CidrArray = JSON.parse($('#CidrRangesInput').val());
+  var CidrArray = [];
+  $('#cidrTable tbody tr td:first-child').each( function(){
+    CidrArray.push( $(this).text() );       
+  });
+
+  CidrArray.splice(-1,1)
+
   newConfig.CidrRanges = CidrArray;
+  console.log(newConfig.CidrRanges);
 
   newConfig.scanInterval = parseInt($('#scanIntervalInput').val());
   newConfig.emailServer = $('#emailServerInput').val();
@@ -75,11 +82,27 @@ function GetBackupFiles(cb){
   });
 }
 
+//Used to add a new Cidr range to the scanner settings table
+function AddRange(){
+  var range = $('#newCidrInput').val();
+  $('#cidrTable tr:last').before('<tr><td>'+range+'</td><td align="right"><button type="button" class="btn btn-danger removeCidrButton">X</button></td></tr>');
+  $('#newCidrInput').val('');
+}
+
 $(document).ready( function () {
   $("#editSettingsSubmitButton").click( function() {
     Update();
   });
 
+  $("#newCidrButton").click( function() {
+    AddRange();
+  });
+
+  //Used to remove a Cidr tange from the scanner settings table
+  $('#cidrTable').on('click', '.removeCidrButton', function() {
+    $(this).closest("tr").remove();
+  });
+  
   //Used to display the email password reset modal
   $("#editEmailAccountButton").click(function () {
     $('#emailPassword1').val('');

@@ -4,7 +4,7 @@ block header
 block selected
   -var selected = 'Settings';
 block body
-  form.form-horizonal.justify-content-center(action='/settings', method='post')
+  form.form-horizonal.justify-content-center(action='/settings', method='post', style={margin: '0px 30px 30px 30px'})
     h4 Database Settings
     button#backupDatabaseButton.btn.btn-primary(type='button', enabled) Backup Database
     br
@@ -30,8 +30,18 @@ block body
     hr
     h4 Scanner Settings
     .form-group
-      label(for='CidrRangesInput') Scanner CIDR Ranges (Example: ["192.168.1.0/24", "172.16.0.0/12", "10.0.0.0/8"])
-      input#CidrRangesInput.form-control(type='text', name='CidrRanges', value=conf.CidrRanges)
+      label(for='CidrRangesInput') Scanner CIDR Ranges (Example: 192.168.1.0/24)
+      table#cidrTable.table.table-hover.table-sm(style={width: '30%'})
+        each range in conf.CidrRanges
+          tr
+            td= range
+            td(align='right', style={width: '1%'})
+              button.btn.btn-danger.removeCidrButton(type='button', enabled) X
+        tr
+          td
+            input#newCidrInput.form-control(type='text', name='newRange')
+          td
+            button#newCidrButton.btn.btn-primary(type='button', enabled) Add New Range
     .form-group
       label(for='scanIntervalInput') Scanner Frequency in Seconds
       input#scanIntervalInput.form-control(type='text', name='scanInterval', value=conf.scanInterval)
