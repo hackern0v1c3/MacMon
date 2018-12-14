@@ -238,4 +238,4 @@ generateSelfSignedCerts ()
 generateSelfSignedCerts
 export 'COOKIE_SECRET'="$(pwgen -1 32)"
 
-exec gosu node "$@"
+exec gosu $RUN_AS "$@"
