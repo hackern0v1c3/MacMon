@@ -4,7 +4,7 @@ shopt -s nullglob
 
 #Prepmysql
 _check_config() {
-	toRun=( mysqld --verbose --help )
+	toRun=( mysqld --verbose --help --log-bin-index="$(mktemp -u)" )
 	if ! errors="$("${toRun[@]}" 2>&1 >/dev/null)"; then
 		cat >&2 <<-EOM
 			ERROR: mysqld failed while attempting to check config
@@ -12,7 +12,7 @@ _check_config() {
 			$errors
 		EOM
 		exit 1
-	fi
+  fi
 }
 
 # Fetch value from server config
@@ -20,31 +20,25 @@ _check_config() {
 # latter only show values present in config files, and not server defaults
 _get_config() {
 	local conf="$1"; shift
-	"$@" --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
+	mysqld --verbose --help --log-bin-index="$(mktemp -u)" 2>/dev/null \
 		| awk '$1 == "'"$conf"'" && /^[^ \t]/ { sub(/^[^ \t]+[ \t]+/, ""); print; exit }'
 	# match "datadir      /some/path with/spaces in/it here" but not "--xyz=abc\n     datadir (xyz)"
 }
 
 # Initializes MySql environment and builds keys
 _init_mysql() {
-	_check_config mysqld
-	DATADIR="$(_get_config 'datadir' mysqld)"
+	_check_config
+	DATADIR="$(_get_config 'datadir' )"
 
-	if [ ! -f "$DATADIR/server-key.pem" ]; then
+	if [ ! -d "$DATADIR/mysql" ]; then
 		mkdir -p "$DATADIR"
 
-		echo 'Initializing database'
-		mysqld --initialize-insecure
-		echo 'Database initialized'
+    echo 'Initializing database'
+    # "Other options are passed to mysqld." (so we pass all "mysqld" arguments directly here)
+    mysql_install_db --datadir="$DATADIR" --rpm
+    echo 'Database initialized'
 
-		if command -v mysql_ssl_rsa_setup > /dev/null && [ ! -e "$DATADIR/server-key.pem" ]; then
-			# https://github.com/mysql/mysql-server/blob/23032807537d8dd8ee4ec1c4d40f0633cd4e12f9/packaging/deb-in/extra/mysql-systemd-start#L81-L84
-			echo 'Initializing certificates'
-			mysql_ssl_rsa_setup --datadir="$DATADIR"
-			echo 'Certificates initialized'
-		fi
-
-		SOCKET="$(_get_config 'socket' mysqld)"
+		SOCKET="$(_get_config 'socket')"
 
 		chown -R mysql:mysql "$DATADIR"
 
@@ -65,11 +59,6 @@ _init_mysql() {
 					exit 1
 		fi
 
-		if [ -z "$MYSQL_INITDB_SKIP_TZINFO" ]; then
-					# sed is for https://bugs.mysql.com/bug.php?id=20545
-					mysql_tzinfo_to_sql /usr/share/zoneinfo | sed 's/Local time zone must be set--see zic manual page/FCTY/' | "${mysql[@]}" mysql
-		fi
-
 		echo "Creating root account"
 
 		rootCreate=
@@ -88,7 +77,8 @@ _init_mysql() {
 			-- What's done in this file shouldn't be replicated
 			--  or products like mysql-fabric won't work
 			SET @@SESSION.SQL_LOG_BIN=0;
-			ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}' ;
+			DELETE FROM mysql.user WHERE user NOT IN ('mysql.sys', 'mysqlxsys', 'root') OR host NOT IN ('localhost') ;
+			SET PASSWORD FOR 'root'@'localhost'=PASSWORD('${DB_ROOT_PASSWORD}') ;
 			GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION ;
 			${rootCreate}
 			DROP DATABASE IF EXISTS test ;
@@ -100,9 +90,10 @@ _init_mysql() {
 			exit 1
 		fi
 	fi
-		gosu mysql mysqld --socket="${SOCKET}" & pid="$!"
 
-		echo "Local mysql init complete"
+  gosu mysql mysqld --socket="${SOCKET}" & pid="$!"
+
+  echo "Local mysql init complete"
 }
 
 # tries to connect to database with root account
@@ -126,7 +117,7 @@ _test_connect_db() {
 	fi	
 	
 	#create mysql user if it doesn't already exist
-	echo "CREATE USER IF NOT EXISTS '${DB_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD' ;" | "${mysql[@]}"
+	echo "CREATE USER IF NOT EXISTS '${DB_USER}'@'${MYSQL_ROOT_HOST}' IDENTIFIED BY '$DB_PASSWORD' ;" | "${mysql[@]}"
 
 	### Build database if it doesn't already exist
 	echo "CREATE DATABASE IF NOT EXISTS AssetTracking;" | "${mysql[@]}"
