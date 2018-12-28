@@ -74,8 +74,12 @@ ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
 	nmap \
-	dsniff arp-scan \
+	arp-scan \
+	python3-pip \
+	python3-setuptools \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install scapy
 
 RUN chmod u+s /usr/bin/arp-scan
 
@@ -90,6 +94,12 @@ COPY ./appcode .
 COPY ./appcode/private/config.example ./private/config.json
 
 RUN chown -R node:node /usr/src/app
+
+RUN chown root:root /usr/src/app/bin/dos.py
+
+RUN chmod 755 /usr/src/app/bin/dos.py
+
+RUN chmod u+s /usr/src/app/bin/dos.py
 
 VOLUME [ "/var/lib/mysql", "/usr/src/app/private" ]
 

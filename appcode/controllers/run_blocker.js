@@ -14,7 +14,7 @@ exports.toggleBlocking = function(ipAddress) {
   } else {
     var newChildProcessHolder = {};
     newChildProcessHolder.name = ipAddress;
-    newChildProcessHolder.childProcess = spawn('/usr/sbin/arpspoof', ['-c', 'both', ipAddress]);
+    newChildProcessHolder.childProcess = spawn('/usr/src/app/bin/dos.py', ['-t', ipAddress]);
 
     blockedDevices.push(newChildProcessHolder);
   }
