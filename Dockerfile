@@ -77,11 +77,20 @@ RUN apt-get update && \
 	arp-scan \
 	python3-pip \
 	python3-setuptools \
+	python3-dev \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install scapy
 
 RUN chmod u+s /usr/bin/arp-scan
+
+RUN pip3 install pyinstaller
+
+WORKDIR /tmp
+
+COPY ./appcode/bin/dos.py ./dos.py
+
+RUN pyinstaller --onefile --hidden-import=queue /tmp/dos.py 
 
 WORKDIR /usr/src/app
 
@@ -95,11 +104,15 @@ COPY ./appcode/private/config.example ./private/config.json
 
 RUN chown -R node:node /usr/src/app
 
-RUN chown root:root /usr/src/app/bin/dos.py
+RUN cp /tmp/dist/dos /usr/src/app/bin/
 
-RUN chmod 755 /usr/src/app/bin/dos.py
+RUN chown root:root /usr/src/app/bin/dos
 
-RUN chmod u+s /usr/src/app/bin/dos.py
+RUN chmod 755 /usr/src/app/bin/dos
+
+RUN chmod u+s /usr/src/app/bin/dos
+
+RUN rm -rf /tmp/*
 
 VOLUME [ "/var/lib/mysql", "/usr/src/app/private" ]
 

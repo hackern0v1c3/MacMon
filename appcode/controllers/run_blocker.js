@@ -6,6 +6,8 @@ const logger = require('./logger.js');
 var blockedDevices = [];
 
 exports.toggleBlocking = function(ipAddress) {
+  logger.debug('Blocker toggle request received for: %s', ipAddress);
+
   //If IP is already in blockedAssets
   var indexOfDevice = blockedDevices.findIndex(x => x.name == ipAddress);
   if (indexOfDevice > -1) {
@@ -14,7 +16,7 @@ exports.toggleBlocking = function(ipAddress) {
   } else {
     var newChildProcessHolder = {};
     newChildProcessHolder.name = ipAddress;
-    newChildProcessHolder.childProcess = spawn('/usr/src/app/bin/dos.py', ['-t', ipAddress]);
+    newChildProcessHolder.childProcess = spawn('/usr/src/app/bin/dos', ['-t', ipAddress]);
 
     blockedDevices.push(newChildProcessHolder);
   }
