@@ -25,6 +25,11 @@ function Update(){
   } else {
     newConfig.emailTls = "False";
   }
+  if ($('#emailNotificationsInput').prop('checked')) {
+    newConfig.emailNotifications = "True";
+  } else {
+    newConfig.emailNotifications = "False";
+  }
   
   $.ajax({
     url: '/settings', 

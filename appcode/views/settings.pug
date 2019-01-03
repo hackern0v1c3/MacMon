@@ -48,6 +48,9 @@ block body
     hr
     h4 Email Settings
     .form-group
+      label(for='emailNotificationsInput') Enable Email Notifications 
+        input#emailNotificationsInput.form-control(type='checkbox', name='emailNotifications', checked=(conf.emailNotifications === 'True' || conf.emailNotifications === 'true'))
+    .form-group
       label(for='emailServerInput') Email Server Address
       input#emailServerInput.form-control(type='text', name='emailServer', value=conf.emailServer)
     .form-group
@@ -62,10 +65,10 @@ block body
     .form-group
       label(for='emailRecipientInput') Email Address for Receiving Notifications
       input#emailRecipientInput.form-control(type='text', name='emailRecipient', value=conf.emailRecipient)
-    button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Change Email Password
     .form-group
       label(for='emailTlsInput') Email Server Requires TLS 
-        input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true'))  
+        input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true')) 
+    button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Change Email Password 
     hr
     button#editSettingsSubmitButton.btn.btn-primary(type='button', enabled) Submit
         

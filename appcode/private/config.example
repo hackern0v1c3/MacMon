@@ -5,6 +5,7 @@
 		"10.10.0.0/16"
 	],
 	"scanInterval": 300,
+	"emailNotifications": "False",
 	"emailServer": "smtp.office365.com",
 	"smtpPort": 587,
 	"emailSender": "sender@example.local",

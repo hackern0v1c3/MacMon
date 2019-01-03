@@ -212,15 +212,18 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
         body +="IP Address: "+newAddresses[i].IP+"   "
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
-      logger.info("Attempting to send email notification");
-      mailer.sendMessage("New Devices Detected", body, function(err, message){
-        if (!err){
-          logger.info("Email sent succesfully");
-        } else {
-          logger.error("Error sending email notification");
-          logger.debug(err);
-        }
-      });
+      
+      if (config.emailNotifications) {
+        logger.info("Attempting to send email notification");
+        mailer.sendMessage("New Devices Detected", body, function(err, message){
+          if (!err){
+            logger.info("Email sent succesfully");
+          } else {
+            logger.error("Error sending email notification");
+            logger.debug(err);
+          }
+        });
+      }
     }
     if (scanResult.length > 0) {
       logger.info("Preparing to upsert assets table");
