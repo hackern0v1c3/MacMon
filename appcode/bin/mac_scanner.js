@@ -213,7 +213,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
       
-      if (config.emailNotifications) {
+      if (config.emailNotifications === "True" || config.emailNotifications === "true") {
         logger.info("Attempting to send email notification");
         mailer.sendMessage("New Devices Detected", body, function(err, message){
           if (!err){
