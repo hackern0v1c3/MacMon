@@ -35,7 +35,13 @@ function Update(){
     url: '/settings', 
     type: 'POST', 
     contentType: 'application/json', 
-    data: JSON.stringify(newConfig)
+    data: JSON.stringify(newConfig),
+    success: function(data) {
+      $('#saveConfirmModal').modal('show');
+    },
+    error: function(error){
+      alert("save failed " + error);
+    }
   });
 }
 
@@ -47,10 +53,10 @@ function BackupDb(){
     contentType: 'application/json', 
     data: JSON.stringify({"action":"backup"}),
     success: function(data) {
-      alert("save success");
+      alert("backup success");
     },
     error: function(error){
-      alert("save failed " + error);
+      alert("backup failed " + error);
     }
   });
 }

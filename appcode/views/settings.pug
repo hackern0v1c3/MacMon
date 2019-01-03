@@ -105,3 +105,16 @@ block body
               select#databaseRestoreSelection.select.form-control
                 option(value='0', selected= true) -- Select --
             button#databaseRestoreSubmitButton.btn.btn-primary(type='button', enabled) Submit
+
+  //Modal for save confirmation
+  #saveConfirmModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='saveConfirmModalLabel', aria-hidden='true')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          h5#saveConfirmModal.modal-title Save Succesful
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          label Save Succesful.  Please restart application for new settings to apply.
+        .modal-footer
+          button.btn.btn-primary(data-dismiss="modal") Close
