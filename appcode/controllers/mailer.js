@@ -10,37 +10,37 @@ callback(error, message)
 "use strict";
 
 const nodemailer = require('nodemailer');
-const config = require('../private/config.json');
+const config = require('./config.js');
 
 exports.sendMessage = function(messageSubject, messageBody, cb) {
+	config.settings.returnAllSettings(function(err, settings){
+		let smtpConfig = {
+			host: settings.emailServer,
+			port: settings.smtpPort,
+			secure: false, // upgrade later with STARTTLS
+			requireTLS: settings.emailTls,
+			auth: {
+				user: settings.emailSenderUsername,
+				pass: settings.emailSenderPassword
+			}
+		};
 	
-	let smtpConfig = {
-		host: config.emailServer,
-		port: config.smtpPort,
-		secure: false, // upgrade later with STARTTLS
-		requireTLS: config.emailTls,
-		auth: {
-			user: config.emailSenderUsername,
-			pass: config.emailSenderPassword
-		}
-	};
-
-	let mailOptions = {
-		from: config.emailSender,
-		to: config.emailRecipient,
-		subject: messageSubject,
-		text: messageBody,
-	};
-
-	let transporter = nodemailer.createTransport(smtpConfig);
-
-	transporter.sendMail(mailOptions, (error, info) => {
-
-	if (error) {
-        	cb(error, "");
-    	} else {
-    		var result = ('Message %s sent: %s', info.messageId, info.response);
-		cb(null, result);
-	}
+		let mailOptions = {
+			from: settings.emailSender,
+			to: settings.emailRecipient,
+			subject: messageSubject,
+			text: messageBody,
+		};
+	
+		let transporter = nodemailer.createTransport(smtpConfig);
+	
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				cb(error, "");
+			} else {
+				var result = ('Message %s sent: %s', info.messageId, info.response);
+				cb(null, result);
+			}
+		});
 	});
 };

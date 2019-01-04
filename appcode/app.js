@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const logger = require('./controllers/logger.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const config = require('./private/config.json');
+const config = require('./controllers/config.js');
 const index = require('./routes/index');
 const login = require('./routes/login.js');
 const admin = require('./routes/admin.js');
@@ -104,8 +104,15 @@ app.use(function(err, req, res, next) {
 //Start timer to run network scanner
 run_scanner.runOnce();
 
-var scannerTimer = timers.setInterval(function(){
-  run_scanner.runOnce();
-},(config.scanInterval * 1000));
+config.settings.returnAllSettings(function(err, settings){
+  if (err){
+    logger.debug('Error reading config file: %s', err);
+    process.exit(1);
+  }
+  var scannerTimer = timers.setInterval(function(){
+    run_scanner.runOnce();
+  },(settings.scanInterval * 1000));
+});
+
 
 module.exports = app;

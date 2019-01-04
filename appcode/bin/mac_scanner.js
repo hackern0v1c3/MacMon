@@ -16,7 +16,7 @@ const mailer = require('../controllers/mailer');
 const db = require('../controllers/db.js');
 
 //Import config for subnets
-const config = require('../private/config.json');
+const config = require('../controllers/config.js');
 
 //Import https for macvendor api
 const fetch = require("node-fetch");
@@ -78,6 +78,15 @@ function getScanResults(cidr){
   });
 }
 
+//Promise to return cidr ranges from config
+function getCidrRangesFromController() {
+  return new Promise(function(resolve, reject){
+    config.settings.returnAllSettings(function(err, settings){
+      resolve(settings.CidrRanges);
+    });
+  });
+}
+
 //Promise to resolve vendors using macvendor.com
 var getVendorsFromApi = function getVendors(asset) {
   return new Promise(function(resolve, reject) {
@@ -112,37 +121,40 @@ var getVendorsFromApi = function getVendors(asset) {
 //Setup promise that should return an array of objects.  Each object should have a MAC,IP, and Vendor property.  These represent the results of arp-scan agains all cidr networks in config.js
 var returnNetworkAssets = new Promise(function(resolve, reject){
   //Setup scanning promises for all network ranges
-  var promises = config.CidrRanges.map(function(cidr){
-    return getScanResults(cidr);
-  });
-
-  //Execute promises and get results of scans
-  Promise.all(promises)
-    .then(function(data){
-      logger.info('Completed all arp scans');
-      var  combinedResults = []
-
-      for (var i=0; i < data.length; i++){
-        var linesFromScan = data[i].split("\n");
-
-        for (var j = 2; j < (linesFromScan.length - 4); j++) { 
-          var splitLines = linesFromScan[j].split('\t')
-          var assetObject = {}
-          assetObject.MAC = splitLines[1]
-          assetObject.IP = []
-          assetObject.IP.push(splitLines[0])
-          assetObject.Vendor = splitLines[2]
-          combinedResults.push(assetObject)
-        }
-      }
-      logger.info('Organized scan results');
-      resolve(groupByMac(combinedResults));
-    })
-    .catch(function (error){
-      logger.error('Error while fetching scan results:');
-      logger.debug(error);
-      reject(Error(error));
+  var CidrRangePromise = getCidrRangesFromController();
+  CidrRangePromise.then(function(result){
+    var promises = result.map(function(cidr){
+      return getScanResults(cidr);
     });
+      
+    //Execute promises and get results of scans
+    Promise.all(promises)
+      .then(function(data){
+        logger.info('Completed all arp scans');
+        var  combinedResults = []
+  
+        for (var i=0; i < data.length; i++){
+          var linesFromScan = data[i].split("\n");
+  
+          for (var j = 2; j < (linesFromScan.length - 4); j++) { 
+            var splitLines = linesFromScan[j].split('\t')
+            var assetObject = {}
+            assetObject.MAC = splitLines[1]
+            assetObject.IP = []
+            assetObject.IP.push(splitLines[0])
+            assetObject.Vendor = splitLines[2]
+            combinedResults.push(assetObject)
+          }
+        }
+        logger.info('Organized scan results');
+        resolve(groupByMac(combinedResults));
+      })
+      .catch(function (error){
+        logger.error('Error while fetching scan results:');
+        logger.debug(error);
+        reject(Error(error));
+      });
+  });
 });
 
 
@@ -213,17 +225,21 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
         body +="Vendor: "+newAddresses[i].Vendor+"\r\n"
       }
       
-      if (config.emailNotifications === "True" || config.emailNotifications === "true") {
-        logger.info("Attempting to send email notification");
-        mailer.sendMessage("New Devices Detected", body, function(err, message){
-          if (!err){
-            logger.info("Email sent succesfully");
-          } else {
-            logger.error("Error sending email notification");
-            logger.debug(err);
-          }
-        });
-      }
+      config.settings.returnAllSettings(function(err, settings){
+        if (settings.emailNotifications === "True" || settings.emailNotifications === "true") {
+          logger.info("Attempting to send email notification");
+          mailer.sendMessage("New Devices Detected", body, function(err, message){
+            if (!err){
+              logger.info("Email sent succesfully");
+            } else {
+              logger.error("Error sending email notification");
+              logger.debug(err);
+            }
+          });
+        } else {
+          logger.info("Email notifications are disabled. No email attempted.");
+        }
+      });
     }
     if (scanResult.length > 0) {
       logger.info("Preparing to upsert assets table");

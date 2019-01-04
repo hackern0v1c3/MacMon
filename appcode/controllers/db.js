@@ -1,7 +1,7 @@
 "use strict";
 
 //Import modules
-const config = require('../private/config.json');
+const config = require('./config.js');
 const mysql = require('mysql');
 const bcrypt = require('bcrypt-nodejs');
 const path = require('path');
@@ -206,19 +206,21 @@ module.exports.users = {
 			return cb('username, password, and role cannot be null');
 		}
 		
-		bcrypt.genSalt(config.hashStrength, function(err, salt) {
-			if(err){return cb(err);}
-			
-			bcrypt.hash(userPassword, salt, null, function(err, hash) {
+		config.settings.returnAllSettings(function(err, settings){
+			bcrypt.genSalt(settings.hashStrength, function(err, salt) {
 				if(err){return cb(err);}
-		
-				pool.getConnection(function(err, connection) {
+				
+				bcrypt.hash(userPassword, salt, null, function(err, hash) {
 					if(err){return cb(err);}
-					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
-						connection.release();
+			
+					pool.getConnection(function(err, connection) {
 						if(err){return cb(err);}
-						return cb(null);
-					}); 
+						connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+							connection.release();
+							if(err){return cb(err);}
+							return cb(null);
+						}); 
+					});
 				});
 			});
 		});
@@ -230,22 +232,24 @@ module.exports.users = {
 			return cb('username, password, and role cannot be null');
 		}
 
-		bcrypt.genSalt(config.hashStrength, function(err, salt) {
-			if(err){return cb(err);}
-
-			bcrypt.hash(newPassword, salt, null, function(err, hash) {
+		config.settings.returnAllSettings(function(err, settings){
+			bcrypt.genSalt(settings.hashStrength, function(err, salt) {
 				if(err){return cb(err);}
-				
-				pool.getConnection(function(err, connection) {
+	
+				bcrypt.hash(newPassword, salt, null, function(err, hash) {
 					if(err){return cb(err);}
-
-					var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
-
-					connection.query(sqlQuery, [hash, userName], function(err) {
-						connection.release();
+					
+					pool.getConnection(function(err, connection) {
 						if(err){return cb(err);}
-						return cb(null);
-					}); 
+	
+						var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
+	
+						connection.query(sqlQuery, [hash, userName], function(err) {
+							connection.release();
+							if(err){return cb(err);}
+							return cb(null);
+						}); 
+					});
 				});
 			});
 		});
