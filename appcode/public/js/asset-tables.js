@@ -101,6 +101,24 @@ $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
 }
 
 $(document).ready( function () {
+  //Get current timezone in browser
+  if (!sessionStorage.getItem('timezone')) {
+    var tz = jstz.determine() || 'UTC';
+    sessionStorage.setItem('timezone', tz.name());
+  }
+  var currTz = sessionStorage.getItem('timezone');
+
+  //Adjust times in table for timezone
+  $("#assetTable tr td.timezoneChange").each(function(){
+    var dateParts = this.innerHTML.split(" ");
+    var adjustableDateTime = dateParts[0]+'T'+dateParts[1]+'Z'
+    var momentTime = moment(adjustableDateTime);
+    var tzTime = momentTime.tz(currTz);
+
+    this.innerHTML = tzTime.format('YYYY-MM-DD HH:mm:ss');
+  });
+
+  //Format table with jquery datatable options
   myAssetTable = $('#assetTable').DataTable({
     //dom: 'Bfrtip',
     "order": [1, 'asc'],
@@ -144,4 +162,5 @@ $(document).ready( function () {
        return false;
    }
   );
+
 });
