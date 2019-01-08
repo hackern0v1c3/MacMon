@@ -12,7 +12,6 @@ function Update(){
   CidrArray.splice(-1,1)
 
   newConfig.CidrRanges = CidrArray;
-  console.log(newConfig.CidrRanges);
 
   newConfig.scanInterval = parseInt($('#scanIntervalInput').val());
   newConfig.emailServer = $('#emailServerInput').val();
