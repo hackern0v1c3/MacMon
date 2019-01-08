@@ -108,10 +108,13 @@ $(document).ready( function () {
   }
   var currTz = sessionStorage.getItem('timezone');
 
+  //Adjust the header for the Last Updated column
+  $("#tzHeader").html('Last Updated '+currTz);
+
   //Adjust times in table for timezone
   $("#assetTable tr td.timezoneChange").each(function(){
     var dateParts = this.innerHTML.split(" ");
-    var adjustableDateTime = dateParts[0]+'T'+dateParts[1]+'Z'
+    var adjustableDateTime = dateParts[0]+'T'+dateParts[1]+'Z';
     var momentTime = moment(adjustableDateTime);
     var tzTime = momentTime.tz(currTz);
 
