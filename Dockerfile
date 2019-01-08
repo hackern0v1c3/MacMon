@@ -70,6 +70,8 @@ ENV LOG_LEVEL="${LOG_LEVEL}"
 ENV HTTPS_PORT="${HTTPS_PORT}"
 ENV RUN_AS="${RUN_AS}"
 ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
+
+ENV VERSION="0.1"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \

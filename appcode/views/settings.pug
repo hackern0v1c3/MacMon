@@ -5,6 +5,8 @@ block selected
   -var selected = 'Settings';
 block body
   form.form-horizonal.justify-content-center(action='/settings', method='post', style={margin: '0px 30px 30px 30px'})
+    h4 Version
+    #{process.env.VERSION}
     h4 Database Settings
     button#backupDatabaseButton.btn.btn-primary(type='button', enabled) Backup Database
     br
