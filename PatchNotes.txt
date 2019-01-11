@@ -1,1 +1,4 @@
+v0.2: Fixed default listening https port to be 8443
+  
+
 v0.1: Initial beta release
