@@ -18,8 +18,8 @@ const db = require('../controllers/db.js');
 //Import config for subnets
 const config = require('../controllers/config.js');
 
-//Import https for macvendor api
-const fetch = require("node-fetch");
+//For using MacVendor API
+const request = require('sync-request');
 
 //For comparing arrays
 Array.prototype.diff = function(a) {
@@ -44,7 +44,7 @@ function groupByMac(addressArray) {
       //If a Mac already exists in the grouped set...
       if (groupedArray[j].MAC == addressArray[i].MAC) {
         var contains = true;
-        //Push the IP address to thr grouped object
+        //Push the IP address to the grouped object
         groupedArray[j].IP.push(addressArray[i].IP[0]);
         //Remove dupliacte IP addresses
         groupedArray[j].IP = groupedArray[j].IP.unique();
@@ -55,20 +55,22 @@ function groupByMac(addressArray) {
       groupedArray.push(addressArray[i]);
     }
   }
-  return groupedArray
+  return groupedArray;
 }
 
 //Define scanning promise
 function getScanResults(cidr){
   return new Promise(function(resolve, reject){
-    logger.info('Staring arp-scan for %s', cidr);
+    logger.info(`Staring arp-scan for ${cidr}`);
     const { exec } = require('child_process');
     exec('arp-scan '+cidr, (err, stdout, stderr) => { 
-      logger.info('Completed arp-scan for %s', cidr);
+      logger.info(`Completed arp-scan for ${cidr}`);
       if (err) {
+        logger.debug(`arp-scan err: ${err}`);
         reject(Error(err));
       }
       else if (stderr) {
+        logger.debug(`arp-scan stderr: ${stderr}`);
         reject(Error(stderr));
       }
       else {
@@ -87,35 +89,32 @@ function getCidrRangesFromController() {
   });
 }
 
-//Promise to resolve vendors using macvendor.com
-var getVendorsFromApi = function getVendors(asset) {
-  return new Promise(function(resolve, reject) {
-    if (asset.Vendor.includes("(Unknown)")) {
-      var url = "https://api.macvendors.com/"+asset.MAC;
+//Functions to allow a blocking sleep.  Used to slow requests to macvendors.com
+function msleep(n) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, n);
+}
 
-      logger.info("Going to fetch this url: " + url);
+function sleep(n) {
+  msleep(n*1000);
+}
 
-      fetch(url)
-        .then(function (res) {
-            logger.info("Vendor retrieved for asset " +asset.MAC);
-            return res.text();
-        })
-        .then(function(resText){
-          logger.debug("Text for " + asset.MAC + " Vendor: " + resText.trim());
-          asset.Vendor = resText.trim();
-          resolve(asset);
-        })
-        .catch(error => {
-          logger.error("Error fetching vendor from macvendors.com: " + error);
-          asset.Vendor = ('Vendor not found');
-          resolve(asset);
-        });
-    } 
-    else {
-      logger.debug("Already know vendor for "+ asset.MAC +": " + asset.Vendor);
-      resolve(asset);
-    }
-  });
+
+//Function to resolve vendors using macvendor.com
+function getVendorsFromApi(mac) {
+  sleep(1);
+
+  var url = "https://api.macvendors.com/"+mac;
+
+  logger.info(`Going to fetch this url: ${url}`);
+
+  var res = request('GET', url);
+
+  //Add errpr handeling!!!
+  if (res.statusCode == 200) {
+    return res.getBody().toString();
+  } else {
+    return ("Unknown");
+  }
 }
 
 //Setup promise that should return an array of objects.  Each object should have a MAC,IP, and Vendor property.  These represent the results of arp-scan agains all cidr networks in config.js
@@ -131,19 +130,19 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
     Promise.all(promises)
       .then(function(data){
         logger.info('Completed all arp scans');
-        var  combinedResults = []
+        var combinedResults = []
   
         for (var i=0; i < data.length; i++){
           var linesFromScan = data[i].split("\n");
   
-          for (var j = 2; j < (linesFromScan.length - 4); j++) { 
-            var splitLines = linesFromScan[j].split('\t')
-            var assetObject = {}
-            assetObject.MAC = splitLines[1]
-            assetObject.IP = []
-            assetObject.IP.push(splitLines[0])
-            assetObject.Vendor = splitLines[2]
-            combinedResults.push(assetObject)
+          for (var j = 2; j < (linesFromScan.length - 4); j++) {
+            var splitLines = linesFromScan[j].split('\t');
+            var assetObject = {};           
+            assetObject.MAC = splitLines[1];
+            assetObject.IP = [];
+            assetObject.IP.push(splitLines[0]);
+            assetObject.Vendor = splitLines[2];
+            combinedResults.push(assetObject);
           }
         }
         logger.info('Organized scan results');
@@ -151,12 +150,11 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
       })
       .catch(function (error){
         logger.error('Error while fetching scan results:');
-        logger.debug(error);
+        logger.debug(`${error}`);
         reject(Error(error));
       });
   });
 });
-
 
 //Setup Promise that should return all MAC addresses from the database
 var getMacsFromDatabase = new Promise(function(resolve, reject){
@@ -171,6 +169,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
       logger.info("Succesfully fetched MAC addresses from database");
       resolve(databaseMacAddresses);
     } else {
+      logger.debug(`Error fetching MAC from DB: ${err}`);
       reject(Error(err));
     }
   });
@@ -185,10 +184,11 @@ function checkScanAndCheckDatabase(cb) {
       var databasesAddresses = data[1];
 
       var newAddresses = []
+
       for (var i = 0; i < scanResults.length; i++){
         var contains = false;
 
-        for (var j=0; j<databasesAddresses.length; j++){
+        for (var j=0; j < databasesAddresses.length; j++){
           if(scanResults[i].MAC == databasesAddresses[j]){
             contains = true;
             break;
@@ -199,17 +199,17 @@ function checkScanAndCheckDatabase(cb) {
         }
       }
 
-      //Setup  promises for resolving vendor on all new devices
-      var vendorPromises = newAddresses.map(getVendorsFromApi);
+      //For resolving vendor on all new devices
+      newAddresses.forEach(function(item){
+        if (item.Vendor.includes("(Unknown)")) {
+          item.Vendor = getVendorsFromApi(item.MAC);
+        }
+      });
 
-      var newAssetsWithVendors = Promise.all(vendorPromises);
-
-      //Resolve all vendor.com promises then return data
-      newAssetsWithVendors.then(newAssets =>
-        cb(null, scanResults, databasesAddresses, newAssets)
-      );
+      cb(null, scanResults, databasesAddresses, newAddresses);
     })
     .catch(function (error){
+      logger.debug(`Error compaing scan to db info: ${error}`);
       cb(error);
     });
 }
@@ -217,8 +217,9 @@ function checkScanAndCheckDatabase(cb) {
 checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAddresses){
   if(!err){
     if (newAddresses.length > 0) {
-      logger.info("New addresses detected");
+      logger.info(`${newAddresses.length} new addresses detected`);
       var body = "New MAC addresses detected on network.\r\n"
+
       for (var i=0; i < newAddresses.length; i++){
         body +="MAC Address: "+newAddresses[i].MAC+"   "
         body +="IP Address: "+newAddresses[i].IP+"   "
@@ -233,7 +234,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
               logger.info("Email sent succesfully");
             } else {
               logger.error("Error sending email notification");
-              logger.debug(err);
+              logger.debug(`${err}`);
             }
           });
         } else {
@@ -261,6 +262,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
     }
   } else {
     logger.error("Error in scanning module retrieving or comparing arp-scan and database MAC addresses");
-    logger.debug("%s", err);
+    logger.debug(`${err}`);
+    db.dbConnection.disconnect(function(){});
   }
 });
