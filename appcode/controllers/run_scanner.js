@@ -25,7 +25,3 @@ exports.runOnce = function() {
     logger.debug('Error in network_scanner.js: %s', err);
   }
 };
-
-
-
-  
