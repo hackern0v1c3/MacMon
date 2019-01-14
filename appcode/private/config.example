@@ -2,7 +2,7 @@
 	"hashStrength": 10,
 	"CidrRanges": [
 		"192.168.2.0/24", 
-		"10.10.0.0/16"
+		"10.0.0.0/24"
 	],
 	"scanInterval": 300,
 	"emailNotifications": "False",
