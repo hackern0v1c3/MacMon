@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-////REMEMBER TO TAKE ALL OF THE CONSOLE LOGGING OUT OF HERE
 ////I have tested the ideal working scenario but not all of the possible failures
 ////Error handeling and logging needs to be worked on.
 "use strict";
