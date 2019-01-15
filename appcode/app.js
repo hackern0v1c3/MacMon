@@ -19,6 +19,7 @@ const settings = require('./routes/settings.js');
 const logout = require('./routes/logout.js');
 const passwordreset = require('./routes/passwordreset.js');
 const dbbackup = require('./routes/dbbackup.js');
+const mailer = require('./routes/mailer.js');
 const user = require('./controllers/roles.js');
 const run_scanner = require('./controllers/run_scanner.js');
 const timers = require('timers');
@@ -82,6 +83,7 @@ app.use('/assettypes', assettypes);
 app.use('/logout', logout);
 app.use('/passwordreset', passwordreset);
 app.use('/dbbackup', dbbackup);
+app.use('/mailer', mailer);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -106,7 +108,7 @@ var scanFunction = function() {
   run_scanner.runOnce();
   config.settings.returnAllSettings(function(err, newSettings){
     if (err){
-      logger.debug('Error reading config file: %s', err);
+      logger.debug(`Error reading config file: ${err}`);
       process.exit(1);
     }
 

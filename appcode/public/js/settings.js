@@ -39,7 +39,21 @@ function Update(){
       $('#saveConfirmModal').modal('show');
     },
     error: function(error){
-      alert("save failed " + error);
+      alert("save failed " + error.responseText);
+    }
+  });
+}
+
+//Used to test email settings
+function TestEmail(){
+  $.ajax({
+    url: '/mailer', 
+    cache: false,
+    success: function(data) {
+      alert("test succeeded: " + data);
+    },
+    error: function(error){
+      alert("test failed: " + error.responseText);
     }
   });
 }
@@ -55,7 +69,7 @@ function BackupDb(){
       alert("backup success");
     },
     error: function(error){
-      alert("backup failed " + error);
+      alert("backup failed " + error.responseText);
     }
   });
 }
@@ -71,7 +85,7 @@ function RestoreDatabase(filename){
       alert("restore requested");
     },
     error: function(error){
-      alert("restore error " + error);
+      alert("restore error " + error.responseText);
     }
   });
 }
@@ -138,17 +152,22 @@ $(document).ready( function () {
   $('#emailPassword1').keyup(validateEmailPasswordInputFields);
   $('#emailPassword2').keyup(validateEmailPasswordInputFields);
 
-  $("#emailPasswordResetSubmitButton").click( function() {
+  $("#emailPasswordResetSubmitButton").click(function() {
     UpdateEmailPassword();
   });
 
-  $("#databaseRestoreSubmitButton").click( function() {  
+  $("#databaseRestoreSubmitButton").click(function() {  
     RestoreDatabase($("#databaseRestoreSelection option:selected").text());
   });
 
   //Called when backup database button is pressed
-  $("#backupDatabaseButton").click( function() {
+  $("#backupDatabaseButton").click(function() {
     BackupDb();
+  });
+
+  //Called when test email settings button is pressed
+  $("#testEmailButton").click(function(){
+    TestEmail();
   });
   
 });
