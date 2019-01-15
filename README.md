@@ -6,7 +6,7 @@ MacMon is an application written primarily in NodeJs that actively scans your ne
 
 ## Information
 
-- This application is intended to be installed on home or small business networks.  It does not support scanning accross network boundaries.
+- This application is intended to be installed on home or small business networks.  It does not support scanning across network boundaries.
 
 - This is a passion project that was spawned by Brian Johnson at [7 minute security](https://7ms.us/) when he was looking for solutions for small business to keep track of what's on their network that were easy to use and innexpensive.  You can't secure your network if you don't know what's on it!  [See step 1 of the Basic CIS Controls](https://www.cisecurity.org/controls/)
 
@@ -32,7 +32,7 @@ sudo docker run -d -e DB_ROOT_PASSWORD={make up a password} -e DB_PASSWORD={make
 
 - Devices can be deleted from either list by clicking the "Delete" button.  However during the next scan if the deviec is detected again the device will appear again on the New Devices tab.  This is intentional.  Devices should only be deleted if you think they are gone for good.  Otherwise they should be approved.
 
-- If arp scan is not able to detect the manufacturer of a device MacMon then uses the [MacVendors.com](https://macvendors.com/) API to lookup a device.  Their usage is throttled so on your initial scan there may be some devices that show "Too Many Requests".  If this happens just be patient.  On every following scan MacMon will try to lookup the device again.  Eventually everything should be identified automatically.
+- If arp scan is not able to detect the manufacturer of a device MacMon then uses the [MacVendors.com](https://macvendors.com/) API to lookup a device.  Their usage is throttled so you can only do 1000 lookups per day from a given IP.  If a lookup fails you can delete the device from MacMon and it should be detected again during the next scan.
 
 - The "Last Updated" column should show the last time any device was detected on your network.  This can be handy for identifying old or powered off devices.
 

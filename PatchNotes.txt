@@ -1,5 +1,7 @@
 v0.2: Fixed default listening https port to be 8443
   Fixed logging format
   changed default subnets to be scanned in config file because /16 took too long
+  Slowed down device scanning and macvendor lookups to fix API problem
+  used setcap to allow node to listen on ports lower than 1024
 
 v0.1: Initial beta release
