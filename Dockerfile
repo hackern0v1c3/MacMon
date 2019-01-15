@@ -80,7 +80,10 @@ RUN apt-get update && \
 	python3-pip \
 	python3-setuptools \
 	python3-dev \
+	libcap2-bin \
 	&& rm -rf /var/lib/apt/lists/*
+
+RUN setcap cap_net_bind_service=+ep `readlink -f \`which node\``
 
 RUN pip3 install scapy
 
