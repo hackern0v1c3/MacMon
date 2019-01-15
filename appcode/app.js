@@ -22,7 +22,6 @@ const dbbackup = require('./routes/dbbackup.js');
 const mailer = require('./routes/mailer.js');
 const user = require('./controllers/roles.js');
 const run_scanner = require('./controllers/run_scanner.js');
-const timers = require('timers');
 
 const db = require('./controllers/db.js');
 const passport = require('passport');
