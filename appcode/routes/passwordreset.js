@@ -11,10 +11,10 @@ router.post('/', function(req, res) {
   } else {
     db.users.updatePassword(req.user.userName, req.body.password, function(err) {
       if(!err) {
-        logger.debug('Password reset for %s', req.user.userName);
+        logger.debug(`Password reset for ${req.user.userName}`);
         res.redirect('/logout');
       } else {
-        logger.debug('Error updating database: %s', err);
+        logger.debug(`Error updating database: ${err}`);
         res.status(500).send('Internal server error: Error updating data');
       }
     });

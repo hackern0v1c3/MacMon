@@ -13,18 +13,18 @@ router.post('/', user.can('be admin'), function(req, res) {
         if(!err){
           res.status(200).send();
         } else {
-          logger.debug('Error backing up database: %s', err);
+          logger.debug(`Error backing up database: ${err}`);
           res.status(500).send('Internal server error: Error backing up database');
         }
       });      
       break;
     case "restore":
-      logger.info("Database restore request received.  Filename: %s", req.body.filename);
+      logger.info(`Database restore request received.  Filename: ${req.body.filename}`);
       backup.utils.restoreDatabase(req.body.filename, function(err){
         if (!err){
           res.status(200).send();
         } else {
-          logger.debug('Error restoring database: %s', err);
+          logger.debug(`Error restoring database: ${err}`);
           res.status(500).send('Internal server error: Error restoring database');
         }
       });
@@ -36,15 +36,15 @@ router.post('/', user.can('be admin'), function(req, res) {
         if(!err){
           res.status(200).send(data);
         } else {
-          logger.debug('Error retrieving backup file list: %s', err);
+          logger.debug(`Error retrieving backup file list: ${err}`);
           res.status(500).send('Internal server error: Error retrieving backup file list');
         }
       });
       
       break;
     default:
-      logger.debug('Invalid backup action requested: %s', req.body.action);
-      res.status(500).send('Internal server error: Unknown dbbackup action: %s', req.body.action);
+      logger.debug(`Invalid backup action requested: ${req.body.action}`);
+      res.status(500).send(`Internal server error: Unknown dbbackup action: ${req.body.action}`);
   }
 });
 

@@ -13,7 +13,7 @@ exports.runOnce = function(mac, ip) {
       }
       else if (stderr) {
         logger.error('nmap error');
-        logger.debug('Nmap error: %s', stderr);
+        logger.debug(`Nmap error: ${stderr}`);
       }
       else {
         logger.info(stdout);
@@ -23,6 +23,6 @@ exports.runOnce = function(mac, ip) {
   }
   catch(err){
     logger.error('Error running nmap_scanner');
-    logger.debug('Error in nmap_scanner.js: %s', err);
+    logger.debug(`Error in nmap_scanner.js: ${err}`);
   }
 }

@@ -19,25 +19,25 @@ const mac = process.argv[2];
 const ip = process.argv[3];
 
 if (!utils.validateMac(mac)) {
-  logger.error("Invalid mac address: %s", mac);
+  logger.error(`Invalid mac address: ${mac}`);
   process.exit(1);
 }
 
 if (!utils.validateIPaddress(ip)) {
-  logger.error("Invalid ip address: %s", ip);
+  logger.error(`Invalid ip address: ${ip}`);
   process.exit(1);
 }
 
-logger.info('Running nmap scan of: %s', ip);
+logger.info(`Running nmap scan of: ${ip}`);
 
 exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
-  logger.info('Completed nmap for %s', ip);
+  logger.info(`Completed nmap for ${ip}`);
   if (err) {
-    logger.error('Error: %s', err);
+    logger.error(`Error: ${err}`);
     process.exit(1);
   }
   else if (stderr) {
-    logger.error('Error: %s', stderr);
+    logger.error(`Error: ${stderr}`);
     process.exit(1);
   }
   else {
@@ -69,11 +69,11 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
 
       db.assets.updateNmap(mac, portInfo, function(err){
         if (err) {
-          logger.error("Error updating database with nmap data: %s %s", mac, ip);
-          logger.debug("Nmap scanner debug: %s", err);
+          logger.error(`Error updating database with nmap data: ${mac} ${ip}`);
+          logger.debug(`Nmap scanner debug: ${err}`);
         }
         else {
-          logger.info('Database Nmap Update Complete for %s %s', mac, ip);
+          logger.info(`Database Nmap Update Complete for ${mac} ${ip}`);
         }
         logger.info("Closing database connection");
         db.dbConnection.disconnect(function(){});

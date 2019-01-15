@@ -6,7 +6,7 @@ const logger = require('./logger.js');
 var blockedDevices = [];
 
 exports.toggleBlocking = function(ipAddress) {
-  logger.debug('Blocker toggle request received for: %s', ipAddress);
+  logger.debug(`Blocker toggle request received for: ${ipAddress}`);
 
   //If IP is already in blockedAssets
   var indexOfDevice = blockedDevices.findIndex(x => x.name == ipAddress);

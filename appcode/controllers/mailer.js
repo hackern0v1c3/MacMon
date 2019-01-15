@@ -38,7 +38,7 @@ exports.sendMessage = function(messageSubject, messageBody, cb) {
 			if (error) {
 				cb(error, "");
 			} else {
-				var result = ('Message %s sent: %s', info.messageId, info.response);
+				var result = (`Message ${info.messageId} sent: ${info.response}`);
 				cb(null, result);
 			}
 		});

@@ -11,7 +11,7 @@ router.get('/', user.can('read data'), function (req, res) {
     if(!err){
       res.status(200).send(data);
     } else {
-      logger.debug('Error retrieving asset types from database: %s', err);
+      logger.debug(`Error retrieving asset types from database: ${err}`);
       res.status(500).send('Internal server error: Error retrieving data');
     }
   });

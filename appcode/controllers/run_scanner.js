@@ -12,7 +12,7 @@ exports.runOnce = function() {
       }
       else if (stderr) {
         logger.error('Arpscan error');
-        logger.debug('Arpscan error: %s', stderr);
+        logger.debug(`Arpscan error: ${stderr}`);
       }
       else {
         logger.info(stdout);
@@ -22,6 +22,6 @@ exports.runOnce = function() {
   }
   catch(err){
     logger.error('Error setting timer for network scans');
-    logger.debug('Error in network_scanner.js: %s', err);
+    logger.debug(`Error in network_scanner.js: ${err}`);
   }
 };

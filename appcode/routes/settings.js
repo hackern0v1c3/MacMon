@@ -15,7 +15,7 @@ router.get('/', function (req, res) {
   } else {
     config.settings.returnAllSettings(function(err, settings){
       if (err){
-        logger.debug('Error reading config file: %s', err);
+        logger.debug(`Error reading config file: ${err}`);
         res.status(500).send('Internal server error: Error reading config file');
       }
       delete settings.emailSenderPassword;
@@ -30,7 +30,7 @@ router.post('/', user.can('update data'), function(req, res) {
 
   config.settings.returnAllSettings(function(err, settings){
     if (err){
-      logger.debug('Error reading config file: %s', err);
+      logger.debug(`Error reading config file: ${err}`);
       res.status(500).send('Internal server error: Error reading config file');
     }
 
@@ -39,7 +39,7 @@ router.post('/', user.can('update data'), function(req, res) {
 
     config.settings.saveNewSettings(newConfig, function(err){
       if (err){
-        logger.debug('Error writing config file: %s', err);
+        logger.debug(`Error writing config file: ${err}`);
         res.status(500).send('Internal server error: Error saving config file');
       }
       logger.info('Wrote new config to disk');
@@ -54,7 +54,7 @@ router.post('/emailPassword', user.can('update data'), function(req, res) {
 
   config.settings.returnAllSettings(function(err, settings){
     if (err){
-      logger.debug('Error reading config file: %s', err);
+      logger.debug(`Error reading config file: ${err}`);
       res.status(500).send('Internal server error: Error reading config file');
     }
     //Only update password in old config
@@ -62,7 +62,7 @@ router.post('/emailPassword', user.can('update data'), function(req, res) {
 
     config.settings.saveNewSettings(settings, function(err){
       if (err){
-        logger.debug('Error writing config file: %s', err);
+        logger.debug(`Error writing config file: ${err}`);
         res.status(500).send('Internal server error: Error saving config file');
       }
       logger.info('Wrote new config to disk');

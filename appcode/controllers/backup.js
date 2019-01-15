@@ -16,12 +16,12 @@ module.exports.utils = {
       exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
         logger.info("mysql dump complete");
         exec('wc -l <'+ backupFileName, function (error, results) {
-          logger.info("mysqldump file lines: %s", results);
+          logger.info(`mysqldump file lines: ${results}`);
           if (results > 10) {
             return cb(null);
           } 
           else {
-            logger.debug("error: %s", error);
+            logger.debug(`error: ${error}`);
             return cb("Backup failed");
           }    
         });
@@ -53,11 +53,11 @@ module.exports.utils = {
       exec('mysql -uroot -p'+process.env.DB_ROOT_PASSWORD+' '+process.env.DB_NAME+' <'+restoreFileName, (err, stdout, stderr) => {
         logger.info("mysql restore complete");
         if (err){
-          logger.debug("Restore Error: %s", err);
+          logger.debug(`Restore Error: ${err}`);
         }
         if (stderr)
         {
-          logger.debug("Restore Error: %s", stderr);
+          logger.debug(`Restore Error: ${stderr}`);
         }
         cb(null);
       });
