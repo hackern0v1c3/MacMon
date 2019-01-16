@@ -157,6 +157,7 @@ _populate_database() {
 
 		#default account admin/admin
 		echo "INSERT INTO users (userName, userPass, userRole) VALUES ('admin', '\$2a\$10\$/tUV6VYUUnblcZK2RFEc9udR8IIz05F4JpIgC75NpMZHR3Gq8gq0i', 1);" | "${mysql[@]}"
+		node ./bin/reset_admin_password.js
 
 		#default asset types
 		echo "INSERT INTO AssetTypes (Name) VALUES ('Unclassified');" | "${mysql[@]}"

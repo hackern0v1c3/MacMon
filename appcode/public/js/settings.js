@@ -1,8 +1,7 @@
 //User to update the config.js file
 function Update(){
   
-  var newConfig = {}
-  newConfig.hashStrength = parseInt($('#hashStrengthInput').val());
+  var newConfig = {};
 
   var CidrArray = [];
   $('#cidrTable tbody tr td:first-child').each( function(){

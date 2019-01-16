@@ -207,7 +207,7 @@ module.exports.users = {
 		}
 		
 		config.settings.returnAllSettings(function(err, settings){
-			bcrypt.genSalt(settings.hashStrength, function(err, salt) {
+			bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
 				if(err){return cb(err);}
 				
 				bcrypt.hash(userPassword, salt, null, function(err, hash) {
@@ -233,7 +233,7 @@ module.exports.users = {
 		}
 
 		config.settings.returnAllSettings(function(err, settings){
-			bcrypt.genSalt(settings.hashStrength, function(err, salt) {
+			bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
 				if(err){return cb(err);}
 	
 				bcrypt.hash(newPassword, salt, null, function(err, hash) {

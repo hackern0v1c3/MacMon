@@ -26,9 +26,6 @@ block body
     .form-group
       label(for='dbNameInput') Database Name
       input#dbNameInput.form-control(type='text', name='dbName', value=process.env.DB_NAME)
-    .form-group
-      label(for='hashStrengthInput') BCrypt hash Iterations.  (Don't change unless you know what you are doing)
-      input#hashStrengthInput.form-control(type='text', name='hashStrength', value=conf.hashStrength)
     hr
     h4 Scanner Settings
     .form-group
