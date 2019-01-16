@@ -17,4 +17,20 @@ router.get('/', user.can('read data'), function (req, res) {
   });
 });
 
+//For deleting an asset type
+router.get('/delete/:ID', user.can('delete data'), function (req, res) {
+  if(req.params.ID === "1"){
+    res.status(403).send('Asset type 1 cannot be deleted.  It is a required default.');
+  } else {
+    db.assetTypes.deleteAssetType(req.params.ID, function(err){
+      if(!err){
+        res.status(200).send('Asset Type Deleted');
+      } else {
+        logger.debug(`Error updating database: ${err}`);
+        res.status(500).send('Internal server error: Error updating data');
+      }
+    });
+  }
+});
+
 module.exports = router;

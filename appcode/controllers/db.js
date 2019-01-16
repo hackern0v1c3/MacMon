@@ -320,5 +320,27 @@ module.exports.assetTypes = {
 				return cb(null, results, fields);
 			});
 		});
-	}
+	},
+	deleteAssetType: function(assetTypeId, cb){
+		//should check here for properly formed input...
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+
+			var sqlQuery = "UPDATE Assets SET AssetType=1 WHERE AssetType=?;"
+
+			connection.query(sqlQuery,[assetTypeId],function(err) {
+				if (err){
+					connection.release();
+					return cb(err);
+				} else {
+					var sqlQuery = "DELETE FROM AssetTypes WHERE ID = ?;"
+
+					connection.query(sqlQuery,[assetTypeId],function(err) {
+						connection.release();
+						return cb(err);
+					});
+				}
+			});
+		});
+	},
 }
