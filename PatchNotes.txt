@@ -4,5 +4,6 @@ v0.2: Fixed default listening https port to be 8443
   Slowed down device scanning and macvendor lookups to fix API problem
   Used setcap to allow node to listen on ports lower than 1024
   Added button for testing email settings
+  Moved bcrypt hash iterations to docker environmental variable and removed from conf file
 
 v0.1: Initial beta release
