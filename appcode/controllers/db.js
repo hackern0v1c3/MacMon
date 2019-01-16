@@ -205,22 +205,20 @@ module.exports.users = {
 		if(userName === null || userPassword === null || userRole === null) {
 			return cb('username, password, and role cannot be null');
 		}
-		
-		config.settings.returnAllSettings(function(err, settings){
-			bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
-				if(err){return cb(err);}
-				
-				bcrypt.hash(userPassword, salt, null, function(err, hash) {
-					if(err){return cb(err);}
+
+		bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
+			if(err){return cb(err);}
 			
-					pool.getConnection(function(err, connection) {
+			bcrypt.hash(userPassword, salt, null, function(err, hash) {
+				if(err){return cb(err);}
+		
+				pool.getConnection(function(err, connection) {
+					if(err){return cb(err);}
+					connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
+						connection.release();
 						if(err){return cb(err);}
-						connection.query('INSERT INTO users (userName, userPass, userRole) VALUES (?, ?, ?)', [userName, hash, userRole], function (err, results, fields) {
-							connection.release();
-							if(err){return cb(err);}
-							return cb(null);
-						}); 
-					});
+						return cb(null);
+					}); 
 				});
 			});
 		});
@@ -232,24 +230,22 @@ module.exports.users = {
 			return cb('username, password, and role cannot be null');
 		}
 
-		config.settings.returnAllSettings(function(err, settings){
-			bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
+		bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
+			if(err){return cb(err);}
+
+			bcrypt.hash(newPassword, salt, null, function(err, hash) {
 				if(err){return cb(err);}
-	
-				bcrypt.hash(newPassword, salt, null, function(err, hash) {
+				
+				pool.getConnection(function(err, connection) {
 					if(err){return cb(err);}
-					
-					pool.getConnection(function(err, connection) {
+
+					var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
+
+					connection.query(sqlQuery, [hash, userName], function(err) {
+						connection.release();
 						if(err){return cb(err);}
-	
-						var sqlQuery = "UPDATE users SET userPass=? WHERE userName = ?;"
-	
-						connection.query(sqlQuery, [hash, userName], function(err) {
-							connection.release();
-							if(err){return cb(err);}
-							return cb(null);
-						}); 
-					});
+						return cb(null);
+					}); 
 				});
 			});
 		});
@@ -321,6 +317,7 @@ module.exports.assetTypes = {
 			});
 		});
 	},
+	//Delete a single asset type by id
 	deleteAssetType: function(assetTypeId, cb){
 		//should check here for properly formed input...
 		pool.getConnection(function(err, connection) {
@@ -343,4 +340,19 @@ module.exports.assetTypes = {
 			});
 		});
 	},
+	//Insert new asset type
+	insertNew: function(Name, cb) {
+		if(Name === null)  {
+			return cb('name cannot be null');
+		}
+
+		pool.getConnection(function(err, connection) {
+			if(err){return cb(err);}
+			connection.query('INSERT INTO AssetTypes (Name) VALUES (?)', [Name], function (err, results, fields) {
+				connection.release();
+				if(err){return cb(err);}
+				return cb(null);
+			}); 
+		});
+	}
 }
