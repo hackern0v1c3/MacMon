@@ -347,11 +347,18 @@ module.exports.assetTypes = {
 		}
 
 		pool.getConnection(function(err, connection) {
-			if(err){return cb(err);}
+			if(err){return cb(err, null);}
 			connection.query('INSERT INTO AssetTypes (Name) VALUES (?)', [Name], function (err, results, fields) {
-				connection.release();
-				if(err){return cb(err);}
-				return cb(null);
+				if(err){return cb(err, null);}
+				connection.query('SELECT LAST_INSERT_ID()', function (err, results, fields) {
+					if(err){return cb(err, null);}
+
+					var assetId = JSON.stringify(results[0]["LAST_INSERT_ID()"]);
+
+					connection.release();
+				
+					return cb(null, assetId);
+				});	
 			}); 
 		});
 	}

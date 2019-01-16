@@ -6,6 +6,7 @@ block selected
 block body
   form.form-horizonal.justify-content-center(action='/settings', method='post', style={margin: '0px 30px 30px 30px'})
     h4 Version
+    hr
     #{process.env.VERSION}
     h4 Database Settings
     button#backupDatabaseButton.btn.btn-primary(type='button', enabled) Backup Database
@@ -26,6 +27,19 @@ block body
     .form-group
       label(for='dbNameInput') Database Name
       input#dbNameInput.form-control(type='text', name='dbName', value=process.env.DB_NAME)
+    hr
+    h4 Asset Types
+    table#assetTypeTable.table.table-hover.table-sm(style={width: '30%'})
+      each assetType in assetTypes
+        tr
+          td(id='assetid_'+assetType.ID)= assetType.Name
+          td(align='right', style={width: '1%'})
+            button.btn.btn-danger.removeAssetTypeButton(type='button', enabled) X
+      tr
+        td
+          input#newAssetTypeInput.form-control(type='text', name='newAssetType')
+        td
+          button#newAssetTypeButton.btn.btn-primary(type='button', enabled) Add Asset Type
     hr
     h4 Scanner Settings
     .form-group

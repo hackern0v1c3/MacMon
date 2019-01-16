@@ -35,10 +35,10 @@ router.get('/delete/:ID', user.can('delete data'), function (req, res) {
 
 //For creating a new asset type
 /* POST for updating data */
-router.post('/insert', user.can('update data'), function(req, res) {
-  db.assetTypes.insertNew(req.body.name, function(err){
+router.post('/', user.can('update data'), function(req, res) {
+  db.assetTypes.insertNew(req.body.name, function(err, newid){
     if(!err){
-      res.status(200).send('Asset Type Created');
+      res.status(200).send(newid);
     } else {
       logger.debug(`Error updating database: ${err}`);
       res.status(500).send('Internal server error: Error updating data');

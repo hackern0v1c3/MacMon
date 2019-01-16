@@ -1,9 +1,8 @@
 //User to update the config.js file
-function Update(){
-  
+function Update(){ 
   var newConfig = {};
-
   var CidrArray = [];
+
   $('#cidrTable tbody tr td:first-child').each( function(){
     CidrArray.push( $(this).text() );       
   });
@@ -135,6 +134,37 @@ function AddRange(){
   $('#newCidrInput').val('');
 }
 
+//Used to add a new asset type to the database
+function AddAssetType(name, cb){
+  var reqData ={'name': name};
+
+  $.ajax({
+    url: '/assettypes', 
+    type: 'POST', 
+    contentType: 'application/json', 
+    data: JSON.stringify(reqData),
+    success: function(data) {
+      cb(null, data);
+    },
+    error: function(error){
+      alert("New Asset Type Failed: " + error.responseText);
+    }
+  });
+}
+
+//Used to remove an asset type from the database
+function DeleteAssetType(id, cb){
+  $.ajax({
+    url: '/assettypes/delete/'+id,
+    success: function() {
+      cb(null);
+    },
+    error: function(error){
+      alert("Removing Asset Type Failed: " + error.responseText);
+    }
+  });
+}
+
 $(document).ready( function () {
   $("#editSettingsSubmitButton").click( function() {
     Update();
@@ -144,9 +174,38 @@ $(document).ready( function () {
     AddRange();
   });
 
-  //Used to remove a Cidr tange from the scanner settings table
+  //Used to remove a Cidr range from the scanner settings table
   $('#cidrTable').on('click', '.removeCidrButton', function() {
     $(this).closest("tr").remove();
+  });
+
+  //Used to remove an asset type
+  $('#assetTypeTable').on('click', '.removeAssetTypeButton', function() {
+    var assetIdToDelete = $(this).parent().siblings(":first").attr('id').split("_")[1];
+
+    var rowRowToRemove = $(this).closest("tr");
+
+    DeleteAssetType(assetIdToDelete, function(err){
+      if (!err){
+        rowRowToRemove.remove();
+      } else {
+        alert("Error deleting asset type: "+err);
+      }
+    });
+  });
+
+  //Used to add a new asset type
+  $("#newAssetTypeButton").click(function() {
+    var name = $('#newAssetTypeInput').val();
+
+    AddAssetType(name, function(err, id){
+      if (!err){
+        $('#assetTypeTable tr:last').before('<tr><td id=assetid_'+ id +'>'+name+'</td><td align="right"><button type="button" class="btn btn-danger removeAssetTypeButton">X</button></td></tr>');
+        $('#newAssetTypeInput').val('');
+      } else {
+        alert("Error adding new asset type: "+err);
+      }
+    });
   });
 
   //Used to display the database restore modal
