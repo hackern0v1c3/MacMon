@@ -70,30 +70,17 @@ block body
     .form-group
       label(for='emailTlsInput') Email Server Requires TLS 
         input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true')) 
-    button#editEmailAccountButton.btn.btn-primary(type='button', enabled) Change Email Password 
+    .form-group
+      label Password
+      input#emailPassword1.form-control(type='password', name='password')
+    .form-group
+      label Confirm Password
+      input#emailPassword2.form-control(type='password', name='confirmPassword')
     br
     br
     button#testEmailButton.btn.btn-primary(type='button', enabled) Test Email Settings
     hr
-    button#editSettingsSubmitButton.btn.btn-success(type='button', enabled) Submit
-        
-  //Modal for editing email password
-  #emailPasswordResetModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='emailPasswordResetModalLabel', aria-hidden='true')
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header
-          h5#emailPasswordResetModalLabel.modal-title Please enter a new email password
-          button.close(type='button', data-dismiss='modal', aria-label='Close')
-            span(aria-hidden='true') &times;
-        .modal-body
-          form.form-horizonal.justify-content-center(action='/passwordreset', method='post')
-            .form-group
-              label Password
-              input#emailPassword1.form-control(type='password', name='password')
-            .form-group
-              label Confirm Password
-              input#emailPassword2.form-control(type='password', name='confirmPassword')
-            button#emailPasswordResetSubmitButton.btn.btn-success(type='button', disabled) Submit
+    button#editSettingsSubmitButton.btn.btn-success(type='button', enabled) Save
 
   //Modal for restoring database
   #databaseRestoreModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='databaseRestoreModalLabel', aria-hidden='true')

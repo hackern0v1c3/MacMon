@@ -34,33 +34,12 @@ router.post('/', user.can('update data'), function(req, res) {
       res.status(500).send('Internal server error: Error reading config file');
     }
 
-    //Keep email password from old config
-    newConfig.emailSenderPassword = settings.emailSenderPassword;
+    //Keep email password from old config if no new one is supplied
+    if(typeof newConfig.emailSenderPassword === "undefined"){
+      newConfig.emailSenderPassword = settings.emailSenderPassword;
+    } 
 
     config.settings.saveNewSettings(newConfig, function(err){
-      if (err){
-        logger.debug(`Error writing config file: ${err}`);
-        res.status(500).send('Internal server error: Error saving config file');
-      }
-      logger.info('Wrote new config to disk');
-      res.status(200).send();
-    });
-  });
-});
-
-/* POST for updating email password in config.json */
-router.post('/emailPassword', user.can('update data'), function(req, res) {
-  newConfig = req.body;
-
-  config.settings.returnAllSettings(function(err, settings){
-    if (err){
-      logger.debug(`Error reading config file: ${err}`);
-      res.status(500).send('Internal server error: Error reading config file');
-    }
-    //Only update password in old config
-    settings.emailSenderPassword = newConfig.emailSenderPassword;
-
-    config.settings.saveNewSettings(settings, function(err){
       if (err){
         logger.debug(`Error writing config file: ${err}`);
         res.status(500).send('Internal server error: Error saving config file');

@@ -44,3 +44,40 @@ exports.sendMessage = function(messageSubject, messageBody, cb) {
 		});
 	});
 };
+
+exports.testSendMessage = function(emailSettings, cb) {
+	config.settings.returnAllSettings(function(err, settings){
+		if (emailSettings.emailSenderPassword === "" || typeof emailSettings.emailSenderPassword === "undefined") {
+			emailSettings.emailSenderPassword = settings.emailSenderPassword;
+		}
+
+		let smtpConfig = {
+			host: emailSettings.emailServer,
+			port: emailSettings.smtpPort,
+			secure: false, // upgrade later with STARTTLS
+			requireTLS: emailSettings.emailTls,
+			auth: {
+				user: emailSettings.emailSenderUsername,
+				pass: emailSettings.emailSenderPassword
+			}
+		};
+
+		let mailOptions = {
+			from: emailSettings.emailSender,
+			to: emailSettings.emailRecipient,
+			subject: "MacMon Email Test",
+			text: "This is a test email from MacMon.  Your email settings are correct.",
+		};
+
+		let transporter = nodemailer.createTransport(smtpConfig);
+
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				cb(error, "");
+			} else {
+				var result = (`Message ${info.messageId} sent: ${info.response}`);
+				cb(null, result);
+			}
+		});
+	});
+};

@@ -29,6 +29,9 @@ function Update(){
   } else {
     newConfig.emailNotifications = "False";
   }
+  if ($('#emailPassword1').val() != "") {
+    newConfig.emailSenderPassword = $('#emailPassword1').val();
+  }
   
   $.ajax({
     url: '/settings', 
@@ -46,14 +49,34 @@ function Update(){
 
 //Used to test email settings
 function TestEmail(){
+  var testEmailSettings = {};
+  testEmailSettings.emailServer = $('#emailServerInput').val();
+  testEmailSettings.smtpPort = parseInt($('#smtpPortInput').val());
+  testEmailSettings.emailSender = $('#emailSenderInput').val();
+  testEmailSettings.emailRecipient = $('#emailRecipientInput').val();
+  testEmailSettings.emailSenderUsername = $('#emailSenderUsernameInput').val();
+
+  if ($('#emailTlsInput').prop('checked')) {
+    testEmailSettings.emailTls = "True";
+  } else {
+    testEmailSettings.emailTls = "False";
+  }
+
+  if ($('#emailPassword1').val() != "") {
+    testEmailSettings.emailSenderPassword = $('#emailPassword1').val();
+  }
+  
   $.ajax({
-    url: '/mailer', 
+    url: '/mailer',
+    type: 'POST',
     cache: false,
+    contentType: 'application/json',
+    data: JSON.stringify(testEmailSettings),
     success: function(data) {
-      alert("test succeeded: " + data);
+      alert("Test succeeded.  Remember to save settings: " + data);
     },
     error: function(error){
-      alert("test failed: " + error.responseText);
+      alert("Test Failed: " + error.responseText);
     }
   });
 }
@@ -126,14 +149,6 @@ $(document).ready( function () {
   $('#cidrTable').on('click', '.removeCidrButton', function() {
     $(this).closest("tr").remove();
   });
-  
-  //Used to display the email password reset modal
-  $("#editEmailAccountButton").click(function () {
-    $('#emailPassword1').val('');
-    $('#emailPassword2').val('');
-    $('#emailPasswordResetSubmitButton').prop('disabled', true);
-    $('#emailPasswordResetModal').modal('show');
-  });
 
   //Used to display the database restore modal
   $("#restoreDatabaseButton").click(function () {
@@ -151,10 +166,6 @@ $(document).ready( function () {
 
   $('#emailPassword1').keyup(validateEmailPasswordInputFields);
   $('#emailPassword2').keyup(validateEmailPasswordInputFields);
-
-  $("#emailPasswordResetSubmitButton").click(function() {
-    UpdateEmailPassword();
-  });
 
   $("#databaseRestoreSubmitButton").click(function() {  
     RestoreDatabase($("#databaseRestoreSelection option:selected").text());
@@ -175,9 +186,11 @@ $(document).ready( function () {
 //Used to validate the email password input fields
 function validateEmailPasswordInputFields(){
   if (testComplexity($('#emailPassword1').val()) && $('#emailPassword1').val() === $('#emailPassword2').val()) {
-    $('#emailPasswordResetSubmitButton').prop('disabled', false);
+    $('#testEmailButton').prop('disabled', false);
+    $('#editSettingsSubmitButton').prop('disabled', false);
   } else {
-    $('#emailPasswordResetSubmitButton').prop('disabled', true);
+    $('#testEmailButton').prop('disabled', true);
+    $('#editSettingsSubmitButton').prop('disabled', true);
   }
 }
 
@@ -188,13 +201,4 @@ function testComplexity(potentialPassword) {
   } else {
     return false;
   }
-}
-
-function UpdateEmailPassword(){
-  var conf = {}
-  conf.emailSenderPassword = $('#emailPassword1').val();
-
-  $.post('/settings/emailPassword/', conf, function(){
-    $('#emailPasswordResetModal').modal('hide');
-  });
 }
