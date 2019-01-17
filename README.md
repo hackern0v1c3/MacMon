@@ -40,3 +40,5 @@ sudo docker run -d -e DB_ROOT_PASSWORD={make up a password} -e DB_PASSWORD={make
 - The MacMon docker image uses two volumes. /var/lib/mysql is where the built in Mariadb database is stored.  /usr/src/app/private is where the MacMon configuration files, https certificates, and database backups are stored.
 
 - The HTTPS port that the container listens on can be changed by using the environmental variable "-e HTTPS_PORT={port number}"
+
+- You can install your own SSL certificate by replacing the server.crt and server.key files in the certificates folder on the macmon_conf volume.  If you followed the quickstart instructions they should be in `/var/lib/docker/volumes/macmon_conf/_data/certificates/`
