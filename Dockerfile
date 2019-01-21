@@ -2,7 +2,7 @@
 FROM node:lts
 
 #Labels
-LABEL maintainer="admin@hackernovice.com"
+LABEL maintainer="macmondev@gmail.com"
 
 #create mysql environment based on here https://github.com/docker-library/mysql/blob/696fc899126ae00771b5d87bdadae836e704ae7d/8.0/Dockerfile
 RUN groupadd -r mysql && useradd -r -g mysql mysql
