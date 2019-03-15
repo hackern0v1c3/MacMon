@@ -1,4 +1,6 @@
 v0.3: Changed label for email password on settings page to avoid confusion
+  Added column to database to save the first time a device was detected
+  Change view to include first seen, and put timezone outside of table headers
 
 v0.2: Fixed default listening https port to be 8443
   Fixed logging format

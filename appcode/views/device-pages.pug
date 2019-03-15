@@ -47,6 +47,8 @@ block body
   //Header for filtering table
   .container-fluid
     .row
+      strong#tzHeader Local Time Zone UTC
+    .row
       strong Filter By Date:
       .col-lg
         input#datePickerStart.form-control(type="text", placeholder="Start Date")
@@ -62,7 +64,7 @@ block body
         table#assetTable.table.table-hover.table-sm
           thead.thead-dark
             tr
-              th
+              th#tzHeader
               th Mac Address
               th Name
               th Decription
@@ -70,6 +72,7 @@ block body
               th Vendor
               th IP Addresses
               th Asset Type
-              th#tzHeader Last Updated UTC
+              th Last Updated
+              th First Seen
           tbody
             block assetTable
