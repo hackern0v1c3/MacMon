@@ -47,6 +47,7 @@ CREATE TABLE `Assets` (
   `Guest` bit(1) NOT NULL DEFAULT b'0',
   `AssetType` int(11) NOT NULL DEFAULT '1',
   `LastUpdated` datetime DEFAULT CURRENT_TIMESTAMP,
+  `FirstSeen` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MAC`),
   KEY `AssetType` (`AssetType`),
   CONSTRAINT `Assets_ibfk_1` FOREIGN KEY (`AssetType`) REFERENCES `AssetTypes` (`ID`)
