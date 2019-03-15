@@ -44,6 +44,7 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
     logger.info('Nmap Result');
 
     parser.parseString(stdout, function (err, result) {
+      //crashes if host is down
       var ports = result.nmaprun.host[0].ports[0].port;
       var d = new Date();
       var portInfo = d + "\r\n"
