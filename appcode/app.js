@@ -1,6 +1,7 @@
 "use strict";
 
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const favicon = require('serve-favicon');
 const morgan = require('morgan');
@@ -28,6 +29,7 @@ const passport = require('passport');
 const strategy = require('passport-local').Strategy;
 
 var app = express();
+app.use(helmet());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
