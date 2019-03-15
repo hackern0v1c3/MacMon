@@ -1,3 +1,5 @@
+v0.4: Change view of nmap scan results in table
+
 v0.3: Changed label for email password on settings page to avoid confusion
   Added column to database to save the first time a device was detected
   Change view to include first seen, and put timezone outside of table headers
