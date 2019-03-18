@@ -166,6 +166,10 @@ function DeleteAssetType(id, cb){
 }
 
 $(document).ready( function () {
+  //Show the local timezone
+  var currTz = sessionStorage.getItem('timezone');
+  $("#tzLabel").html(currTz);
+
   $("#editSettingsSubmitButton").click( function() {
     Update();
   });
