@@ -108,9 +108,6 @@ $(document).ready( function () {
   }
   var currTz = sessionStorage.getItem('timezone');
 
-  //Adjust the header for the Last Updated column
-  $("#tzHeader").html('Local Time Zone '+currTz);
-
   //Adjust times in table for timezone
   $("#assetTable tr td.timezoneChange").each(function(){
     var dateParts = this.innerHTML.split(" ");
