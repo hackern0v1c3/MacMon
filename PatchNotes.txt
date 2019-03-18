@@ -1,3 +1,6 @@
+v0.5: Add code to docker entrypoint which should update the DB schema from MacMon v0.1-v0.2 to include the new field introduced in v0.3
+  Moved time zone display again.  This time to settings page
+
 v0.4: Change view of nmap scan results in table
 
 v0.3: Changed label for email password on settings page to avoid confusion
