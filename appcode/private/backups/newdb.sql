@@ -163,7 +163,8 @@ SET character_set_client = utf8;
  1 AS `LastUpdated`,
  1 AS `Nmap`,
  1 AS `AssetType`,
- 1 AS `AssetTypeName`*/;
+ 1 AS `AssetTypeName`,
+ 1 AS `FirstSeen`*/;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -233,7 +234,7 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `whitelistedGuestAssetsWithTypes` AS select `Assets`.`MAC` AS `MAC`,`Assets`.`Name` AS `Name`,`Assets`.`Description` AS `Description`,`Assets`.`Vendor` AS `Vendor`,`Assets`.`IP` AS `IP`,`Assets`.`LastUpdated` AS `LastUpdated`,`Assets`.`Nmap` AS `Nmap`,`Assets`.`AssetType` AS `AssetType`,`AssetTypes`.`Name` AS `AssetTypeName` from (`Assets` join `AssetTypes` on((`Assets`.`AssetType` = `AssetTypes`.`ID`))) where (`Assets`.`Whitelisted` and `Assets`.`Guest`) */;
+/*!50001 VIEW `whitelistedGuestAssetsWithTypes` AS select `Assets`.`MAC` AS `MAC`,`Assets`.`Name` AS `Name`,`Assets`.`Description` AS `Description`,`Assets`.`Vendor` AS `Vendor`,`Assets`.`IP` AS `IP`,`Assets`.`LastUpdated` AS `LastUpdated`,`Assets`.`Nmap` AS `Nmap`,`Assets`.`AssetType` AS `AssetType`,`Assets`.`FirstSeen` AS `FirstSeen`,`AssetTypes`.`Name` AS `AssetTypeName` from (`Assets` join `AssetTypes` on((`Assets`.`AssetType` = `AssetTypes`.`ID`))) where (`Assets`.`Whitelisted` and `Assets`.`Guest`) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
