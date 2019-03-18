@@ -140,12 +140,12 @@ _populate_database() {
 	echo "Table count: ${TABLE_COUNT}"
 
 	if [ $TABLE_COUNT != "8" ]; then
-
-		echo "Creating database user account"
 		mysql=( mysql -uroot -p"${DB_ROOT_PASSWORD}" -h"${DB_ADDRESS}" -P"${DB_PORT}" )
 
+		echo "Importing DB Schema"
 		mysql -uroot -p${DB_ROOT_PASSWORD} -D AssetTracking < ./private/backups/newdb.sql
 
+		echo "Creating database user account"
 		echo "GRANT ALL ON AssetTracking.* TO '${DB_USER}'@'${MYSQL_ROOT_HOST}' ;" | "${mysql[@]}"
 		echo 'FLUSH PRIVILEGES ;' | "${mysql[@]}"
 
@@ -170,7 +170,17 @@ _populate_database() {
 		echo "INSERT INTO AssetTypes (Name) VALUES ('Switch');" | "${mysql[@]}"
 
 		echo "Finished populating database"
+	else
+		mysql=( mysql -uroot -p"${DB_ROOT_PASSWORD}" -h"${DB_ADDRESS}" -P"${DB_PORT}" -D AssetTracking)
 
+		#UPDATE v0.1-v0.2 database
+		echo "Updating Assets Table Schema"
+		echo "ALTER TABLE Assets ADD COLUMN IF NOT EXISTS FirstSeen datetime DEFAULT CURRENT_TIMESTAMP AFTER LastUpdated;" | "${mysql[@]}"
+
+		echo "Updating DB Views"
+		echo "ALTER VIEW unapprovedAssetsWithTypes AS SELECT Assets.MAC AS MAC,Assets.Name AS Name,Assets.Description AS Description,Assets.Vendor AS Vendor,Assets.IP AS IP,Assets.LastUpdated AS LastUpdated,Assets.Nmap AS Nmap,Assets.AssetType AS AssetType,Assets.FirstSeen AS FirstSeen,AssetTypes.Name AS AssetTypeName from (Assets join AssetTypes on((Assets.AssetType = AssetTypes.ID))) where (not(Assets.Whitelisted));" | "${mysql[@]}"
+		echo "ALTER VIEW whitelistedAssetsWithTypes AS SELECT Assets.MAC AS MAC,Assets.Name AS Name,Assets.Description AS Description,Assets.Vendor AS Vendor,Assets.IP AS IP,Assets.LastUpdated AS LastUpdated,Assets.Nmap AS Nmap,Assets.AssetType AS AssetType,Assets.FirstSeen AS FirstSeen,AssetTypes.Name AS AssetTypeName from (Assets join AssetTypes on((Assets.AssetType = AssetTypes.ID))) where (Assets.Whitelisted and (not(Assets.Guest)));" | "${mysql[@]}"
+		echo "ALTER VIEW whitelistedGuestAssetsWithTypes AS SELECT Assets.MAC AS MAC,Assets.Name AS Name,Assets.Description AS Description,Assets.Vendor AS Vendor,Assets.IP AS IP,Assets.LastUpdated AS LastUpdated,Assets.Nmap AS Nmap,Assets.AssetType AS AssetType,Assets.FirstSeen AS FirstSeen,AssetTypes.Name AS AssetTypeName from (Assets join AssetTypes on((Assets.AssetType = AssetTypes.ID))) where (Assets.Whitelisted and Assets.Guest);" | "${mysql[@]}"
 	fi
 }
 
