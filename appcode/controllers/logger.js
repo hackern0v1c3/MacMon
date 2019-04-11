@@ -22,6 +22,18 @@ const logger = createLogger({
             timestamp: function () {
                 return (new Date()).toISOString();
             }
+        }),
+        new transports.File({
+            filename: '/usr/src/app/private/logs/errors.log',
+            maxsize: 10000,
+            maxFiles: 2,
+            level: 'error'
+        }),
+        new transports.File({
+            filename: '/usr/src/app/private/logs/info.log',
+            maxsize: 10000,
+            maxFiles: 2,
+            level: 'info'
         })
     ]
 });
