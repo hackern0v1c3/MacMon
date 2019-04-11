@@ -1,3 +1,5 @@
+v0.8: enhanced logging for backup method
+
 v0.7: Replaced most logging debug calls with logging error calls for more accurate logging
 
 v0.6: Updated npm packages to fix security vulnerability
