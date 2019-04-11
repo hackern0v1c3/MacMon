@@ -14,7 +14,7 @@ router.get('/:MAC', user.can('read data'), function (req, res) {
     if(!err){
       res.status(200).send(asset);
     } else {
-      logger.debug(`Error retrieving asset from database: ${err}`);
+      logger.error(`Error retrieving asset from database: ${err}`);
       res.status(500).send('Internal server error: Error retrieving data');
     }
   });
@@ -26,7 +26,7 @@ router.get('/approve/:MAC', user.can('update data'), function (req, res) {
     if(!err){
       res.status(200).send('MAC Approved');
     } else {
-      logger.debug(`Error updating database: ${err}`);
+      logger.error(`Error updating database: ${err}`);
       res.status(500).send('Internal server error: Error updating data');
     }
   });
@@ -38,7 +38,7 @@ router.get('/delete/:MAC', user.can('delete data'), function (req, res) {
     if(!err){
       res.status(200).send('MAC Deleted');
     } else {
-      logger.debug(`Error updating database: ${err}`);
+      logger.error(`Error updating database: ${err}`);
       res.status(500).send('Internal server error: Error updating data');
     }
   });
@@ -63,7 +63,7 @@ router.post('/update', user.can('update data'), function(req, res) {
     if(!err){
       res.status(200).send('MAC Updated');
     } else {
-      logger.debug(`Error updating database: ${err}`);
+      logger.error(`Error updating database: ${err}`);
       res.status(500).send('Internal server error: Error updating data');
     }
   });

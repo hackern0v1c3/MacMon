@@ -9,11 +9,11 @@ exports.runOnce = function(mac, ip) {
     exec(__dirname + '/../bin/nmap_scanner.js '+ mac + " " + ip, (err, stdout, stderr) => { 
       if (err) {
         logger.error('Error launching nmap scanner');
-        logger.debug(err);
+        logger.error(err);
       }
       else if (stderr) {
         logger.error('nmap error');
-        logger.debug(`Nmap error: ${stderr}`);
+        logger.error(`Nmap error: ${stderr}`);
       }
       else {
         logger.info(stdout);
@@ -23,6 +23,6 @@ exports.runOnce = function(mac, ip) {
   }
   catch(err){
     logger.error('Error running nmap_scanner');
-    logger.debug(`Error in nmap_scanner.js: ${err}`);
+    logger.error(`Error in nmap_scanner.js: ${err}`);
   }
 }

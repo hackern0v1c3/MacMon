@@ -8,11 +8,11 @@ exports.runOnce = function() {
     exec(__dirname + '/../bin/mac_scanner.js', (err, stdout, stderr) => { 
       if (err) {
         logger.error('Error launching scanner');
-        logger.debug(err);
+        logger.error(err);
       }
       else if (stderr) {
         logger.error('Arpscan error');
-        logger.debug(`Arpscan error: ${stderr}`);
+        logger.error(`Arpscan error: ${stderr}`);
       }
       else {
         logger.info(stdout);
@@ -22,6 +22,6 @@ exports.runOnce = function() {
   }
   catch(err){
     logger.error('Error setting timer for network scans');
-    logger.debug(`Error in network_scanner.js: ${err}`);
+    logger.error(`Error in network_scanner.js: ${err}`);
   }
 };

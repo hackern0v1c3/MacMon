@@ -71,7 +71,7 @@ exec('nmap -Pn -n -p1-65535 -sV '+ ip + ' -oX -', (err, stdout, stderr) => {
       db.assets.updateNmap(mac, portInfo, function(err){
         if (err) {
           logger.error(`Error updating database with nmap data: ${mac} ${ip}`);
-          logger.debug(`Nmap scanner debug: ${err}`);
+          logger.error(`Nmap scanner debug: ${err}`);
         }
         else {
           logger.info(`Database Nmap Update Complete for ${mac} ${ip}`);

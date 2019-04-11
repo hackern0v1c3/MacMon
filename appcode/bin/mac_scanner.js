@@ -65,11 +65,11 @@ function getScanResults(cidr){
     exec('arp-scan '+cidr, (err, stdout, stderr) => { 
       logger.info(`Completed arp-scan for ${cidr}`);
       if (err) {
-        logger.debug(`arp-scan err: ${err}`);
+        logger.error(`arp-scan err: ${err}`);
         reject(Error(err));
       }
       else if (stderr) {
-        logger.debug(`arp-scan stderr: ${stderr}`);
+        logger.error(`arp-scan stderr: ${stderr}`);
         reject(Error(stderr));
       }
       else {
@@ -149,7 +149,7 @@ var returnNetworkAssets = new Promise(function(resolve, reject){
       })
       .catch(function (error){
         logger.error('Error while fetching scan results:');
-        logger.debug(`${error}`);
+        logger.error(`${error}`);
         reject(Error(error));
       });
   });
@@ -168,7 +168,7 @@ var getMacsFromDatabase = new Promise(function(resolve, reject){
       logger.info("Succesfully fetched MAC addresses from database");
       resolve(databaseMacAddresses);
     } else {
-      logger.debug(`Error fetching MAC from DB: ${err}`);
+      logger.error(`Error fetching MAC from DB: ${err}`);
       reject(Error(err));
     }
   });
@@ -208,7 +208,7 @@ function checkScanAndCheckDatabase(cb) {
       cb(null, scanResults, databasesAddresses, newAddresses);
     })
     .catch(function (error){
-      logger.debug(`Error compaing scan to db info: ${error}`);
+      logger.error(`Error compaing scan to db info: ${error}`);
       cb(error);
     });
 }
@@ -233,7 +233,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
               logger.info("Email sent succesfully");
             } else {
               logger.error("Error sending email notification");
-              logger.debug(`${err}`);
+              logger.error(`${err}`);
             }
           });
         } else {
@@ -248,7 +248,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
           logger.info("Completed database upsert");
         } else {
           logger.error("Error updating database with scan results");
-          logger.debug(err);
+          logger.error(err);
         }
         logger.info("Closing database connection");
         db.dbConnection.disconnect(function(){});
@@ -261,7 +261,7 @@ checkScanAndCheckDatabase(function(err, scanResult, databaseMacAddresses, newAdd
     }
   } else {
     logger.error("Error in scanning module retrieving or comparing arp-scan and database MAC addresses");
-    logger.debug(`${err}`);
+    logger.error(`${err}`);
     db.dbConnection.disconnect(function(){});
   }
 });

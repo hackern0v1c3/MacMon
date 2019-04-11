@@ -16,13 +16,13 @@ router.get('/', function (req, res) {
   } else {
     config.settings.returnAllSettings(function(err, settings){
       if (err){
-        logger.debug(`Error reading config file: ${err}`);
+        logger.error(`Error reading config file: ${err}`);
         res.status(500).send('Internal server error: Error reading config file');
       } else {
         delete settings.emailSenderPassword;
         db.assetTypes.returnAllAssetTypes(function(err, results, fields){
           if(err){
-            logger.debug(`Error fetching asset types from database: ${err}`);
+            logger.error(`Error fetching asset types from database: ${err}`);
             res.status(500).send('Internal server error: Error fetching asset types');
           } else{
             res.render('settings', { username: req.user.userName, conf: settings, assetTypes: results});
@@ -39,7 +39,7 @@ router.post('/', user.can('update data'), function(req, res) {
 
   config.settings.returnAllSettings(function(err, settings){
     if (err){
-      logger.debug(`Error reading config file: ${err}`);
+      logger.error(`Error reading config file: ${err}`);
       res.status(500).send('Internal server error: Error reading config file');
     }
 
@@ -50,7 +50,7 @@ router.post('/', user.can('update data'), function(req, res) {
 
     config.settings.saveNewSettings(newConfig, function(err){
       if (err){
-        logger.debug(`Error writing config file: ${err}`);
+        logger.error(`Error writing config file: ${err}`);
         res.status(500).send('Internal server error: Error saving config file');
       }
       logger.info('Wrote new config to disk');

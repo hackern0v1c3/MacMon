@@ -5,9 +5,9 @@ const db = require('../controllers/db.js');
 db.users.updatePassword('admin', 'admin', function(err){
   if (err) {
     logger.error('Could not update admin password in database');
-    logger.debug(`Password Reset Error: ${err}`);
+    logger.error(`Password Reset Error: ${err}`);
   } else {
-    logger.debug('admin password has been reset to admin.');
+    logger.error('admin password has been reset to admin.');
   }
 
   db.dbConnection.disconnect(function(){});

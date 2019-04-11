@@ -13,7 +13,7 @@ router.post('/', user.can('be admin'), function(req, res) {
         if(!err){
           res.status(200).send();
         } else {
-          logger.debug(`Error backing up database: ${err}`);
+          logger.error(`Error backing up database: ${err}`);
           res.status(500).send('Internal server error: Error backing up database');
         }
       });      
@@ -24,7 +24,7 @@ router.post('/', user.can('be admin'), function(req, res) {
         if (!err){
           res.status(200).send();
         } else {
-          logger.debug(`Error restoring database: ${err}`);
+          logger.error(`Error restoring database: ${err}`);
           res.status(500).send('Internal server error: Error restoring database');
         }
       });
@@ -36,14 +36,14 @@ router.post('/', user.can('be admin'), function(req, res) {
         if(!err){
           res.status(200).send(data);
         } else {
-          logger.debug(`Error retrieving backup file list: ${err}`);
+          logger.error(`Error retrieving backup file list: ${err}`);
           res.status(500).send('Internal server error: Error retrieving backup file list');
         }
       });
       
       break;
     default:
-      logger.debug(`Invalid backup action requested: ${req.body.action}`);
+      logger.error(`Invalid backup action requested: ${req.body.action}`);
       res.status(500).send(`Internal server error: Unknown dbbackup action: ${req.body.action}`);
   }
 });

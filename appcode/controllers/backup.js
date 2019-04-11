@@ -21,7 +21,7 @@ module.exports.utils = {
             return cb(null);
           } 
           else {
-            logger.debug(`error: ${error}`);
+            logger.error(`error: ${error}`);
             return cb("Backup failed");
           }    
         });
@@ -53,11 +53,11 @@ module.exports.utils = {
       exec('mysql -uroot -p'+process.env.DB_ROOT_PASSWORD+' '+process.env.DB_NAME+' <'+restoreFileName, (err, stdout, stderr) => {
         logger.info("mysql restore complete");
         if (err){
-          logger.debug(`Restore Error: ${err}`);
+          logger.error(`Restore Error: ${err}`);
         }
         if (stderr)
         {
-          logger.debug(`Restore Error: ${stderr}`);
+          logger.error(`Restore Error: ${stderr}`);
         }
         cb(null);
       });

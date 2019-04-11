@@ -14,7 +14,7 @@ router.post('/', function(req, res) {
         logger.debug(`Password reset for ${req.user.userName}`);
         res.redirect('/logout');
       } else {
-        logger.debug(`Error updating database: ${err}`);
+        logger.error(`Error updating database: ${err}`);
         res.status(500).send('Internal server error: Error updating data');
       }
     });

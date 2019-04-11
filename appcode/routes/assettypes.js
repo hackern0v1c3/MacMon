@@ -11,7 +11,7 @@ router.get('/', user.can('read data'), function (req, res) {
     if(!err){
       res.status(200).send(data);
     } else {
-      logger.debug(`Error retrieving asset types from database: ${err}`);
+      logger.error(`Error retrieving asset types from database: ${err}`);
       res.status(500).send('Internal server error: Error retrieving data');
     }
   });
@@ -26,7 +26,7 @@ router.get('/delete/:ID', user.can('delete data'), function (req, res) {
       if(!err){
         res.status(200).send('Asset Type Deleted');
       } else {
-        logger.debug(`Error updating database: ${err}`);
+        logger.error(`Error updating database: ${err}`);
         res.status(500).send('Internal server error: Error updating data');
       }
     });
@@ -40,7 +40,7 @@ router.post('/', user.can('update data'), function(req, res) {
     if(!err){
       res.status(200).send(newid);
     } else {
-      logger.debug(`Error updating database: ${err}`);
+      logger.error(`Error updating database: ${err}`);
       res.status(500).send('Internal server error: Error updating data');
     }
   });

@@ -19,7 +19,7 @@ router.post('/', function (req, res) {
         res.status(200).send("Test email sent succesfully.");
       } else {
         logger.error("Error sending test email");
-        logger.debug(`${err}`);
+        logger.error(`${err}`);
         res.status(500).send(`Test email failed: ${err}`);
       }
     });

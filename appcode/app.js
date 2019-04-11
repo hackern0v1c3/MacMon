@@ -109,7 +109,7 @@ var scanFunction = function() {
   run_scanner.runOnce();
   config.settings.returnAllSettings(function(err, newSettings){
     if (err){
-      logger.debug(`Error reading config file: ${err}`);
+      logger.error(`Error reading config file: ${err}`);
       process.exit(1);
     }
 
