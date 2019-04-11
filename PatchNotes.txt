@@ -1,3 +1,6 @@
+v0.6: Updated npm packages to fix security vulnerability
+  Added file based error and info logging
+
 v0.5: Add code to docker entrypoint which should update the DB schema from MacMon v0.1-v0.2 to include the new field introduced in v0.3
   Moved time zone display again.  This time to settings page
 
