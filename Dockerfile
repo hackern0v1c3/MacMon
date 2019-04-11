@@ -73,7 +73,7 @@ ENV RUN_AS="${RUN_AS}"
 ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
 ENV HASH_STRENGTH="${HASH_STRENGTH}"
 
-ENV VERSION="0.7"
+ENV VERSION="0.8"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
