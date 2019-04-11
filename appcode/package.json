@@ -1,6 +1,6 @@
 {
   "name": "macmon",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A basic asset detections, whitelisting, and tracking app",
   "private": true,
   "scripts": {
@@ -23,7 +23,7 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "helmet": "^3.16.0",
-    "morgan": "~1.9.1",
+    "morgan": ">=1.9.1",
     "mysql": "^2.16.0",
     "nodemailer": "^5.1.1",
     "passport": "^0.4.0",
