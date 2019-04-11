@@ -191,6 +191,12 @@ echo "DB_USER: $DB_USER"
 echo "DB_PASSWORD: $DB_PASSWORD"
 echo "MYSQL ROOT PASSWORD: $DB_ROOT_PASSWORD"
 
+#Make sure the log folder introduced in version 0.6 exists
+if [ ! -d /usr/src/app/private/logs ]; then
+  mkdir -p /usr/src/app/private/logs
+	chown node:node /usr/src/app/private/logs
+fi
+
 if [ "$NO_LOCAL_DB" != "true" ]; then
 	echo "Going to initialize local database"
 	_init_mysql
