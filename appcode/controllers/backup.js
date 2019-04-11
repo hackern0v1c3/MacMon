@@ -14,7 +14,16 @@ module.exports.utils = {
 
 		try{
       exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
+        logger.info(stdout);
         logger.info("mysql dump complete");
+
+        if (err) {
+          logger.error(`error: ${err}`);
+        }
+        if (stderr) {
+          logger.error(`error: ${stderr}`);
+        }
+
         exec('wc -l <'+ backupFileName, function (error, results) {
           logger.info(`mysqldump file lines: ${results}`);
           if (results > 10) {
