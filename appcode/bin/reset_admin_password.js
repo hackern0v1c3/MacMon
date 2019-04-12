@@ -7,7 +7,7 @@ db.users.updatePassword('admin', 'admin', function(err){
     logger.error('Could not update admin password in database');
     logger.error(`Password Reset Error: ${err}`);
   } else {
-    logger.error('admin password has been reset to admin.');
+    logger.info('admin password has been reset to admin.');
   }
 
   db.dbConnection.disconnect(function(){});
