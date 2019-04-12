@@ -13,7 +13,7 @@ module.exports.utils = {
 		var backupFileName = path.join(__dirname, '..', 'private', 'backups', filename);
 
 		try{
-      exec('mysqldump -u'+process.env.DB_USER+' -p'+process.env.DB_PASSWORD+' '+process.env.DB_NAME+' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
+      exec('mysqldump -u\''+process.env.DB_USER+'\' -p\''+process.env.DB_PASSWORD+'\' \''+process.env.DB_NAME+'\' --single-transaction >'+backupFileName, (err, stdout, stderr) => {
         logger.info(stdout);
         logger.info("mysql dump complete");
 
@@ -50,6 +50,7 @@ module.exports.utils = {
         files.reverse();
         cb(null, files);
       } else {
+        logger.error(`Error listing backup files: ${err}`);
         cb(err, null);
       }
     });
@@ -59,8 +60,8 @@ module.exports.utils = {
   restoreDatabase: function(filename, cb) {
     var restoreFileName = path.join(__dirname, '..', 'private', 'backups', filename);
     try{
-      exec('mysql -uroot -p'+process.env.DB_ROOT_PASSWORD+' '+process.env.DB_NAME+' <'+restoreFileName, (err, stdout, stderr) => {
-        logger.info("mysql restore complete");
+      exec('mysql -uroot -p\''+process.env.DB_ROOT_PASSWORD+'\' \''+process.env.DB_NAME+'\' <'+restoreFileName, (err, stdout, stderr) => {
+        logger.info(`${stdout}`);
         if (err){
           logger.error(`Restore Error: ${err}`);
         }
@@ -68,10 +69,12 @@ module.exports.utils = {
         {
           logger.error(`Restore Error: ${stderr}`);
         }
+        logger.info("mysql restore complete");
         cb(null);
       });
 		}
 		catch(err){
+      logger.error(`Restore Error: ${err}`);
 			cb(err);
 		}
   }
