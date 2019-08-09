@@ -1,3 +1,7 @@
+v0.12: Added build instructions to the repo
+  Added tini to handle process reaping
+  Added seperate dockerfile for building for arm that pulls the correct tini build
+
 v0.11: Updated packages to fix vulnerability in lodash
   Updated gosu
   Add note to README about --init flag for managing process reaping.
