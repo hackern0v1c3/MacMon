@@ -1,4 +1,8 @@
-v 0.10: Updated packages to fix vulnerability in constantinople and clean-css.  Also moved to latest version of node-mailer package.
+v0.11: Updated packages to fix vulnerability in lodash
+  Updated gosu
+  Add note to README about --init flag for managing process reaping.
+
+v0.10: Updated packages to fix vulnerability in constantinople and clean-css.  Also moved to latest version of node-mailer package.
 
 v0.9: Fixed command injection bug in backup and restore methods.  Also continued to enhance logging.
 
