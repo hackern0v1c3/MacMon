@@ -14,8 +14,10 @@ MacMon is an application written primarily in NodeJs that actively scans your ne
 
 - This container requires the --net=host option because it relies on layer 2 traffic.
 
+- This container requires the --init option to ensure that child processes are reaped.  If you don't use this flag the container will run but you will end up with large ammounts of zombie processes.
+
 ## Quickstart
-sudo docker run -d -e DB_ROOT_PASSWORD={make up a password} -e DB_PASSWORD={make up another password} --net=host -v macmon_sql:/var/lib/mysql -v macmon_conf:/usr/src/app/private macmondev/macmon:latest
+sudo docker run --init -d -e DB_ROOT_PASSWORD={make up a password} -e DB_PASSWORD={make up another password} --net=host -v macmon_sql:/var/lib/mysql -v macmon_conf:/usr/src/app/private macmondev/macmon:latest
 
 ## Usage Instructions
 - Browse to the web interface.  By default it will listen on port 8443 with a self signed certificate.  Example: https://192.168.1.50:8443
