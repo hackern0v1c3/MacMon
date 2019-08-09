@@ -9,7 +9,7 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg dirmngr && rm -rf /var/lib/apt/lists/*
 
-ENV GOSU_VERSION 1.7
+ENV GOSU_VERSION 1.11
 
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
@@ -73,7 +73,7 @@ ENV RUN_AS="${RUN_AS}"
 ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
 ENV HASH_STRENGTH="${HASH_STRENGTH}"
 
-ENV VERSION="0.10"
+ENV VERSION="0.11"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
