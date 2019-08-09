@@ -17,8 +17,8 @@
   * `docker push macmondev/macmon-amd64:0.1`
 11. Pull code from git on arm
 12. Build on arm
-  * `docker build -f Dockerfile_Arm -t macmondev/macmon-arm64v8:{version} .`
-  * `docker build -f Dockerfile_Arm -t macmondev/macmon-arm64v8:0.1 .`
+  * `docker build -f DockerfileArm -t macmondev/macmon-arm64v8:{version} .`
+  * `docker build -f DockerfileArm -t macmondev/macmon-arm64v8:0.1 .`
 13. Push from arm
   * `Docker push macmondev/macmon-arm64v8:{version}`
   * `Docker push macmondev/macmon-arm64v8:0.1`
