@@ -5,7 +5,7 @@
 5. Merge to master
 6. Tag master with version
   * `git tag -a {version} -m "{version}"`
-  * `git tag -a v0.1 -m "v0.1"`
+  * `git tag -a 0.1 -m "0.1"`
 7. Push tag
   * `git push --tags`
 8. Docker login
