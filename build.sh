@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# https://github.com/docker/buildx
+
 # Notes on setting up build environment on linux
 # https://github.com/docker/buildx/issues/57
 # The easiest way to setup qemu should be to run docker run --privileged linuxkit/binfmt:v0.7
@@ -33,7 +35,10 @@ push()
     docker buildx build --no-cache --platform linux/arm64,linux/amd64,linux/arm/v7 -t macmondev/macmon --push .
 
     # echo ==== \$ docker buildx imagetools inspect macmondev/macmontest:0.13
-    docker buildx imagetools inspect macmondev/macmontest
+    docker buildx imagetools inspect macmondev/macmon
+
+    docker buildx stop macmon
+    docker buildx rm macmon
 }
 
 # Main
