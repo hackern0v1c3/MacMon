@@ -1,3 +1,6 @@
+v0.13: Replaced retired bcrypt library with supported one
+  Changed build process to use new docker buildx experimental cross platform building
+
 v0.12: Added build instructions to the repo
   Added tini to handle process reaping
   Added seperate dockerfile for building for arm that pulls the correct tini build
