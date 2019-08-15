@@ -2,7 +2,7 @@
 
 //Import modules
 const mysql = require('mysql');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 //Setup SQL Server connection
 var pool = mysql.createPool({
