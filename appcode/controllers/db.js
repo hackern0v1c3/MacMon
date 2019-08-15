@@ -1,11 +1,8 @@
 "use strict";
 
 //Import modules
-const config = require('./config.js');
 const mysql = require('mysql');
-const bcrypt = require('bcrypt-nodejs');
-const path = require('path');
-const { exec } = require('child_process');
+const bcrypt = require('bcrypt');
 
 //Setup SQL Server connection
 var pool = mysql.createPool({
@@ -206,10 +203,14 @@ module.exports.users = {
 			return cb('username, password, and role cannot be null');
 		}
 
-		bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
+		if (isNaN(process.env.HASH_STRENGTH)) {
+			return cb('Hash strength must be a valid number');
+		}
+
+		bcrypt.genSalt(parseInt(process.env.HASH_STRENGTH), function(err, salt) {
 			if(err){return cb(err);}
 			
-			bcrypt.hash(userPassword, salt, null, function(err, hash) {
+			bcrypt.hash(userPassword, salt, function(err, hash) {
 				if(err){return cb(err);}
 		
 				pool.getConnection(function(err, connection) {
@@ -230,10 +231,14 @@ module.exports.users = {
 			return cb('username, password, and role cannot be null');
 		}
 
-		bcrypt.genSalt(process.env.HASH_STRENGTH, function(err, salt) {
+		if (isNaN(process.env.HASH_STRENGTH)) {
+			return cb('Hash strength must be a valid number');
+		}
+
+		bcrypt.genSalt(parseInt(process.env.HASH_STRENGTH), function(err, salt) {
 			if(err){return cb(err);}
 
-			bcrypt.hash(newPassword, salt, null, function(err, hash) {
+			bcrypt.hash(newPassword, salt, function(err, hash) {
 				if(err){return cb(err);}
 				
 				pool.getConnection(function(err, connection) {

@@ -1,6 +1,6 @@
 {
   "name": "macmon",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "A basic asset detections, whitelisting, and tracking app",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/hackern0v1c3/MacMon",
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "connect-roles": "^3.1.2",
     "cookie-parser": "^1.4.4",
