@@ -9,6 +9,11 @@ RUN groupadd -r mysql && useradd -r -g mysql mysql
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg dirmngr && rm -rf /var/lib/apt/lists/*
 
+# Add Tini
+ENV TINI_VERSION v0.18.0
+RUN wget -O /tini "https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini-$(dpkg --print-architecture)"
+RUN chmod +x /tini
+
 # Add Gosu
 ENV GOSU_VERSION 1.11
 
@@ -74,7 +79,7 @@ ENV RUN_AS="${RUN_AS}"
 ENV NO_LOCAL_DB="${NO_LOCAL_DB}"
 ENV HASH_STRENGTH="${HASH_STRENGTH}"
 
-ENV VERSION="0.12"
+ENV VERSION="0.13"
  
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -123,11 +128,6 @@ RUN chmod u+s /usr/src/app/bin/dos
 RUN rm -rf /tmp/*
 
 VOLUME [ "/var/lib/mysql", "/usr/src/app/private" ]
-
-# Add Tini
-ENV TINI_VERSION v0.18.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
 
 ENTRYPOINT [ "/tini", "--", "/usr/src/app/docker-entrypoint.sh" ]
 
