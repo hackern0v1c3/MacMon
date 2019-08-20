@@ -15,6 +15,7 @@
   },
   "homepage": "https://github.com/hackern0v1c3/MacMon",
   "dependencies": {
+    "@hapi/joi": "^15.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-roles": "^3.1.2",
