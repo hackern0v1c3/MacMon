@@ -5,12 +5,12 @@ block content
     .row
       .col-md-4
       .col-md-4
-        form.form-horizonal.justify-content-center(action='/login', method='post')
+        form.form-horizonal.justify-content-center(action='/login', method='post', autocomplete='off')
           .form-group
             label Username
-            input.form-control(type='text', name='username')
+            input.form-control(type='text', name='username', autocomplete='off')
           .form-group
             label Password
-            input.form-control(type='password', name='password')
+            input.form-control(type='password', name='password', autocomplete='off')
           button.btn.btn-primary(type='submit') Sign In
       .col-md-4
