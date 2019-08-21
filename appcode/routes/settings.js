@@ -3,10 +3,8 @@ const router = express.Router();
 const user = require('../controllers/roles.js');
 const logger = require('../controllers/logger.js');
 const db = require('../controllers/db.js');
-const fs = require('fs');
-const path = require('path');
-
-var config = require('../controllers/config.js');
+const validateSettings = require('../validators/settings.js');
+let config = require('../controllers/config.js');
 
 /* GET settings page without passwords. */
 //Redirect if not logged in
@@ -35,7 +33,11 @@ router.get('/', function (req, res) {
 
 /* POST for updating config without editing passwords */
 router.post('/', user.can('update data'), function(req, res) {
-  newConfig = req.body;
+  const validationError = validateSettings(req.body);
+  if ( validationError != null){
+    logger.debug(`Settings validation failed: ${validationError}`);
+    return res.status(422).send('Improperly Formed Settings');
+  }
 
   config.settings.returnAllSettings(function(err, settings){
     if (err){
@@ -44,11 +46,11 @@ router.post('/', user.can('update data'), function(req, res) {
     }
 
     //Keep email password from old config if no new one is supplied
-    if(typeof newConfig.emailSenderPassword === "undefined"){
-      newConfig.emailSenderPassword = settings.emailSenderPassword;
+    if(typeof req.body.emailSenderPassword === "undefined"){
+      req.body.emailSenderPassword = settings.emailSenderPassword;
     } 
 
-    config.settings.saveNewSettings(newConfig, function(err){
+    config.settings.saveNewSettings(req.body, function(err){
       if (err){
         logger.error(`Error writing config file: ${err}`);
         res.status(500).send('Internal server error: Error saving config file');
