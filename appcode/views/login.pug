@@ -6,6 +6,7 @@ block content
       .col-md-4
       .col-md-4
         form.form-horizonal.justify-content-center(action='/login', method='post', autocomplete='off')
+          input(type='hidden', name='_csrf', value=_csrf)
           .form-group
             label Username
             input.form-control(type='text', name='username', autocomplete='off')
