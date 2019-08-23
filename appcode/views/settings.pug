@@ -5,7 +5,7 @@ block header
 block selected
   -var selected = 'Settings';
 block body
-  form.form-horizonal.justify-content-center(action='/settings', method='post', style={margin: '0px 30px 30px 30px'})
+  form.form-horizonal.justify-content-center(action='/settings', method='post', style={margin: '0px 30px 30px 30px'}, autocomplete='off')
     h4 Version
     #{process.env.VERSION}
     hr
@@ -87,10 +87,10 @@ block body
         input#emailTlsInput.form-control(type='checkbox', name='emailTls', checked=(conf.emailTls === 'True' || conf.emailTls === 'true')) 
     .form-group
       label Email Password
-      input#emailPassword1.form-control(type='password', name='password')
+      input#emailPassword1.form-control(type='password', name='password', autocomplete='off')
     .form-group
       label Confirm Email Password
-      input#emailPassword2.form-control(type='password', name='confirmPassword')
+      input#emailPassword2.form-control(type='password', name='confirmPassword', autocomplete='off')
     br
     br
     button#testEmailButton.btn.btn-primary(type='button', enabled) Test Email Settings
