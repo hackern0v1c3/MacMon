@@ -39,6 +39,7 @@ block content
             span(aria-hidden='true') &times;
         .modal-body
           form.form-horizonal.justify-content-center(action='/passwordreset', method='post', autocomplete='off')
+            input(type='hidden', name='_csrf', value=_csrf)
             .form-group
               label Password
               input#password1.form-control(type='password', name='password', autocomplete='off')
