@@ -1,6 +1,7 @@
 extends navbar
 block header
-  script(src='/js/settings.js')
+  meta(name="csrf-token" content=csrfToken)
+  script(src='/js/settings.js') 
 block selected
   -var selected = 'Settings';
 block body

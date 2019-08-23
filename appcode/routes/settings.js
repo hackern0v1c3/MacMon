@@ -23,7 +23,7 @@ router.get('/', function (req, res) {
             logger.error(`Error fetching asset types from database: ${err}`);
             res.status(500).send('Internal server error: Error fetching asset types');
           } else{
-            res.render('settings', { username: req.user.userName, conf: settings, assetTypes: results});
+            res.render('settings', { username: req.user.userName, conf: settings, assetTypes: results, csrfToken: req.csrfToken() });
           }          
         });  
       }

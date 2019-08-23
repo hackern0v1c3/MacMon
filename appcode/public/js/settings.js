@@ -166,6 +166,14 @@ function DeleteAssetType(id, cb){
 }
 
 $(document).ready( function () {
+  //Setup csrf for ajax
+  var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  $.ajaxSetup({
+    headers: {
+      'CSRF-Token': token
+    }
+  });
+  
   //Show the local timezone
   var currTz = sessionStorage.getItem('timezone');
   $("#tzLabel").html(currTz);
