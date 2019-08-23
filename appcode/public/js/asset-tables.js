@@ -101,6 +101,14 @@ $.fn.dataTable.ext.order['dom-text'] = function  ( settings, col )
 }
 
 $(document).ready( function () {
+  //Setup csrf for ajax
+  var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  $.ajaxSetup({
+    headers: {
+      'CSRF-Token': token
+    }
+  });
+
   //Get current timezone in browser
   if (!sessionStorage.getItem('timezone')) {
     var tz = jstz.determine() || 'UTC';

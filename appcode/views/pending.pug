@@ -1,4 +1,6 @@
 extends device-pages
+block navbarheader
+  meta(name="csrf-token" content=csrfToken)
 block selected
   -var selected = 'New Detected Devices';
 block assetTable

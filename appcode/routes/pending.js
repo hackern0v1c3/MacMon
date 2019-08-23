@@ -22,7 +22,7 @@ router.get('/', function (req, res) {
           return eachResult;
         });
 
-        res.render('pending', { username: req.user.userName, assets: resultsIncludingBlocks })
+        res.render('pending', { username: req.user.userName, assets: resultsIncludingBlocks, csrfToken: req.csrfToken() })
       } else {
         res.status(500).send('Internal server error: Error retrieving data');
       }
