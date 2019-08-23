@@ -29,7 +29,12 @@ const passport = require('passport');
 const strategy = require('passport-local').Strategy;
 
 var app = express();
+
+//Setup secure settings and headers with helmet
 app.use(helmet());
+app.use(helmet.xssFilter());
+app.use(helmet.frameguard({ action: 'deny' }));
+app.use(helmet.noCache());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -60,7 +65,7 @@ app.use(morgan('combined', { 'stream': logger.stream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('express-session')({ secret: process.env.COOKIE_SECRET, resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: process.env.COOKIE_SECRET, secure: true, resave: false, saveUninitialized: false }));
 
 //Initialize Passport for authentication
 app.use(passport.initialize());
