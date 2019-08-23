@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const logger = require('./controllers/logger.js');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const csurf = require('csurf');
 const config = require('./controllers/config.js');
 const index = require('./routes/index');
 const login = require('./routes/login.js');
@@ -70,6 +71,21 @@ app.use(require('express-session')({ secret: process.env.COOKIE_SECRET, secure: 
 //Initialize Passport for authentication
 app.use(passport.initialize());
 app.use(passport.session());
+
+//Setup CSRF protection middleware
+app.use(csurf());
+app.use(function(req, res, next) {
+  res.locals._csrf = req.csrfToken();
+  next();
+});
+app.use(function (err, req, res, next) {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err)
+
+  // handle CSRF token errors here
+  logger.error(`CSRF Error`);
+  res.status(403)
+  res.send('Access Denied: CSRF protection triggered')
+})
 
 //Initialize connect-roles for authorization
 app.use(user.middleware());
