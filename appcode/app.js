@@ -66,7 +66,7 @@ app.use(morgan('combined', { 'stream': logger.stream}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(require('express-session')({ secret: process.env.COOKIE_SECRET, secure: true, resave: false, saveUninitialized: false }));
+app.use(require('express-session')({ secret: process.env.COOKIE_SECRET, cookie: { secure: true }, resave: false, saveUninitialized: false }));
 
 //Initialize Passport for authentication
 app.use(passport.initialize());
