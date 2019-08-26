@@ -2,6 +2,7 @@ v0.14: Added CSRF protection
   Added input validation
   Added additional security headers
   Updated javascript libraries
+  Added error messages when ajax calls fail in asset pages
 
 v0.13: Replaced retired bcrypt library with supported one
   Changed build process to use new docker buildx experimental cross platform building
