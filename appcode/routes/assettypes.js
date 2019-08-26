@@ -46,7 +46,6 @@ router.get('/delete/:ID', user.can('delete data'), function (req, res) {
 router.post('/', user.can('update data'), function(req, res) {
   const validationError = validateAssetType(req.body);
   if ( validationError != null){
-    logger.debug(`Received assettype object: ${req.body}`);
     logger.debug(`AssetType validation failed: ${validationError}`);
     return res.status(422).send('Improperly Formed Asset Type Data');
   }

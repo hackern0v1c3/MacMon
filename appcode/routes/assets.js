@@ -87,7 +87,6 @@ router.get('/block/:IpAddress', user.can('write data'), function (req, res) {
 router.post('/update', user.can('update data'), function(req, res) {
   const validationError = validateAsset(req.body);
   if ( validationError != null){
-    logger.debug(`Received asset object: ${req.body}`);
     logger.debug(`Asset validation failed: ${validationError}`);
     return res.status(422).send('Improperly Formed Asset Data');
   }
