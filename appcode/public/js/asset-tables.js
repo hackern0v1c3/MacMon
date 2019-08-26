@@ -5,11 +5,15 @@ function FilterDates() {
 }
 
 function Block(mac, ipAddress) {
-  $.ajax({url:'/assets/block/' + ipAddress}).done(function() {
-    var rowid = $(document.getElementById(mac));
-    rowid.toggleClass('blocked-row');
-    toggleBlockButtonText(ipAddress);
-  });
+  $.ajax({url:'/assets/block/' + ipAddress})
+    .done(function(){
+      var rowid = $(document.getElementById(mac));
+      rowid.toggleClass('blocked-row');
+      toggleBlockButtonText(ipAddress);
+    })
+    .fail(function(error){
+      alert('Error blocking asset: ' + error.responseText);
+    });
 }
 
 function toggleBlockButtonText(blockButtonId) {
@@ -22,40 +26,56 @@ function toggleBlockButtonText(blockButtonId) {
 }
 
 function Edit(mac) {
-  $.ajax({url:'/assettypes/'}).done(function(assetTypes) {
-    $.ajax({url:'/assets/' + mac}).done(function(asset) {
-      $('#editAssetMac').val(mac);
-      $('#editAssetModalLabel').text('Edit ' + mac);  
-      $('#editAssetName').val(asset.Name);
-      $('#editAssetDescription').val(asset.Description);
-      $('#assetType').empty();
+  $.ajax({url:'/assettypes/'})
+    .done(function(assetTypes) {
+      $.ajax({url:'/assets/' + mac})
+        .done(function(asset) {
+          $('#editAssetMac').val(mac);
+          $('#editAssetModalLabel').text('Edit ' + mac);  
+          $('#editAssetName').val(asset.Name);
+          $('#editAssetDescription').val(asset.Description);
+          $('#assetType').empty();
 
-      $.each(assetTypes, function() {
-        $('#assetType').append($("<option/>", {
-            value: this.ID,
-            text: this.Name
-        }));
-      });
-      
-      $('#assetType option[value=' + asset.AssetType + ']').prop('selected', 'selected').change();
+          $.each(assetTypes, function() {
+            $('#assetType').append($("<option/>", {
+                value: this.ID,
+                text: this.Name
+            }));
+          });
+          
+          $('#assetType option[value=' + asset.AssetType + ']').prop('selected', 'selected').change();
 
-      $('#editAsset').modal('show');
+          $('#editAsset').modal('show');
+        })
+        .fail(function(error){
+          alert('Error fetching asset: ' + error.responseText);
+        });
+    })
+    .fail(function(error){
+      alert('Error fetching asset types: ' + error.responseText);
     });
-  });
 }
 
 function Approve(mac) {
-  $.ajax({url:'/assets/approve/' + mac}).done(function() {
-    var rowid = $(document.getElementById(mac));
-    rowid.fadeOut();  
-  });
+  $.ajax({url:'/assets/approve/' + mac})
+    .done(function() {
+      var rowid = $(document.getElementById(mac));
+      rowid.fadeOut();  
+    })
+    .fail(function(error){
+      alert('Error approving asset: ' + error.responseText);
+    });
 }
 
 function Delete(mac){
-  $.ajax({url:'/assets/delete/' + mac}).done(function() {
-    var rowid = $(document.getElementById(mac));
-    rowid.fadeOut();  
-  });
+  $.ajax({url:'/assets/delete/' + mac})
+    .done(function() {
+      var rowid = $(document.getElementById(mac));
+      rowid.fadeOut();  
+    })
+    .fail(function(error){
+      alert('Error deleting asset: ' + error.responseText);
+    });
 }
 
 function Update(){
@@ -67,29 +87,41 @@ function Update(){
   assetToBeSaved.AssetType = $('#assetType').val();
   assetToBeSaved.AssetTypeName = $('#assetType option:selected').text();
 
-  $.post('/assets/update/', assetToBeSaved, function(){
-    var rowid = $(document.getElementById(assetToBeSaved.MAC));
-    $($(rowid).find(".nameColumn")).text(assetToBeSaved.Name);
-    $($(rowid).find(".descriptionColumn")).text(assetToBeSaved.Description);
-    $($(rowid).find(".assetTypeColumn")).text(assetToBeSaved.AssetTypeName);
-  });
+  $.post('/assets/update/', assetToBeSaved)
+    .done(function(){
+      var rowid = $(document.getElementById(assetToBeSaved.MAC));
+      $($(rowid).find(".nameColumn")).text(assetToBeSaved.Name);
+      $($(rowid).find(".descriptionColumn")).text(assetToBeSaved.Description);
+      $($(rowid).find(".assetTypeColumn")).text(assetToBeSaved.AssetTypeName);
+    })
+    .fail(function(error){
+      alert('Error updating asset: ' + error.responseText);
+    });
 }
 
 function Scan(mac, ip){
   var assetToScan = {}
   assetToScan.MAC = mac;
   assetToScan.IP = ip;
-  $.post('/assets/scan/', assetToScan, function(){
-    $('#nmapBody').text('A scan has begun for MAC ' + mac + ' IP ' + ip + '.\nThe scan can take 5-10 minutes to complete.\nWhen it finishes the results should appear in the table.\nPlease be patient.');
-    $('#nmapModal').modal('show');
-  });
+  $.post('/assets/scan/', assetToScan)
+    .done(function(){
+      $('#nmapBody').text('A scan has begun for MAC ' + mac + ' IP ' + ip + '.\nThe scan can take 5-10 minutes to complete.\nWhen it finishes the results should appear in the table.\nPlease be patient.');
+      $('#nmapModal').modal('show');
+    })
+    .fail(function(error){
+      alert('Error starting scan: ' + error.responseText);
+    });
 }
 
 function ScanResults(mac, ip){
-  $.ajax({url:'/assets/' + mac}).done(function(asset) {
-    $('#nmapBody').text('Port scan results for MAC ' + mac + ' IP ' + ip  + '\n' + asset.Nmap);
-    $('#nmapModal').modal('show');
-  });
+  $.ajax({url:'/assets/' + mac})
+    .done(function(asset) {
+      $('#nmapBody').text('Port scan results for MAC ' + mac + ' IP ' + ip  + '\n' + asset.Nmap);
+      $('#nmapModal').modal('show');
+    })
+    .fail(function(error){
+      alert('Error fetching scan results: ' + error.responseText);
+    });
 }
 
 //For sorting text boxes in datatable
