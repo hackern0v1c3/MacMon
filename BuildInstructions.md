@@ -11,5 +11,5 @@
 8. Docker login
 9. Build using build script
   * `./build -v {version} .`
-  * `./build v 0.1`
+  * `./build -v 0.1`
 10. Update description on docker hub with latest Readme.md
