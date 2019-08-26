@@ -1,6 +1,7 @@
 v0.14: Added CSRF protection
   Added input validation
   Added additional security headers
+  Updated javascript libraries
 
 v0.13: Replaced retired bcrypt library with supported one
   Changed build process to use new docker buildx experimental cross platform building
