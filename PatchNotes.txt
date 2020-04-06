@@ -1,4 +1,5 @@
 v0.17: Updated acorn and kind-of npm packages to fix vulns reported by github
+  Changed build method for gosu
 
 v0.16: Allowed single quotes in asset descriptions and names
 
