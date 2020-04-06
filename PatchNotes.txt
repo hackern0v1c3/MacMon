@@ -1,3 +1,5 @@
+v0.17: Updated acorn and kind-of npm packages to fix vulns reported by github
+
 v0.16: Allowed single quotes in asset descriptions and names
 
 v0.15: Updated node packages and rebuilt container for security updates
