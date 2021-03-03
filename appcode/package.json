@@ -32,7 +32,7 @@
     "nodemailer": "^6.4.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "serve-favicon": "^2.5.0",
     "sync-request": "^6.1.0",
     "winston": "^3.2.1",
